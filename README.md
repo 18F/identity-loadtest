@@ -1,9 +1,4 @@
-`identity-loadtest`
-
-[![Build Status](https://circleci.com/gh/18F/identity-loadtest.svg?style=svg)](https://circleci.com/gh/18F/identity-loadtest)
-[![Code Climate](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/maintainability)](https://codeclimate.com/github/18F/identity-loadtest/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/test_coverage)](https://codeclimate.com/github/18F/identity-loadtest/test_coverage)
-[![security](https://hakiri.io/github/18F/identity-loadtest/master.svg)](https://hakiri.io/github/18F/identity-idp/master)
+# `identity-loadtest`
 
 Load testing scripts and tooling for the Login.gov IdP application, currently using [`locust`](http://locust.io).
 
