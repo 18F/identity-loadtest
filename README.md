@@ -26,6 +26,6 @@ telephony_disabled: 'true'
 ## Running Locust
 
 ```sh
-locust --host localhost:3000 --clients 1 --hatch-rate 1
+locust --host localhost:3000 --clients 1 --hatch-rate 1 --locustfile load_testing/locustfile.py
 open http://localhost:8089
 ```
