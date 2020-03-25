@@ -59,8 +59,15 @@ class CovidReliefLoad(TaskSet):
                     'authenticity_token': authenticity_token(dom),
                   },
                   catch_response=True)
-        dom = resp_to_dom(resp)
-        confirmation_link = dom.find("#confirm-now")[0].attrib['href']
+
+        with resp as confirm_resp:
+            dom = resp_to_dom(confirm_resp)
+            try:
+                confirmation_link = dom.find("#confirm-now")[0].attrib['href']
+            except Exception as err:
+                resp.failure(
+                    "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?")
+                return 
         
         # Get confirmation token
         resp = self.client.get(confirmation_link, name="/sign_up/email/confirm?confirmation_token=")
@@ -94,8 +101,15 @@ class CovidReliefLoad(TaskSet):
           },
           catch_response=True
         )
-        dom = resp_to_dom(resp)
-        otp_code = dom.find('input[name="code"]')[0].attrib['value']
+
+        with resp as otp_resp:
+            dom = resp_to_dom(otp_resp)
+            try:
+                otp_code = dom.find('input[name="code"]')[0].attrib['value']
+            except Exception as err:
+                resp.failure(
+                    "Could not find pre-filled OTP code, is IDP telephony_disabled: 'true' ?")
+                return
 
         # Visit security code page and submit pre-filled OTP
         resp = self.client.post(
@@ -106,14 +120,10 @@ class CovidReliefLoad(TaskSet):
             })
 
         # Should be able to get the /account page now
-        resp = self.client.get(
-          login_url + "/account"
-        )
+        resp = self.client.get("/account")
 
         # Now log out
-        resp = self.client.get(
-          login_url + "/logout"
-        )
+        resp = self.client.get("/logout")
 
 
 class WebsiteUser(HttpLocust):
