@@ -6,7 +6,7 @@ Load testing scripts and tooling for the Login.gov, currently using [`locust`](h
 
 ### Python and Locust
 
-Instally python3 and dependencies
+Install python3 and dependencies
 
 ```sh
 brew install python
@@ -26,6 +26,8 @@ telephony_disabled: 'true'
 ## Running Locust
 
 ```sh
-locust --host localhost:3000 --clients 1 --hatch-rate 1 --locustfile load_testing/locustfile.py
+locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/locustfile.py
 open http://localhost:8089
 ```
+
+Or add `--no-web` for a console-only experience
