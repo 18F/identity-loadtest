@@ -1,8 +1,7 @@
-import os
 from locust import HttpLocust, TaskSet, task, between
 from faker import Factory
-import pyquery
 import foney
+from locust_helpers import *
 from random import randint
 
 """ Globals """
@@ -10,40 +9,17 @@ fake = Factory.create()
 phone_numbers = foney.phone_numbers()
 default_password = "salty pickles"
 
-""" Helper functions """
-def authenticity_token(dom, id=None):
-    """
-    Retrieves the CSRF auth token from the DOM for submission.
-    If you need to differentiate between multiple CSRF tokens on one page,
-    pass the optional ID of the parent form (with hash)
-    """
-    selector = 'input[name="authenticity_token"]:first'
-
-    if id:
-        selector = '{} {}'.format(id, selector)
-    return dom.find(selector).attr('value')
-
-def resp_to_dom(resp):
-    """
-    Little helper to check response status is 200
-    and return the DOM, cause we do that a lot.
-    """
-    resp.raise_for_status()
-    return pyquery.PyQuery(resp.content)
-
-
-""" The main Locust script """
-class CovidReliefLoad(TaskSet):
+class SignUpLoad(TaskSet):
     def on_start(self):
-        print("*** Starting load tests ***")
+        print("*** Starting Sign-Up load tests ***")
 
     def on_stop(self):
-        print("*** Ending load tests ***")
+        print("*** Ending Sign-Up load tests ***")
 
     """ @task(<weight>) : value=3 executes 3x as often as value=1 """
     """ Things inside task are synchronous. Tasks are async """
     @task(1)
-    def full_synchronous_path(self):
+    def sign_up_path(self):
         # GET the root
         self.client.get("/")
 
@@ -127,5 +103,5 @@ class CovidReliefLoad(TaskSet):
 
 
 class WebsiteUser(HttpLocust):
-    task_set = CovidReliefLoad
+    task_set = SignUpLoad
     wait_time = between(5, 9)

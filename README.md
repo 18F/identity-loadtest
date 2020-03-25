@@ -25,9 +25,26 @@ telephony_disabled: 'true'
 
 ## Running Locust
 
+You can only run one locustfile at a time, there are many to choose from that end in `.locustfile.py`.
+
+- `clients` is the total number of concurrent Locust users.
+- `hatch-rate` is the number of users to spawn per second, starting from zero.
+
+### Sign-Up load test
+
+* This will create lots of users in your database
+
 ```sh
-locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/locustfile.py
-open http://localhost:8089
+locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/sign_up.locustfile.py --no-web
 ```
 
-Or add `--no-web` for a console-only experience
+### Sign-In load test
+
+* You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
+* You also must pass in a matching `NUM_USERS=100` to the locust call.
+
+```sh
+NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/sign_in.locustfile.py --no-web
+```
+
+Or omit `--no-web` and open <http://localhost:8089> for a UI.
