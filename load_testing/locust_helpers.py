@@ -1,7 +1,35 @@
 import pyquery
 from random import randint
 
-# Functions that are used across different locustfiles
+# Utility functions that are used across different locustfiles
+
+def get_request(context, path, expected_redirect=None):
+    """
+    This is a generic get request.
+    """
+    with context.client.get(path, 
+        headers=desktop_agent_headers(),
+        catch_response=True) as resp:
+            if expected_redirect:
+                verify_resp_url(expected_redirect, resp)
+            dom = resp_to_dom(resp)
+            auth_token = authenticity_token(dom)
+
+            return dom, auth_token
+
+def post_request(context, path, data, expected_redirect=None):
+    with context.client.post(
+        path, 
+        headers=desktop_agent_headers(),
+        data=data, 
+        catch_response=True) as resp:
+            if expected_redirect:
+                verify_resp_url(expected_redirect, resp)
+            dom = resp_to_dom(resp)
+            auth_token = authenticity_token(dom)
+
+            return dom, auth_token
+
 def authenticity_token(dom, id=None):
     """
     Retrieves the CSRF auth token from the DOM for submission.
@@ -42,3 +70,26 @@ def random_cred(num_users):
     }
 
     return credential
+
+"""
+Format a common error message with full content attached
+"""
+def err_msg(msg, resp):
+    return """"
+           {}
+           Our current URL is: {}
+           Content is: {}.
+           """.format(msg, resp.url, resp.content)
+
+"""
+Use this in headers to act as a Desktop
+"""
+def desktop_agent_headers():
+    return {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"}
+
+"""
+Raise errors when you are not at the expected page
+"""
+def verify_resp_url(url, resp):
+    if url not in resp.url:
+        resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))

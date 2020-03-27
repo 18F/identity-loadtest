@@ -48,3 +48,13 @@ NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --l
 ```
 
 Or omit `--no-web` and open <http://localhost:8089> for a UI.
+
+## IAL2 load tests
+
+- Same rules as above, but use `ial2_sign_*` filenames.
+- Using Desktop mode for now
+- needs `mont-front.jpeg` and `mont-back.jpeg` images
+
+```sh
+NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/ial2_sign_in.locustfile.py --no-web
+```
