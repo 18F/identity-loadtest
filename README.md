@@ -52,8 +52,8 @@ Or omit `--no-web` and open <http://localhost:8089> for a UI.
 ### IAL2 load tests
 
 - Same rules as above, but use `ial2_sign_*` filenames.
-- Using Desktop mode for now
-- needs `mont-front.jpeg` and `mont-back.jpeg` images
+- Uses "desktop proofing" experience, not mobile.
+- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images
 
 ```sh
 NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/ial2_sign_in.locustfile.py --no-web
