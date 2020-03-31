@@ -32,7 +32,7 @@ You can only run one locustfile at a time, there are many to choose from that en
 
 ### Sign-Up load test
 
-* This will create lots of users in your database
+- This will create lots of users in your database
 
 ```sh
 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/sign_up.locustfile.py --no-web
@@ -40,8 +40,8 @@ locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load
 
 ### Sign-In load test
 
-* You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
-* You also must pass in a matching `NUM_USERS=100` to the locust call.
+- You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
+- You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 ```sh
 NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/sign_in.locustfile.py --no-web
@@ -49,7 +49,7 @@ NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --l
 
 Or omit `--no-web` and open <http://localhost:8089> for a UI.
 
-## IAL2 load tests
+### IAL2 load tests
 
 - Same rules as above, but use `ial2_sign_*` filenames.
 - Using Desktop mode for now
@@ -57,4 +57,12 @@ Or omit `--no-web` and open <http://localhost:8089> for a UI.
 
 ```sh
 NUM_USERS=100 locust --host http://localhost:3000 --clients=1 --hatch-rate 1 --locustfile load_testing/ial2_sign_in.locustfile.py --no-web
+```
+
+## Debugging Locust scripts
+
+The python debugger _should_ just work. [Here are some commands](https://docs.python.org/3/library/pdb.html#debugger-commands) The following will drop you into a debugger:
+
+```py
+import pdb; pdb.set_trace()
 ```

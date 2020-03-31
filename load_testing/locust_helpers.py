@@ -13,9 +13,8 @@ def get_request(context, path, expected_redirect=None):
             if expected_redirect:
                 verify_resp_url(expected_redirect, resp)
             dom = resp_to_dom(resp)
-            auth_token = authenticity_token(dom)
 
-            return dom, auth_token
+            return dom
 
 def post_request(context, path, data, expected_redirect=None):
     with context.client.post(
@@ -26,21 +25,21 @@ def post_request(context, path, data, expected_redirect=None):
             if expected_redirect:
                 verify_resp_url(expected_redirect, resp)
             dom = resp_to_dom(resp)
-            auth_token = authenticity_token(dom)
 
-            return dom, auth_token
+            return dom
 
-def authenticity_token(dom, id=None):
+def authenticity_token(dom, index=0):
     """
     Retrieves the CSRF auth token from the DOM for submission.
     If you need to differentiate between multiple CSRF tokens on one page,
-    pass the optional ID of the parent form (with hash)
+    pass the optional index of the CSRF on the page
     """
-    selector = 'input[name="authenticity_token"]:first'
+    selector = 'input[name="authenticity_token"]'
 
-    if id:
-        selector = '{} {}'.format(id, selector)
-    return dom.find(selector).attr('value')
+    token = dom.find(selector).eq(index).attr('value')
+    # print("Returning authenticity_token: {}".format(token))
+
+    return token
 
 def resp_to_dom(resp):
     """

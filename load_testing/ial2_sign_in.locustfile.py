@@ -1,7 +1,7 @@
 import os
 import sys
 from locust import HttpLocust, TaskSet, task, between
-from locust_helpers import *
+from locust_helpers import * 
 from common_flows import do_sign_in
 from faker import Faker
 
@@ -41,27 +41,30 @@ class IAL2SignInLoad(TaskSet):
       do_sign_in(self)
 
       #  Get /account page
-      dom, auth_token = get_request(self, "/account", "/account")
+      get_request(self, "/account", "/account")
 
       # Request IAL2 Verification
-      dom, auth_token = get_request(self, "/verify", "/verify/doc_auth")
+      dom = get_request(self, "/verify", "/verify/doc_auth")
+      auth_token = authenticity_token(dom)
       
       # Post consent to Welcome
-      dom, auth_token = post_request(self, 
+      dom = post_request(self, 
         "/verify/doc_auth/welcome",
         { '_method': 'put',
           'ial2_consent_given': 'true',
           'authenticity_token': auth_token,
         },
         "/verify/doc_auth/upload")
+      auth_token = authenticity_token(dom)
 
       # Choose Desktop flow
-      dom, auth_token = post_request(self, 
+      dom = post_request(self, 
         "/verify/doc_auth/upload?type=desktop",
         { '_method': 'put',
           'authenticity_token': auth_token,
         },
         "/verify/doc_auth/front_image")
+      auth_token = authenticity_token(dom)
 
       # Post the Front Image of the license
       front_path = sys.path[0] + "/load_testing/mont-front.jpeg"
@@ -96,8 +99,8 @@ class IAL2SignInLoad(TaskSet):
       # SSN - use faker to get unique SSNs
       fake = Faker()
       ssn = fake.ssn()
-      print("*** Using ssn: " + ssn)
-      dom, auth_token = post_request(self, 
+      # print("*** Using ssn: " + ssn)
+      dom = post_request(self, 
         "/verify/doc_auth/ssn",
         { '_method': 'put',
           'authenticity_token': auth_token,
@@ -105,75 +108,88 @@ class IAL2SignInLoad(TaskSet):
         },
         "/verify/doc_auth/verify")
 
+      # There are three auth tokens on the response, get the second
+      auth_token = authenticity_token(dom, 1)
+
+      # You can debug by issuing a GET and checking the expected path
+      # dom = get_request(self, "/verify", "/verify/doc_auth/verify")
+      # auth_token = authenticity_token(dom)
+ 
       # Verify
-      dom, auth_token = post_request(self, 
+      dom = post_request(self, 
         "/verify/doc_auth/verify",
         { '_method': 'put',
           'authenticity_token': auth_token,
         },
         "/verify/doc_auth/doc_success")
+      auth_token = authenticity_token(dom)
 
       # Continue after doc success
-      dom, auth_token = post_request(self, 
+      dom = post_request(self, 
         "/verify/doc_auth/doc_success",
         { '_method': 'put',
           'authenticity_token': auth_token,
         },
-        "/verify/doc_auth/phone")
+        "/verify/phone")
+      auth_token = authenticity_token(dom)
 
       # Enter Phone
-      dom, auth_token = post_request(self, 
-        "/verify/doc_auth/phone",
+      dom = post_request(self, 
+        "/verify/phone",
         { '_method': 'put',
           'authenticity_token': auth_token,
           'idv_phone_form[phone]': '8888888888',
         },
         "/verify/otp_delivery_method")
+      auth_token = authenticity_token(dom)
 
-      # Select SMS Delivery
-      dom, auth_token = post_request(self, 
+       # Select SMS Delivery
+      dom = post_request(self, 
         "/verify/otp_delivery_method",
         { '_method': 'put',
           'authenticity_token': auth_token,
           'otp_delivery_preference': 'sms',
         },
         "/verify/phone_confirmation") 
+      auth_token = authenticity_token(dom)
       try:
           otp_code = dom.find('input[name="code"]')[0].attrib['value']
       except Exception:
           resp.failure(
-              "Could not find pre-filled OTP code, is IDP telephony_disabled: 'true' ?")
+              "Could not find pre-filled OTP code, is IDP telephony_disabled: true ?")
 
       # Verify SMS Delivery
-      dom, auth_token = post_request(self, 
+      dom = post_request(self, 
         "/verify/phone_confirmation",
         { '_method': 'put',
           'authenticity_token': auth_token,
           'code': otp_code,
         },
         "/verify/review")
+      auth_token = authenticity_token(dom)
 
       # Re-enter password
-      dom, auth_token = post_request(self, 
+      dom = post_request(self, 
         "/verify/review",
         { '_method': 'put',
           'authenticity_token': auth_token,
           'user[password]': 'salty pickles',
         },
         "/verify/confirmations")
+      auth_token = authenticity_token(dom)
 
       # Confirmations
-      dom, auth_token = post_request(self, 
+      post_request(self, 
         "/verify/confirmations",
         { 'authenticity_token': auth_token,
         },
-        "/verify/account")
+        "/account")
 
       # Re-Check verification activated
-      dom, auth_token = get_request(self, "/verify", "/verify/activated")
+      get_request(self, "/verify", "/verify/activated")
 
       # Now log out
-      resp = self.client.get("/logout")
+      self.client.get("/logout")
 
 
 class WebsiteUser(HttpLocust):
