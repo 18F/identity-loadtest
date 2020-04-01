@@ -1,3 +1,16 @@
+.DS_Store
+*.pyc
+*.swp
+.vscode
+.idea
+
+# Python and Virtual Environment
 __pycache__
+bin/
+include/
+lib/
+pyvenv.cf
+
+# Test drivers license images
 mont-front.jpeg
 mont-back.jpeg
