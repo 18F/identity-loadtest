@@ -1,7 +1,7 @@
 import os
 import sys
 from locust import HttpLocust, TaskSet, task, between
-from locust_helpers import * 
+from locust_helpers import do_request, authenticity_token, otp_code 
 from common_flows import do_sign_in
 from faker import Faker
 
@@ -36,160 +36,154 @@ class IAL2SignInLoad(TaskSet):
       15. GET  /verify (redirects -> /verify/activated)
       """
 
-
       #  Sign in
       do_sign_in(self)
 
       #  Get /account page
-      get_request(self, "/account", "/account")
+      do_request(self, 'get', '/account', '/account')
 
       # Request IAL2 Verification
-      dom = get_request(self, "/verify", "/verify/doc_auth")
-      auth_token = authenticity_token(dom)
+      resp = do_request(self, 'get', '/verify', '/verify/doc_auth')
+      auth_token = authenticity_token(resp)
       
       # Post consent to Welcome
-      dom = post_request(self, 
-        "/verify/doc_auth/welcome",
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/welcome',
+        '/verify/doc_auth/upload',
         { '_method': 'put',
           'ial2_consent_given': 'true',
           'authenticity_token': auth_token,
-        },
-        "/verify/doc_auth/upload")
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
 
       # Choose Desktop flow
-      dom = post_request(self, 
-        "/verify/doc_auth/upload?type=desktop",
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/upload?type=desktop',
+        '/verify/doc_auth/front_image',
         { '_method': 'put',
           'authenticity_token': auth_token,
-        },
-        "/verify/doc_auth/front_image")
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
 
       # Post the Front Image of the license
       front_path = sys.path[0] + "/load_testing/mont-front.jpeg"
-      with open(front_path, 'rb') as image, self.client.post(
-        "/verify/doc_auth/front_image",
-        headers= desktop_agent_headers(),
-        data={
-          '_method': 'put',
+      image = open(front_path, 'rb')
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/front_image',
+        '/verify/doc_auth/back_image',
+        { '_method': 'put',
           'authenticity_token': auth_token,
-          }, 
-        files={'doc_auth[image]': image},
-        catch_response=True) as resp:
-          verify_resp_url("/verify/doc_auth/back_image", resp)
-          dom = resp_to_dom(resp)
-          auth_token = authenticity_token(dom)
-      
+        },
+        { 'doc_auth[image]': image
+        })
+      auth_token = authenticity_token(resp)
+
       # Post the Back Image of the license
       back_path = sys.path[0] + "/load_testing/mont-back.jpeg"
-      with open(back_path, 'rb') as image, self.client.post(
-        "/verify/doc_auth/back_image",
-        headers= desktop_agent_headers(),
-        data={
-          '_method': 'put',
+      image = open(back_path, 'rb')
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/back_image',
+        '/verify/doc_auth/ssn',
+        { '_method': 'put',
           'authenticity_token': auth_token,
-          }, 
-        files={'doc_auth[image]': image},
-        catch_response=True) as resp:
-          verify_resp_url("/verify/doc_auth/ssn", resp)
-          dom = resp_to_dom(resp)
-          auth_token = authenticity_token(dom)
+        },
+        { 'doc_auth[image]': image
+        })
+      auth_token = authenticity_token(resp)
 
       # SSN - use faker to get unique SSNs
       fake = Faker()
       ssn = fake.ssn()
       # print("*** Using ssn: " + ssn)
-      dom = post_request(self, 
-        "/verify/doc_auth/ssn",
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/ssn',
+        '/verify/doc_auth/verify',
         { '_method': 'put',
           'authenticity_token': auth_token,
           'doc_auth[ssn]': ssn,
-        },
-        "/verify/doc_auth/verify")
-
+        })
       # There are three auth tokens on the response, get the second
-      auth_token = authenticity_token(dom, 1)
+      auth_token = authenticity_token(resp, 1)
 
       # You can debug by issuing a GET and checking the expected path
-      # dom = get_request(self, "/verify", "/verify/doc_auth/verify")
-      # auth_token = authenticity_token(dom)
+      # resp = get_request(self, "/verify", "/verify/doc_auth/verify")
+      # auth_token = authenticity_token(resp)
  
       # Verify
-      dom = post_request(self, 
-        "/verify/doc_auth/verify",
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/verify',
+        '/verify/doc_auth/doc_success',
         { '_method': 'put',
           'authenticity_token': auth_token,
-        },
-        "/verify/doc_auth/doc_success")
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
 
       # Continue after doc success
-      dom = post_request(self, 
-        "/verify/doc_auth/doc_success",
+      resp = do_request(self, 'post',
+        '/verify/doc_auth/doc_success',
+        '/verify/phone',
         { '_method': 'put',
           'authenticity_token': auth_token,
-        },
-        "/verify/phone")
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
 
       # Enter Phone
-      dom = post_request(self, 
-        "/verify/phone",
+      resp = do_request(self, 'post',
+        '/verify/phone',
+        '/verify/otp_delivery_method',
         { '_method': 'put',
           'authenticity_token': auth_token,
           'idv_phone_form[phone]': '8888888888',
-        },
-        "/verify/otp_delivery_method")
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
 
        # Select SMS Delivery
-      dom = post_request(self, 
-        "/verify/otp_delivery_method",
+      resp = do_request(self, 'post',
+        '/verify/otp_delivery_method',
+        '/verify/phone_confirmation',
         { '_method': 'put',
           'authenticity_token': auth_token,
           'otp_delivery_preference': 'sms',
-        },
-        "/verify/phone_confirmation") 
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
       try:
-          otp_code = dom.find('input[name="code"]')[0].attrib['value']
+          code = otp_code(resp)
       except Exception:
           resp.failure(
               "Could not find pre-filled OTP code, is IDP telephony_disabled: true ?")
 
       # Verify SMS Delivery
-      dom = post_request(self, 
-        "/verify/phone_confirmation",
+      resp = do_request(self, 'post',
+        '/verify/phone_confirmation',
+        '/verify/review',
         { '_method': 'put',
           'authenticity_token': auth_token,
-          'code': otp_code,
-        },
-        "/verify/review")
-      auth_token = authenticity_token(dom)
+          'code': code,
+        })
+      auth_token = authenticity_token(resp)
 
       # Re-enter password
-      dom = post_request(self, 
-        "/verify/review",
+      resp = do_request(self, 'post',
+        '/verify/review',
+        '/verify/confirmations',
         { '_method': 'put',
           'authenticity_token': auth_token,
           'user[password]': 'salty pickles',
-        },
-        "/verify/confirmations")
-      auth_token = authenticity_token(dom)
+        })
+      auth_token = authenticity_token(resp)
 
       # Confirmations
-      post_request(self, 
-        "/verify/confirmations",
+      do_request(self, 'post'
+        '/verify/confirmations',
+        '/account',
         { 'authenticity_token': auth_token,
-        },
-        "/account")
-
+        })
+        
       # Re-Check verification activated
-      get_request(self, "/verify", "/verify/activated")
+      do_request(self, 'get', '/verify', '/verify/activated')
 
       # Now log out
-      self.client.get("/logout")
+      do_request(self, 'get', '/logout', '/')
 
 
 class WebsiteUser(HttpLocust):

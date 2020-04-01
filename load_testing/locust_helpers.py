@@ -3,32 +3,18 @@ from random import randint
 
 # Utility functions that are used across different locustfiles
 
-def get_request(context, path, expected_redirect=None):
-    """
-    This is a generic get request.
-    """
-    with context.client.get(path, 
-        headers=desktop_agent_headers(),
-        catch_response=True) as resp:
-            if expected_redirect:
-                verify_resp_url(expected_redirect, resp)
-            dom = resp_to_dom(resp)
-
-            return dom
-
-def post_request(context, path, data, expected_redirect=None):
-    with context.client.post(
+def do_request(context, method, path, expected_redirect=None, data={}, files={}):
+   with getattr(context.client, method)(
         path, 
         headers=desktop_agent_headers(),
         data=data, 
+        files=files,
         catch_response=True) as resp:
             if expected_redirect:
                 verify_resp_url(expected_redirect, resp)
-            dom = resp_to_dom(resp)
+            return resp
 
-            return dom
-
-def authenticity_token(dom, index=0):
+def authenticity_token(response, index=0):
     """
     Retrieves the CSRF auth token from the DOM for submission.
     If you need to differentiate between multiple CSRF tokens on one page,
@@ -36,10 +22,23 @@ def authenticity_token(dom, index=0):
     """
     selector = 'input[name="authenticity_token"]'
 
+    dom = resp_to_dom(response)
     token = dom.find(selector).eq(index).attr('value')
     # print("Returning authenticity_token: {}".format(token))
 
     return token
+
+def otp_code(response):
+    """
+    Retrieves the auto-populated OTP code from the DOM for submission.
+    """
+    selector = 'input[name="code"]'
+
+    dom = resp_to_dom(response)
+    code = dom.find(selector).attr('value')
+    # print("Returning OTP code: {}".format(code))
+
+    return code
 
 def resp_to_dom(resp):
     """

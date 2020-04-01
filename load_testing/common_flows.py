@@ -24,7 +24,7 @@ def do_sign_in(context):
             return resp
 
         dom = resp_to_dom(resp)
-        token = authenticity_token(dom)
+        token = authenticity_token(resp)
 
         if not token:
             resp.failure(
@@ -36,7 +36,7 @@ def do_sign_in(context):
         data={
             'user[email]': credentials['email'],
             'user[password]': credentials['password'],
-            'authenticity_token': authenticity_token(dom),
+            'authenticity_token': authenticity_token(resp),
             'commit': 'Submit',
         },
         catch_response=True
@@ -59,7 +59,7 @@ def do_sign_in(context):
         code_form.attr('action'),
         data={
             'code': code,
-            'authenticity_token': authenticity_token(dom),
+            'authenticity_token': authenticity_token(resp),
             'commit': 'Submit'
         }
     )
@@ -88,7 +88,7 @@ def do_sign_up(context):
   resp = context.client.post("/sign_up/enter_email",
             data={
               'user[email]': new_email,
-              'authenticity_token': authenticity_token(dom),
+              'authenticity_token': authenticity_token(resp),
             },
             catch_response=True)
 
@@ -96,10 +96,9 @@ def do_sign_up(context):
       dom = resp_to_dom(confirm_resp)
       try:
           confirmation_link = dom.find("#confirm-now")[0].attrib['href']
-      except Exception as err:
-          resp.failure(
-              "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?" + err)
-          return 
+      except Exception:
+          confirm_resp.failure(
+              "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?")
   
   # Get confirmation token
   resp = context.client.get(confirmation_link, name="/sign_up/email/confirm?confirmation_token=")
@@ -110,7 +109,7 @@ def do_sign_up(context):
   resp = context.client.post("/sign_up/create_password",
             data={
                 'password_form[password]': default_password,
-                'authenticity_token': authenticity_token(dom),
+                'authenticity_token': authenticity_token(resp),
                 'confirmation_token': token,
             }
         )
@@ -119,7 +118,7 @@ def do_sign_up(context):
   phone_setup_url = "/phone_setup"
   resp = context.client.get(phone_setup_url)
   dom = resp_to_dom(resp)
-  auth_token = authenticity_token(dom)
+  auth_token = authenticity_token(resp)
 
   resp = context.client.post(
     phone_setup_url,
