@@ -147,7 +147,7 @@ def do_sign_up(context):
       "/login/two_factor/sms",
       data={
           'code': otp_code,
-          'authenticity_token': authenticity_token(dom),
+          'authenticity_token': authenticity_token(resp),
       })
 
   return resp
