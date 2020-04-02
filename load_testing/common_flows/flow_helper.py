@@ -4,13 +4,14 @@ from random import randint
 # Utility functions that are helpful in various locust contexts
 
 
-def do_request(context, method, path, expected_redirect=None, data={}, files={}):
+def do_request(context, method, path, expected_redirect=None, data={}, files={}, name=None):
     with getattr(context.client, method)(
         path,
         headers=desktop_agent_headers(),
         data=data,
         files=files,
         catch_response=True,
+        name=name,
     ) as resp:
         if expected_redirect:
             verify_resp_url(expected_redirect, resp)
@@ -43,6 +44,23 @@ def otp_code(response):
     # print("Returning OTP code: {}".format(code))
 
     return code
+
+
+def confirm_link(response):
+    """
+    Retrieves the "CONFIRM NOW" link during the sign-up process.
+    """
+
+    dom = resp_to_dom(response)
+    try:
+        confirmation_link = dom.find("#confirm-now")[0].attrib["href"]
+    except Exception:
+        response.failure(
+            "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?"
+        )
+    return confirmation_link
+    
+        
 
 
 def resp_to_dom(resp):
