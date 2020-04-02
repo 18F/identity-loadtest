@@ -13,9 +13,9 @@ brew install python
 pip3 install -r requirements.txt
 ```
 
-### Login.gov
+### Login.gov IdP
 
-Login must be running with these settings in `application.yml`
+Login IdP must be running with these settings in `application.yml`
 
 ```yml
 disable_email_sending: 'true'
