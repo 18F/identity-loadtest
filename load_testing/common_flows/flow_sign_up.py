@@ -69,10 +69,11 @@ def do_sign_up(context):
 
     resp = do_request(
         context,
-        "patch",
+        "post",
         "/phone_setup",
         "/login/two_factor/sms",
         {
+            "_method": "patch",
             "new_phone_form[international_code]": "US",
             "new_phone_form[phone]": phone_numbers[randint(1, 1000)],
             "new_phone_form[otp_delivery_preference]": "sms",
