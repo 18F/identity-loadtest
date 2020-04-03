@@ -25,7 +25,7 @@ def do_sign_up(context):
     resp = do_request(context, "get", "/sign_up/enter_email", "/sign_up/enter_email")
     auth_token = authenticity_token(resp)
 
-    # Post fake email and get confirmation link (link shows up in "load test mode"
+    # Post fake email and get confirmation link (link shows up in "load test mode")
     resp = do_request(
         context,
         "post",
