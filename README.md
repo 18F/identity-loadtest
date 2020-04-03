@@ -30,13 +30,19 @@ You can only run one locustfile at a time, there are many to choose from that en
 - `clients` is the total number of concurrent Locust users.
 - `hatch-rate` is the number of users to spawn per second, starting from zero.
 
-## Common `locust` cmd line arguments
+### Common `locust` cmd line arguments
 
 ```sh
 --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
-add `--csv=<base-name>` to generate CSV output
+Or omit `--no-web` and open <http://localhost:8089> for a UI.
+
+Add `--csv=<base-name>` to generate CSV output
+
+## Adding new tests
+
+Add new `*.loucstfile.py` files to the project for new test scenarios.
 
 ### Sign-Up load test
 
@@ -46,8 +52,6 @@ add `--csv=<base-name>` to generate CSV output
 locust --locustfile load_testing/sign_up.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
-Or omit `--no-web` and open <http://localhost:8089> for a UI.
-
 ### Sign-In load test
 
 - You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
@@ -55,6 +59,16 @@ Or omit `--no-web` and open <http://localhost:8089> for a UI.
 
 ```sh
 NUM_USERS=100 locust --locustfile load_testing/sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+```
+
+### Sign up + Sign-In load test
+
+- This test mixes Sign-up and Sign-in together
+- You must run the same rake task as above in the IdP before using this test
+- You also must pass in a matching `NUM_USERS=100` to the locust call.
+
+```sh
+NUM_USERS=100 locust --locustfile load_testing/sign_up_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
 ### IAL2 load tests
