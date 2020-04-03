@@ -87,6 +87,8 @@ NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host
 
 ## Debugging Locust scripts
 
+The HTTP Library is called Requests: <https://requests.readthedocs.io/en/master/>
+
 The python debugger _should_ just work. [Here are some commands](https://docs.python.org/3/library/pdb.html#debugger-commands) The following will drop you into a debugger:
 
 ```py
