@@ -1,5 +1,6 @@
 from locust import HttpLocust, TaskSet, task, between
-from common_flows import do_sign_up
+from common_flows import flow_sign_up, flow_helper
+
 
 class SignUpLoad(TaskSet):
     def on_start(self):
@@ -10,19 +11,21 @@ class SignUpLoad(TaskSet):
 
     """ @task(<weight>) : value=3 executes 3x as often as value=1 """
     """ Things inside task are synchronous. Tasks are async """
+
     @task(1)
-    def sign_up_path(self):
+    def sign_up_load_test(self):
         # GET the root
-        self.client.get("/")
+        flow_helper.do_request(self, "get", "/", "/")
 
         # This performs the entire sign-up flow
-        do_sign_up(self) 
+        flow_sign_up.do_sign_up(self)
 
         # Should be able to get the /account page now
-        self.client.get("/account")
+        flow_helper.do_request(self, "get", "/account", "/account")
 
         # Now log out
-        self.client.get("/logout")
+        flow_helper.do_request(self, "get", "/logout", "/logout")
+
 
 class WebsiteUser(HttpLocust):
     task_set = SignUpLoad

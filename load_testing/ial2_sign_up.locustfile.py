@@ -1,27 +1,23 @@
 import os
 from locust import HttpLocust, TaskSet, task, between
-from common_flows import flow_ial2_proofing, flow_sign_in, flow_helper
+from common_flows import flow_ial2_proofing, flow_sign_up, flow_helper
 
 
-class IAL2SignInLoad(TaskSet):
+class IAL2SignUpLoad(TaskSet):
     def on_start(self):
-        print(
-            "*** Starting Sign-In and IAL2 proof load tests with "
-            + os.environ.get("NUM_USERS")
-            + " users ***"
-        )
+        print("*** Starting Sign-Up and IAL2 proof load tests ***")
 
     def on_stop(self):
-        print("*** Ending IAL2 Sign-In load tests ***")
+        print("*** Ending IAL2 Sign-Up load tests ***")
 
     """ @task(<weight>) : value=3 executes 3x as often as value=1 """
     """ Things inside task are synchronous. Tasks are async """
 
     @task(1)
-    def sign_in_and_proof_load_test(self):
+    def sign_up_and_proof_load_test(self):
 
-        #  Sign in flow
-        flow_sign_in.do_sign_in(self)
+        #  Sign up flow
+        flow_sign_up.do_sign_up(self)
 
         #  Get /account page
         flow_helper.do_request(self, "get", "/account", "/account")
@@ -37,5 +33,5 @@ class IAL2SignInLoad(TaskSet):
 
 
 class WebsiteUser(HttpLocust):
-    task_set = IAL2SignInLoad
+    task_set = IAL2SignUpLoad
     wait_time = between(5, 9)

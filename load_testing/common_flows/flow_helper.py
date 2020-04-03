@@ -1,18 +1,22 @@
 import pyquery
 from random import randint
 
-# Utility functions that are used across different locustfiles
+# Utility functions that are helpful in various locust contexts
 
-def do_request(context, method, path, expected_redirect=None, data={}, files={}):
-   with getattr(context.client, method)(
-        path, 
+
+def do_request(context, method, path, expected_redirect=None, data={}, files={}, name=None):
+    with getattr(context.client, method)(
+        path,
         headers=desktop_agent_headers(),
-        data=data, 
+        data=data,
         files=files,
-        catch_response=True) as resp:
-            if expected_redirect:
-                verify_resp_url(expected_redirect, resp)
-            return resp
+        catch_response=True,
+        name=name,
+    ) as resp:
+        if expected_redirect:
+            verify_resp_url(expected_redirect, resp)
+        return resp
+
 
 def authenticity_token(response, index=0):
     """
@@ -23,10 +27,11 @@ def authenticity_token(response, index=0):
     selector = 'input[name="authenticity_token"]'
 
     dom = resp_to_dom(response)
-    token = dom.find(selector).eq(index).attr('value')
+    token = dom.find(selector).eq(index).attr("value")
     # print("Returning authenticity_token: {}".format(token))
 
     return token
+
 
 def otp_code(response):
     """
@@ -35,10 +40,28 @@ def otp_code(response):
     selector = 'input[name="code"]'
 
     dom = resp_to_dom(response)
-    code = dom.find(selector).attr('value')
+    code = dom.find(selector).attr("value")
     # print("Returning OTP code: {}".format(code))
 
     return code
+
+
+def confirm_link(response):
+    """
+    Retrieves the "CONFIRM NOW" link during the sign-up process.
+    """
+
+    dom = resp_to_dom(response)
+    try:
+        confirmation_link = dom.find("#confirm-now")[0].attrib["href"]
+    except Exception:
+        response.failure(
+            "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?"
+        )
+    return confirmation_link
+    
+        
+
 
 def resp_to_dom(resp):
     """
@@ -47,6 +70,7 @@ def resp_to_dom(resp):
     """
     resp.raise_for_status()
     return pyquery.PyQuery(resp.content)
+
 
 def random_cred(num_users):
     """
@@ -63,31 +87,44 @@ def random_cred(num_users):
 
     """
     credential = {
-        'email': 'testuser{}@example.com'.format(randint(1, int(num_users)-1)),
-        'password': "salty pickles"
+        "email": "testuser{}@example.com".format(randint(1, int(num_users) - 1)),
+        "password": "salty pickles",
     }
 
     return credential
 
+
 """
 Format a common error message with full content attached
 """
+
+
 def err_msg(msg, resp):
     return """"
            {}
            Our current URL is: {}
            Content is: {}.
-           """.format(msg, resp.url, resp.content)
+           """.format(
+        msg, resp.url, resp.content
+    )
+
 
 """
 Use this in headers to act as a Desktop
 """
+
+
 def desktop_agent_headers():
-    return {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"}
+    return {
+        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
+    }
+
 
 """
 Raise errors when you are not at the expected page
 """
+
+
 def verify_resp_url(url, resp):
     if url not in resp.url:
         resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
