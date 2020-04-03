@@ -29,4 +29,4 @@ class SignUpLoad(TaskSet):
 
 class WebsiteUser(HttpLocust):
     task_set = SignUpLoad
-    wait_time = between(5, 9)
+    wait_time = between(5, 9) # number seconds simulated users wait between requests
