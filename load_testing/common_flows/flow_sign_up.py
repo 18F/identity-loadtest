@@ -50,10 +50,6 @@ def do_sign_up(context):
     dom = resp_to_dom(resp)
     token = dom.find('[name="confirmation_token"]:first').attr("value")
 
-    # resp = context.client.get(
-    #     confirmation_link, name=
-    # )
-
     # Set user password
     resp = do_request(
         context,
@@ -66,15 +62,6 @@ def do_sign_up(context):
             "confirmation_token": token,
         },
     )
-
-    # resp = context.client.post(
-    #     "/sign_up/create_password",
-    #     data={
-    #         "password_form[password]": default_password,
-    #         "authenticity_token": authenticity_token(resp),
-    #         "confirmation_token": token,
-    #     },
-    # )
 
     # After password creation set up SMS 2nd factor
     resp = do_request(context, "get", "/phone_setup", "/phone_setup")
@@ -104,33 +91,6 @@ def do_sign_up(context):
         )
         return
 
-    # phone_setup_url = "/phone_setup"
-    # resp = context.client.get(phone_setup_url)
-    # dom = resp_to_dom(resp)
-    # auth_token = authenticity_token(resp)
-
-    # resp = context.client.patch(
-    #     phone_setup_url,
-    #     data={
-    #         "new_phone_form[international_code]": "US",
-    #         "new_phone_form[phone]": phone_numbers[randint(1, 1000)],
-    #         "new_phone_form[otp_delivery_preference]": "sms",
-    #         "authenticity_token": auth_token,
-    #         "commit": "Send security code",
-    #     },
-    #     catch_response=True,
-    # )
-
-    # with resp as otp_resp:
-    #     dom = resp_to_dom(otp_resp)
-    #     try:
-    #         otp_code = dom.find('input[name="code"]')[0].attrib["value"]
-    #     except Exception:
-    #         resp.failure(
-    #             "Could not find pre-filled OTP code, is IDP telephony_disabled: 'true' ?"
-    #         )
-    #         return
-
     # Visit security code page and submit pre-filled OTP
     resp = do_request(
         context,
@@ -140,9 +100,5 @@ def do_sign_up(context):
         {"code": otp_code, "authenticity_token": auth_token},
     )
 
-    # resp = context.client.post(
-    #     "/login/two_factor/sms",
-    #     data={"code": otp_code, "authenticity_token": authenticity_token(resp),},
-    # )
 
     return resp
