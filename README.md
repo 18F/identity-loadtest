@@ -20,7 +20,7 @@ Login IdP must be running with these settings in `application.yml`
 ```yml
 disable_email_sending: 'true'
 enable_load_testing_mode: 'true'
-telephony_disabled: 'true'
+telephony_adapter: 'test'
 ```
 
 ## Running Locust

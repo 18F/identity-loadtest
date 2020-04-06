@@ -122,7 +122,7 @@ def do_ial2_proofing(context):
         code = otp_code(resp)
     except Exception:
         resp.failure(
-            "Could not find pre-filled OTP code, is IDP telephony_disabled: true ?"
+            "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
         )
 
     # Verify SMS Delivery

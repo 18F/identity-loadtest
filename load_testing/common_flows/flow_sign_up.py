@@ -88,7 +88,7 @@ def do_sign_up(context):
         otp_code = dom.find('input[name="code"]')[0].attrib["value"]
     except Exception:
         resp.failure(
-            "Could not find pre-filled OTP code, is IDP telephony_disabled: 'true' ?"
+            "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
         )
         return
 
