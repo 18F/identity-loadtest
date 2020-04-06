@@ -25,7 +25,7 @@ def do_sign_up(context):
     resp = do_request(context, "get", "/sign_up/enter_email", "/sign_up/enter_email")
     auth_token = authenticity_token(resp)
 
-    # Post fake email and get confirmation link (link shows up in "load test mode"
+    # Post fake email and get confirmation link (link shows up in "load test mode")
     resp = do_request(
         context,
         "post",
@@ -88,7 +88,7 @@ def do_sign_up(context):
         otp_code = dom.find('input[name="code"]')[0].attrib["value"]
     except Exception:
         resp.failure(
-            "Could not find pre-filled OTP code, is IDP telephony_disabled: 'true' ?"
+            "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
         )
         return
 

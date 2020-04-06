@@ -23,10 +23,10 @@ class SignUpLoad(TaskSet):
         # Should be able to get the /account page now
         flow_helper.do_request(self, "get", "/account", "/account")
 
-        # Now log out
+        # Now log out.
+        # You'd think that this would leave you at "/", but it returns a 204 and leaves you be.
         flow_helper.do_request(self, "get", "/logout", "/logout")
-
 
 class WebsiteUser(HttpLocust):
     task_set = SignUpLoad
-    wait_time = between(5, 9)
+    wait_time = between(5, 9) # number seconds simulated users wait between requests
