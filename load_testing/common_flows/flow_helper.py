@@ -1,6 +1,7 @@
 import locust
 import os
 import pyquery
+import urllib
 from random import randint
 
 # Utility functions that are helpful in various locust contexts
@@ -60,6 +61,11 @@ def authenticity_token(response, index=0):
     return token
 
 
+def querystring_value(url, key):
+    parsed = urllib.parse.urlparse(url)
+    return urllib.parse.parse_qs(parsed.query)[key][0]
+
+
 def otp_code(response):
     """
     Retrieves the auto-populated OTP code from the DOM for submission.
@@ -71,6 +77,7 @@ def otp_code(response):
     )
 
     code = dom.find(selector).attr("value")
+
     if not code:
         response.failure(error_message)
         raise locust.exception.RescheduleTask

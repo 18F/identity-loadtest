@@ -85,6 +85,14 @@ NUM_USERS=100 locust --locustfile load_testing/ial2_sign_in.locustfile.py --host
 NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
+### SP Sign in load test
+
+- This requires that [`identity-oidc-sinatra`](https://github.com/18F/identity-oidc-sinatra) be running as an SP
+
+```sh
+NUM_USERS=100 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+```
+
 ## Debugging Locust scripts
 
 The HTTP Library is called Requests: <https://requests.readthedocs.io/en/master/>
