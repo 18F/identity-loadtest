@@ -1,10 +1,13 @@
+import locust
 import pyquery
 from random import randint
 
 # Utility functions that are helpful in various locust contexts
 
 
-def do_request(context, method, path, expected_redirect=None, data={}, files={}, name=None):
+def do_request(
+    context, method, path, expected_redirect=None, data={}, files={}, name=None
+):
     with getattr(context.client, method)(
         path,
         headers=desktop_agent_headers(),
@@ -15,6 +18,8 @@ def do_request(context, method, path, expected_redirect=None, data={}, files={},
     ) as resp:
         if expected_redirect:
             verify_resp_url(expected_redirect, resp)
+
+        resp.raise_for_status()
         return resp
 
 
@@ -28,7 +33,9 @@ def authenticity_token(response, index=0):
 
     dom = resp_to_dom(response)
     token = dom.find(selector).eq(index).attr("value")
-    # print("Returning authenticity_token: {}".format(token))
+    if not token:
+        response.failure("Could not find authenticity_token on page")
+        raise locust.exception.RescheduleTask
 
     return token
 
@@ -37,11 +44,16 @@ def otp_code(response):
     """
     Retrieves the auto-populated OTP code from the DOM for submission.
     """
-    selector = 'input[name="code"]'
-
     dom = resp_to_dom(response)
+    selector = 'input[name="code"]'
+    error_message = (
+        "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
+    )
+
     code = dom.find(selector).attr("value")
-    # print("Returning OTP code: {}".format(code))
+    if not code:
+        response.failure(error_message)
+        raise locust.exception.RescheduleTask
 
     return code
 
@@ -52,15 +64,15 @@ def confirm_link(response):
     """
 
     dom = resp_to_dom(response)
-    try:
-        confirmation_link = dom.find("#confirm-now")[0].attrib["href"]
-    except Exception:
-        response.failure(
-            "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?"
-        )
+    error_message = (
+        "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?"
+    )
+    confirmation_link = dom.find("#confirm-now")[0].attrib["href"]
+    if not confirmation_link:
+        response.failure(error_message)
+        raise locust.exception.RescheduleTask
+
     return confirmation_link
-    
-        
 
 
 def resp_to_dom(resp):
@@ -68,7 +80,6 @@ def resp_to_dom(resp):
     Little helper to check response status is 200
     and return the DOM, cause we do that a lot.
     """
-    resp.raise_for_status()
     return pyquery.PyQuery(resp.content)
 
 
@@ -95,21 +106,6 @@ def random_cred(num_users):
 
 
 """
-Format a common error message with full content attached
-"""
-
-
-def err_msg(msg, resp):
-    return """"
-           {}
-           Our current URL is: {}
-           Content is: {}.
-           """.format(
-        msg, resp.url, resp.content
-    )
-
-
-"""
 Use this in headers to act as a Desktop
 """
 
@@ -126,5 +122,7 @@ Raise errors when you are not at the expected page
 
 
 def verify_resp_url(url, resp):
-    if url not in resp.url:
+    if resp.url and url not in resp.url:
         resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
+        raise locust.exception.RescheduleTask
+

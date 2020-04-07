@@ -42,17 +42,6 @@ def do_sign_in(context):
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
-    if not code:
-        resp.failure(
-            """
-            No 2FA code found.
-            Make sure {} is created and can log into the IDP
-            """.format(
-                credentials
-            )
-        )
-        return
-
     # Post to unauthenticated redirect
     resp = do_request(
         context,
@@ -61,8 +50,5 @@ def do_sign_in(context):
         "/account",
         {"code": code, "authenticity_token": auth_token,},
     )
-    auth_token = authenticity_token(resp)
-
-    resp.raise_for_status()
 
     return resp
