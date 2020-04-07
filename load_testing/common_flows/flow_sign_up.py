@@ -6,6 +6,7 @@ from .flow_helper import (
     random_cred,
     do_request,
     confirm_link,
+    otp_code,
 )
 from .helper_phony import fake_phone_numbers
 import os
@@ -82,15 +83,7 @@ def do_sign_up(context):
         },
     )
     auth_token = authenticity_token(resp)
-
-    try:
-        dom = resp_to_dom(resp)
-        otp_code = dom.find('input[name="code"]')[0].attrib["value"]
-    except Exception:
-        resp.failure(
-            "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
-        )
-        return
+    code = otp_code(resp)
 
     # Visit security code page and submit pre-filled OTP
     resp = do_request(
@@ -98,7 +91,7 @@ def do_sign_up(context):
         "post",
         "/login/two_factor/sms",
         "/account",
-        {"code": otp_code, "authenticity_token": auth_token},
+        {"code": code, "authenticity_token": auth_token},
     )
 
 

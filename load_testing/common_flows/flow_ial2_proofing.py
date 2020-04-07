@@ -118,12 +118,7 @@ def do_ial2_proofing(context):
         {"authenticity_token": auth_token, "otp_delivery_preference": "sms",},
     )
     auth_token = authenticity_token(resp)
-    try:
-        code = otp_code(resp)
-    except Exception:
-        resp.failure(
-            "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
-        )
+    code = otp_code(resp)
 
     # Verify SMS Delivery
     resp = do_request(
