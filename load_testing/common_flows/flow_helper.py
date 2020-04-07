@@ -18,6 +18,8 @@ def do_request(
     ) as resp:
         if expected_redirect:
             verify_resp_url(expected_redirect, resp)
+
+        resp.raise_for_status()
         return resp
 
 
@@ -78,7 +80,6 @@ def resp_to_dom(resp):
     Little helper to check response status is 200
     and return the DOM, cause we do that a lot.
     """
-    resp.raise_for_status()
     return pyquery.PyQuery(resp.content)
 
 
@@ -121,7 +122,7 @@ Raise errors when you are not at the expected page
 
 
 def verify_resp_url(url, resp):
-    if url not in resp.url:
+    if resp.url and url not in resp.url:
         resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
         raise locust.exception.RescheduleTask
 

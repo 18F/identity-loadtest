@@ -50,7 +50,5 @@ def do_sign_in(context):
         "/account",
         {"code": code, "authenticity_token": auth_token,},
     )
-    
-    resp.raise_for_status()
 
     return resp
