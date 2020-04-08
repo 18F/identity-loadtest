@@ -124,6 +124,12 @@ def random_cred(num_users):
 
     return credential
 
+def random_phone():
+    """
+    IdP cares about true area codes, so pick one, and generate the rest randomly
+    """
+    digits = "%0.7d" % randint(0,9999999)
+    return "415" + digits
 
 """
 Use this in headers to act as a Desktop
