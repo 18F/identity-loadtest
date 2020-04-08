@@ -10,18 +10,6 @@ def do_request(
     context, method, path, expected_redirect=None, data={}, files={}, name=None
 ):
 
-    if os.getenv("DEBUG"):
-        print(
-            """
-            *** Doing Request ***
-            Method: {}
-            Path: {}
-            Data: {}
-            """.format(
-                method, path, data
-            )
-        )
-
     with getattr(context.client, method)(
         path,
         headers=desktop_agent_headers(),
@@ -33,7 +21,24 @@ def do_request(
         resp.raise_for_status()
 
         if expected_redirect:
-            verify_resp_url(expected_redirect, resp)
+             if resp.url and url not in resp.url:
+                if os.getenv("DEBUG"):
+                    message = """
+                    You wanted {}, but got {} for a response.
+                    Request:
+                        Method: {}
+                        Path: {}
+                        Data: {}
+                    Response:
+                        Body: {}
+                    """.format(
+                        url, resp.url, resp.text
+                    )
+                    resp.failure(message)
+                else:
+                    resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
+
+                raise locust.exception.RescheduleTask
 
         return resp
 
@@ -129,25 +134,3 @@ def desktop_agent_headers():
     return {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
     }
-
-
-"""
-Raise errors when you are not at the expected page
-"""
-
-
-def verify_resp_url(url, resp):
-    if resp.url and url not in resp.url:
-        if os.getenv("DEBUG"):
-            message = """
-            You wanted {}, but got {} for a response.
-            
-            Body: {}
-            """.format(
-                url, resp.url, resp.text
-            )
-            resp.failure(message)
-        else:
-            resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
-
-        raise locust.exception.RescheduleTask
