@@ -104,7 +104,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/phone",
         "/verify/otp_delivery_method",
-        {"authenticity_token": auth_token, "idv_phone_form[phone]": random_phone,},
+        {"authenticity_token": auth_token, "idv_phone_form[phone]": random_phone(),},
     )
     auth_token = authenticity_token(resp)
 
