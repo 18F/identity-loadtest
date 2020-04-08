@@ -126,10 +126,11 @@ def random_cred(num_users):
 
 def random_phone():
     """
-    IdP cares about true area codes, so pick one, and generate the rest randomly
+    IdP uses Phonelib.valid_for_country? to test phone numbers to make sure
+    they look very real
     """
-    digits = "%0.7d" % randint(0,9999999)
-    return "415" + digits
+    digits = "%0.4d" % randint(0,9999)
+    return "202555" + digits
 
 """
 Use this in headers to act as a Desktop
