@@ -1,6 +1,5 @@
 from faker import Faker
-from random import randint
-from .flow_helper import do_request, authenticity_token, otp_code
+from .flow_helper import do_request, authenticity_token, otp_code, random_phone
 import os
 import sys
 
@@ -105,7 +104,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/phone",
         "/verify/otp_delivery_method",
-        {"authenticity_token": auth_token, "idv_phone_form[phone]": "8888888888",},
+        {"authenticity_token": auth_token, "idv_phone_form[phone]": random_phone(),},
     )
     auth_token = authenticity_token(resp)
 

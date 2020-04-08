@@ -1,5 +1,4 @@
 from faker import Faker
-from random import randint
 from .flow_helper import (
     resp_to_dom,
     authenticity_token,
@@ -7,8 +6,8 @@ from .flow_helper import (
     do_request,
     confirm_link,
     otp_code,
+    random_phone
 )
-from .helper_phony import fake_phone_numbers
 import os
 
 """
@@ -18,7 +17,6 @@ import os
 
 def do_sign_up(context):
     fake = Faker()
-    phone_numbers = fake_phone_numbers()
     new_email = "test+{}@test.com".format(fake.md5())
     default_password = "salty pickles"
 
@@ -76,7 +74,7 @@ def do_sign_up(context):
         {
             "_method": "patch",
             "new_phone_form[international_code]": "US",
-            "new_phone_form[phone]": phone_numbers[randint(1, 1000)],
+            "new_phone_form[phone]": random_phone(),
             "new_phone_form[otp_delivery_preference]": "sms",
             "authenticity_token": auth_token,
             "commit": "Send security code",

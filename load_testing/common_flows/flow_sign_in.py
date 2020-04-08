@@ -1,5 +1,3 @@
-from faker import Faker
-from random import randint
 import os
 from .flow_helper import (
     random_cred,
