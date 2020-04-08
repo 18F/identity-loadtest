@@ -1,4 +1,5 @@
 import locust
+import os
 import pyquery
 from random import randint
 
@@ -16,10 +17,11 @@ def do_request(
         catch_response=True,
         name=name,
     ) as resp:
+        resp.raise_for_status()
+
         if expected_redirect:
             verify_resp_url(expected_redirect, resp)
 
-        resp.raise_for_status()
         return resp
 
 
@@ -123,6 +125,14 @@ Raise errors when you are not at the expected page
 
 def verify_resp_url(url, resp):
     if resp.url and url not in resp.url:
-        resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
-        raise locust.exception.RescheduleTask
+        if os.getenv("DEBUG"):
+            message = """
+            You wanted {}, but got {} for a response.
+            
+            Body: {}
+            """.format(url, resp.url, resp.text)
+            resp.failure(message)
+        else:
+            resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
 
+        raise locust.exception.RescheduleTask
