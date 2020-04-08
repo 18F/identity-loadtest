@@ -21,7 +21,7 @@ def do_request(
         resp.raise_for_status()
 
         if expected_redirect:
-             if resp.url and url not in resp.url:
+             if resp.url and expected_redirect not in resp.url:
                 if os.getenv("DEBUG"):
                     message = """
                     You wanted {}, but got {} for a response.
@@ -32,11 +32,11 @@ def do_request(
                     Response:
                         Body: {}
                     """.format(
-                        url, resp.url, resp.text
+                        expected_redirect, resp.url, method, path, data, resp.text
                     )
                     resp.failure(message)
                 else:
-                    resp.failure("You wanted {}, but got {} for a url".format(url, resp.url))
+                    resp.failure("You wanted {}, but got {} for a url".format(expected_redirect, resp.url))
 
                 raise locust.exception.RescheduleTask
 
