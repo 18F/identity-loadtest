@@ -7,7 +7,7 @@ class SignInLoad(TaskSet):
     def on_start(self):
         print(
             "*** Starting Sign-In load tests with "
-            + os.environ.get("NUM_USERS")
+            + flow_helper.get_env("NUM_USERS")
             + " users ***"
         )
 

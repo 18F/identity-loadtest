@@ -5,6 +5,7 @@ from .flow_helper import (
     authenticity_token,
     do_request,
     otp_code,
+    get_env,
 )
 
 """
@@ -15,7 +16,7 @@ from .flow_helper import (
 def do_sign_in(context):
 
     # This should match the number of users that were created for the DB with the rake task
-    num_users = os.environ.get("NUM_USERS")
+    num_users = get_env("NUM_USERS")
     credentials = random_cred(num_users)
 
     resp = do_request(context, "get", "/", "/")

@@ -92,5 +92,4 @@ def do_sign_up(context):
         {"code": code, "authenticity_token": auth_token},
     )
 
-
     return resp

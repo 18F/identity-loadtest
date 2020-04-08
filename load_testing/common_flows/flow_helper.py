@@ -62,8 +62,14 @@ def authenticity_token(response, index=0):
 
 
 def querystring_value(url, key):
+    # Get a querystring value from a url
     parsed = urllib.parse.urlparse(url)
     return urllib.parse.parse_qs(parsed.query)[key][0]
+
+
+def url_without_querystring(url):
+    # Return the url without a querystring
+    return url.split("?")[0]
 
 
 def otp_code(response):
@@ -102,6 +108,36 @@ def confirm_link(response):
     return confirmation_link
 
 
+def sp_signin_link(response):
+    """
+    Gets a Sign-in link from the SP, raises an error if not found
+    """
+
+    dom = resp_to_dom(response)
+    link = dom.find("div.sign-in-wrap a").eq(0)
+    href = link.attr("href")
+
+    if "/openid_connect/authorize" not in href:
+        response.failure("Could not find SP Sign in link")
+        raise locust.exception.RescheduleTask
+
+    return href
+
+def sp_signout_link(response):
+    """
+    Gets a Sign-in link from the SP, raises an error if not found
+    """
+
+    dom = resp_to_dom(response)
+    link = dom.find("div.sign-in-wrap a").eq(0)
+    href = link.attr("href")
+
+    if "/logout" not in href:
+        response.failure("Could not find SP Log out link")
+        raise locust.exception.RescheduleTask
+
+    return href
+
 def resp_to_dom(resp):
     """
     Little helper to check response status is 200
@@ -139,12 +175,19 @@ def random_phone():
     digits = "%0.4d" % randint(0,9999)
     return "202555" + digits
 
-"""
-Use this in headers to act as a Desktop
-"""
-
-
 def desktop_agent_headers():
+    """
+    Use this in headers to act as a Desktop
+    """
     return {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
     }
+
+def get_env(key):
+    """
+    Get an ENV value, and raise an error if it's not there
+    """
+    value = os.getenv(key)
+    if not value:
+        raise Exception("You must pass in Environment Variable {}".format(key))
+    return value

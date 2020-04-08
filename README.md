@@ -88,9 +88,11 @@ NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host
 ### SP Sign in load test
 
 - This requires that [`identity-oidc-sinatra`](https://github.com/18F/identity-oidc-sinatra) be running as an SP
+- This requires the `NUM_USERS` env varible
+- This requires the `SP_HOST` env varible, something like `SP_HOST=http://localhost:9292`
 
 ```sh
-NUM_USERS=100 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 SP_HOST=http://localhost:9292 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
 ## Debugging Locust scripts
