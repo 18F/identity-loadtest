@@ -18,9 +18,11 @@ pip3 install -r requirements.txt
 Login IdP must be running with these settings in `application.yml`
 
 ```yml
+telephony_adapter: 'test'
 disable_email_sending: 'true'
 enable_load_testing_mode: 'true'
-telephony_adapter: 'test'
+enable_rate_limiting: 'false'
+otp_delivery_blocklist_maxretry: 1000000
 ```
 
 ## Running Locust

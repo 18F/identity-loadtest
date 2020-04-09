@@ -1,4 +1,3 @@
-import os
 from locust import HttpLocust, TaskSet, task, between
 from common_flows import flow_helper
 
@@ -43,7 +42,6 @@ class SPSignInLoad(TaskSet):
                 "authenticity_token": auth_token,
             },
         )
-
         auth_token = flow_helper.authenticity_token(resp)
         code = flow_helper.otp_code(resp)
 
@@ -56,10 +54,10 @@ class SPSignInLoad(TaskSet):
             None,
             {"code": code, "authenticity_token": auth_token,},
         )
-        auth_token = flow_helper.authenticity_token(resp)
 
         if "/sign_up/completed" in resp.url:
             # POST to completed, should go back to the SP
+            auth_token = flow_helper.authenticity_token(resp)
             resp = flow_helper.do_request(
                 self,
                 "post",

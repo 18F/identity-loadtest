@@ -55,7 +55,16 @@ def authenticity_token(response, index=0):
     dom = resp_to_dom(response)
     token = dom.find(selector).eq(index).attr("value")
     if not token:
-        response.failure("Could not find authenticity_token on page")
+        error = "Could not find authenticity_token on page"
+        if os.getenv("DEBUG"):
+            message = """
+            {}
+            Response:
+                Body: {}
+            """.format(error, response.text)
+            response.failure(message)
+        else:
+            response.failure(error)
         raise locust.exception.RescheduleTask
 
     return token

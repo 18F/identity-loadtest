@@ -1,4 +1,3 @@
-import os
 from .flow_helper import (
     random_cred,
     resp_to_dom,

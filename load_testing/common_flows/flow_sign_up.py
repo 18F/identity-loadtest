@@ -8,7 +8,6 @@ from .flow_helper import (
     otp_code,
     random_phone
 )
-import os
 
 """
 *** Sign Up Flow ***
