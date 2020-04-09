@@ -170,7 +170,7 @@ def random_cred(num_users):
 
     """
     credential = {
-        "email": "testuser{}@example.com".format(randint(1, int(num_users) - 1)),
+        "email": "testuser{}@example.com".format(randint(1, int(num_users))),
         "password": "salty pickles",
     }
 
