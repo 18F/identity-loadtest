@@ -2,7 +2,7 @@
 import pytest
 import os
 import re
-import test_helpers
+import test_helper
 
 # Import load_testing files
 # :/ this kind of import only works when you run `pytest` from the root of the project.
@@ -43,4 +43,53 @@ def test_get_env():
     with pytest.raises(Exception):
         get_env("UNSETKEY")
 
+def test_resp_to_dom():
+    resp = test_helper.mock_response("doc_auth_verify.html")
+    assert resp_to_dom(resp)
+
+def test_authentication_token():
+    resp = test_helper.mock_response("doc_auth_verify.html")
+
+    assert authenticity_token(resp) == "WPhfbuwqPzfbpB2+aTHWR93t0/7O88iK5nYdL/RaZoLEPH63Cjf4yKAkHw6CUDyaXw6O5oi4Nc2NHzC6stEdwA=="
+    assert authenticity_token(resp, 0)  == "WPhfbuwqPzfbpB2+aTHWR93t0/7O88iK5nYdL/RaZoLEPH63Cjf4yKAkHw6CUDyaXw6O5oi4Nc2NHzC6stEdwA=="
+    assert authenticity_token(resp, 1) == "I7WOA3x24rsZVj56R9QtCNVNlXapxqo2A9MOkU2sHPIsAi99KMzwSzD3Y89H710hluHXCoKOYt8VkT77f9U/Kg=="
+    assert authenticity_token(resp, 2) == "679gwHHowpDvKlzyBL4Cw2MYZC1NYLqWaAEz+Nze6ZJZELBdu1t7BTlGmVkvqfBh713/xc0oCkbndTMoOlpLRg=="
+
+    with pytest.raises(Exception):
+        authenticity_token("a response without a token in it")
+
+def test_otp_code():
+    resp = test_helper.mock_response("two_factor_sms.html")
+
+    assert otp_code(resp) == "543662"
+
+    with pytest.raises(Exception):
+        otp_code("a response without a code in it")
+
+
+def test_confirm_link():
+    resp = test_helper.mock_response("verify_email.html")
+
+    assert "/sign_up/email/confirm?confirmation_token=" in confirm_link(resp)
+    
+    with pytest.raises(Exception):
+        confirm_link("a response without a token in it")
+
+
+def test_sp_signin_link():
+    resp = test_helper.mock_response("sp_without_session.html")
+    
+    assert "openid_connect/authorize?" in sp_signin_link(resp)
+
+    with pytest.raises(Exception):
+        sp_signin_link("a response without a signin link in it")
+
+
+def test_sp_signout_link():
+    resp = test_helper.mock_response("sp_with_session.html")
+
+    assert "openid_connect/logout?" in sp_signout_link(resp)
+
+    with pytest.raises(Exception):
+        sp_signout_link("A response without a sign-out link")
 

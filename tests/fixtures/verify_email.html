@@ -1,0 +1,146 @@
+<!--
+  This is an example response from the IdP running locally
+  This response is from /sign_up/verify_email
+  It contains a CONFIRM NOW link as required by the load test suite
+-->
+<html class="" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="login.gov" name="description">
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <meta content="none" name="msapplication-config">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="telephone=no" name="format-detection">
+  <meta content="noindex,nofollow" name="robots">
+  <title>login.gov - Check your email</title>
+  <link rel="stylesheet" media="all"
+    href="http://localhost:3000/assets/application.debug-eb78989aca0a658e33c0640871445d565767d95c88c9f291127c9fc0c8d06d6b.css">
+  <!--[if IE 8]><script src="http://localhost:3000/assets/es5-shim.min.debug-79b9b25f26199aedf5a93bda38807ebcae5d56e4d8029f3367757ec1d26184cf.js"></script><![endif]-->
+  <script
+    src="http://localhost:3000/assets/application.debug-e7197af4138c6a924a021894601d2fb2297a6aa92b8dc56030233b0c46b0e98d.js"></script>
+  <script src="http://localhost:3000/packs/js/application-172b88dd47fb0c40aa61.js"></script>
+  <meta name="csrf-param" content="authenticity_token">
+  <meta name="csrf-token"
+    content="kszoDfrEmR6c6YT88jdgrrhYTGdeqOy8WVrh6CMizhKSXbJQWHvrJOKUy+XaGlxfu2lWdeHdYxccqNi4wXtcOw==">
+  <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+  <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+  <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+  <link href="/manifest.json" rel="manifest">
+  <link color="#e21c3d" href="/safari-pinned-tab.svg" rel="mask-icon">
+  <meta content="#ffffff" name="theme-color">
+  <!--[if lt IE 9]><script src="http://localhost:3000/assets/html5shiv.debug-961fe9a1afc419c91c7be9093fc696501d2656f4d90ce181092c07be513265dc.js"></script><script src="http://localhost:3000/assets/respond.min.debug-466eb5c1a77e988fcc81074013ba37f599800c8b935442a05e0831581d30cd5e.js"></script><![endif]-->
+</head>
+
+<body class="development-env site sm-bg-light-blue">
+  <div class="site-wrap bg-light-blue">
+    <div class="py1 bg-navy white fs-12p line-height-1 center"><img alt="US flag" class="mr1 align-bottom"
+        src="http://localhost:3000/assets/us-flag-bc2e6d8847fa0fcae216426344888597fa1a6fd7e7e0a608a7dcdc824a1c4436.png"
+        width="18" height="12"><span>An official website of the United States government</span></div>
+    <nav class="nav-nonbranded vertical-align bg-light-blue center"><a class="inline-block align-middle" href="/"><img
+          height="15" width="111" alt="login.gov" class="align-middle"
+          src="http://localhost:3000/assets/logo-daea47bfc25e493f9fe02f6146c724752b0614f67c6807130102acb03fb107b7.svg"></a>
+    </nav>
+    <div class="container">
+      <div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box card ">
+
+        <div class="mtn2">
+          <img alt="" width="24" class="left-0 right-0 ico-heading"
+            src="http://localhost:3000/assets/check-email-6a046c1c878738f27296444a7b01664c8072f90ddec5f0a4b40bea3f4de03636.svg">
+          <h1 class="mt2 ml1 h3 ico-heading">Check your email</h1>
+        </div>
+
+        <p>We sent an email to
+          <strong>test99@test.com</strong>
+          with a link to confirm your email address. Follow the link to continue creating your account.
+        </p>
+
+        <div class="col-3">
+          <hr class="my3 bw3 border-teal rounded">
+        </div>
+
+        <form class="simple_form mb2" id="new_user" action="/sign_up/enter_email" accept-charset="UTF-8" method="post">
+          <input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token"
+            value="GLKfHt4m11LcxJBudcrV13pRobudpsLtuA5ygfB89iU9q/5yPM4wFl51Pt/zAPFpfTJtlEOjx/nc7iCjbwvx4A==">
+
+          <input class="block col-12 field hidden" type="hidden" value="test99@test.com" name="user[email]"
+            id="user_email">
+          <input class="block col-12 field hidden" type="hidden" value="true" name="user[resend]" id="user_resend">
+          <input class="block col-12 field hidden" type="hidden" value="" name="user[request_id]" id="user_request_id">
+          <p>Didn’t receive an email?
+            <input type="submit" name="commit" value="Resend" class="btn btn-primary btn-link ml-tiny"
+              data-disable-with="Resend"></p>
+
+          <p>Or, <a href="/sign_up/enter_email?request_id=">use a different email address</a></p>
+          <p>You can close this window if you're done.</p>
+
+          <a id="confirm-now"
+            href="http://localhost:3000/sign_up/email/confirm?confirmation_token=_ZyzLsczUEtmUyheEyzS">CONFIRM NOW</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer class="footer bg-light-blue sm-bg-navy">
+    <div class="sm-hide border-bottom">
+      <div class="container cntnr-wide py1 px2 lg-px0 h5">
+        <div class="i18n-mobile-toggle center"><a class="block text-decoration-none blue fs-13p" aria-expanded="false"
+            href="#"><img width="12" class="mr1" alt="" aria-hidden="true"
+              src="http://localhost:3000/assets/globe-blue-587dbfffb3d6d6d980fbe15c9880cb3d0e8e32779a013e880cb9ceafba2544a5.svg">Language<span
+              aria-hidden="true" class="caret inline-block ml-tiny">▾</span></a></div>
+      </div>
+    </div>
+    <div class="i18n-mobile-dropdown sm-hide display-none">
+      <ul class="list-reset mb0 white center">
+        <li class="border-bottom"><a class="block py-12p px2 text-decoration-none blue fs-13p"
+            href="/en/sign_up/verify_email?request_id=">English</a></li>
+        <li class="border-bottom"><a class="block py-12p px2 text-decoration-none blue fs-13p"
+            href="/es/sign_up/verify_email?request_id=">Español</a></li>
+        <li class="border-bottom"><a class="block py-12p px2 text-decoration-none blue fs-13p"
+            href="/fr/sign_up/verify_email?request_id=">Français</a></li>
+      </ul>
+    </div>
+    <div class="container py1 px2 lg-px0 sm-py0">
+      <div class="flex flex-center">
+        <div class="flex flex-center">
+          <ul class="list-reset sm-show mb0">
+            <li class="i18n-desktop-toggle flex my1 mx3 relative"><a
+                class="white text-decoration-none border border-blue rounded-lg px1 py-tiny" aria-expanded="false"
+                href="#"><img width="12" class="mr1" alt="" aria-hidden="true"
+                  src="http://localhost:3000/assets/globe-white-62ede721980c3476c26bead9765eeb650fa0d6986f46613fb8e55f6af7510765.svg">Language<span
+                  aria-hidden="true" class="caret inline-block ml-tiny">▾</span></a>
+              <ul class="i18n-desktop-dropdown list-reset mb0 white display-none">
+                <li class="border-bottom border-navy"><a class="block pl-24p py2 text-decoration-none white"
+                    href="/en/sign_up/verify_email?request_id=">English</a></li>
+                <li class="border-bottom border-navy"><a class="block pl-24p py2 text-decoration-none white"
+                    href="/es/sign_up/verify_email?request_id=">Español</a></li>
+                <li class="border-bottom border-navy"><a class="block pl-24p py2 text-decoration-none white"
+                    href="/fr/sign_up/verify_email?request_id=">Français</a></li>
+              </ul>
+            </li>
+          </ul><a class="caps h6 blue sm-white text-decoration-none mr3" target="_blank" rel="noopener noreferrer"
+            href="https://www.login.gov/help">Help</a><a class="caps h6 blue sm-white text-decoration-none mr3"
+            target="_blank" rel="noopener noreferrer" href="https://www.login.gov/contact">Contact</a><a
+            class="caps h6 blue sm-white text-decoration-none" target="_blank" rel="noopener noreferrer"
+            href="https://www.login.gov/policy">Privacy &amp; security</a>
+        </div>
+        <div class="flex flex-auto flex-first"><a class="flex flex-center text-decoration-none white h6" target="_blank"
+            rel="noopener noreferrer" href="https://gsa.gov"><img width="20" class="mr1 sm-show" alt="GSA homepage"
+              src="http://localhost:3000/assets/sp-logos/square-gsa-67778024563469abca3b0ff14bd70a1984a6f1971edc0bc7af76f17446999a5a.svg"><img
+              width="20" class="mr1 sm-hide" alt="GSA homepage"
+              src="http://localhost:3000/assets/sp-logos/square-gsa-dark-a249e084f2fb9f0a50facd740f3eeeaccefcdb3633057814aac23e80a5550b8e.svg"><span
+              class="sm-show">U.S. General Services Administration</span></a></div>
+      </div>
+    </div>
+  </footer>
+  <div id="session-timeout-cntnr"></div>
+  <script nonce="">var sessionTimeoutIn = 900 * 1000;
+
+    function refreshPage() {
+      document.location = "/sign_up/verify_email?request_id=&timeout=true";
+    }
+
+    setTimeout(refreshPage, sessionTimeoutIn);
+  </script>
+</body>
+
+</html>
