@@ -25,7 +25,7 @@ def test_url_without_querystring():
 
 def test_random_cred():
     cred = random_cred(1)
-    assert cred["email"] == "testuser1@example.com"
+    assert cred["email"] == "testuser0@example.com"
     assert cred["password"] == "salty pickles"
 
 def test_random_phone():
