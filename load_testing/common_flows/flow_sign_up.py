@@ -8,7 +8,6 @@ from .flow_helper import (
     otp_code,
     random_phone
 )
-import os
 
 """
 *** Sign Up Flow ***
@@ -91,6 +90,5 @@ def do_sign_up(context):
         "/account",
         {"code": code, "authenticity_token": auth_token},
     )
-
 
     return resp

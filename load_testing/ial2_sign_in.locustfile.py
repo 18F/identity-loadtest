@@ -1,4 +1,3 @@
-import os
 from locust import HttpLocust, TaskSet, task, between
 from common_flows import flow_ial2_proofing, flow_sign_in, flow_helper
 
@@ -7,7 +6,7 @@ class IAL2SignInLoad(TaskSet):
     def on_start(self):
         print(
             "*** Starting Sign-In and IAL2 proof load tests with "
-            + os.environ.get("NUM_USERS")
+            + flow_helper.get_env("NUM_USERS")
             + " users ***"
         )
 

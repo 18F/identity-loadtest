@@ -1,6 +1,5 @@
 from faker import Faker
 from .flow_helper import do_request, authenticity_token, otp_code, random_phone
-import os
 import sys
 
 """
