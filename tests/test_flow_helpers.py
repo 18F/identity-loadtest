@@ -13,11 +13,11 @@ from common_flows.flow_helper import *
 """
 *** Unit test simple flow helpers
 """
+
 def test_querystring_value():
     url = "http://one.two?three=four&five=six"
     assert querystring_value(url, "three") == "four"
     assert querystring_value(url, "five") == "six"
-
 
 def test_url_without_querystring():
     assert url_without_querystring("http://one.two?three=four&five=six") == "http://one.two"
@@ -66,7 +66,6 @@ def test_otp_code():
     with pytest.raises(Exception):
         otp_code("a response without a code in it")
 
-
 def test_confirm_link():
     resp = test_helper.mock_response("verify_email.html")
 
@@ -75,7 +74,6 @@ def test_confirm_link():
     with pytest.raises(Exception):
         confirm_link("a response without a token in it")
 
-
 def test_sp_signin_link():
     resp = test_helper.mock_response("sp_without_session.html")
     
@@ -83,7 +81,6 @@ def test_sp_signin_link():
 
     with pytest.raises(Exception):
         sp_signin_link("a response without a signin link in it")
-
 
 def test_sp_signout_link():
     resp = test_helper.mock_response("sp_with_session.html")
