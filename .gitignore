@@ -19,3 +19,7 @@ mont-back.jpeg
 *failures.csv
 *stats_history.csv
 *stats.csv
+
+# tests
+.pytest_cache
+.coverage

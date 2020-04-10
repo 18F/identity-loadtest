@@ -97,6 +97,21 @@ NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host
 NUM_USERS=100 SP_HOST=http://localhost:9292 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
+## Running the test suite
+
+There are tests for these load tests, find them in the `tests` folder.
+
+```sh
+# Run the tests
+pytest
+
+# Run the tests and show coverage
+coverage run -m pytest
+coverage report
+```
+
+If you install the [CircleCI CLI](https://circleci.com/docs/2.0/local-cli) you can test a CircleCI run in a local Docker container with `circleci local execute`.
+
 ## Debugging Locust scripts
 
 The HTTP Library is called Requests: <https://requests.readthedocs.io/en/master/>

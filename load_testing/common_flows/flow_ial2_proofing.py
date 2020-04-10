@@ -73,10 +73,6 @@ def do_ial2_proofing(context):
     # There are three auth tokens on the response, get the second
     auth_token = authenticity_token(resp, 1)
 
-    # You can debug by issuing a GET and checking the expected path
-    # resp = get_request(context, "/verify", "/verify/doc_auth/verify")
-    # auth_token = authenticity_token(resp)
-
     # Verify
     resp = do_request(
         context,
