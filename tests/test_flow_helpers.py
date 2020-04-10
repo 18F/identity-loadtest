@@ -8,7 +8,20 @@ import test_helper
 # :/ this kind of import only works when you run `pytest` from the root of the project.
 import sys
 sys.path.append('./load_testing')
-from common_flows.flow_helper import *
+from common_flows.flow_helper import (
+    authenticity_token,
+    confirm_link,
+    desktop_agent_headers,
+    get_env,
+    otp_code,
+    querystring_value,
+    random_cred,
+    random_phone,
+    resp_to_dom,
+    sp_signin_link,
+    sp_signout_link,
+    url_without_querystring,
+)
 
 """
 *** Unit test simple flow helpers
