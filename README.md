@@ -110,6 +110,8 @@ coverage run -m pytest
 coverage report
 ```
 
+If you install the [CircleCI CLI](https://circleci.com/docs/2.0/local-cli) you can test a CircleCI run in a local Docker container with `circleci local execute`.
+
 ## Debugging Locust scripts
 
 The HTTP Library is called Requests: <https://requests.readthedocs.io/en/master/>

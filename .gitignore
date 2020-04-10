@@ -21,4 +21,5 @@ mont-back.jpeg
 *stats.csv
 
 # tests
+.pytest_cache
 .coverage
