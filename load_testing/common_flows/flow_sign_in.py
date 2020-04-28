@@ -69,7 +69,7 @@ def do_sign_in_user_not_found(context):
         "/",
         "/",
         {
-            "user[email]": "sign_in_bad_user@example.com",
+            "user[email]": "actually-not-" + credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
         },
