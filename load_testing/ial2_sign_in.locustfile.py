@@ -3,6 +3,10 @@ from common_flows import flow_ial2_proofing, flow_sign_in, flow_helper
 
 
 class IAL2SignInLoad(TaskSet):
+    # Preload drivers license data
+    license_front = flow_helper.load_fixture("mont-front.jpeg")
+    license_back = flow_helper.load_fixture("mont-back.jpeg")
+
     def on_start(self):
         print(
             "*** Starting Sign-In and IAL2 proof load tests with "

@@ -13,6 +13,7 @@ from common_flows.flow_helper import (
     confirm_link,
     desktop_agent_headers,
     get_env,
+    load_fixture,
     otp_code,
     querystring_value,
     random_cred,
@@ -103,3 +104,10 @@ def test_sp_signout_link():
     with pytest.raises(Exception):
         sp_signout_link("A response without a sign-out link")
 
+def test_load_file():
+    orig = open("README.md", "rb").read()
+
+    assert load_fixture("README.md", ".") == orig
+
+    with pytest.raises(RuntimeError):
+        load_fixture("NotReallyThere")

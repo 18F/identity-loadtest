@@ -200,3 +200,25 @@ def get_env(key):
     if not value:
         raise Exception("You must pass in Environment Variable {}".format(key))
     return value
+
+def load_fixture(filename, path="./load_testing"):
+    """
+    Preload data for use by tests.
+
+    Args:
+        filename (str) - File to load, relative to path
+        path (str)     - (Optional)  Path files are under
+                        (Default: ./load_testing)
+    Returns:
+        bytes
+    """
+    fullpath = os.path.join(path, filename)
+
+    try:
+        with open(fullpath, "rb") as infile:
+            fixture = infile.read()
+    except FileNotFoundError:
+        # Be a little more helpful
+        raise RuntimeError(f"Could not find fixture {fullpath}")
+
+    return fixture
