@@ -8,7 +8,11 @@ import sys
 
 
 def do_ial2_proofing(context):
-
+    """
+    Requires following attributes on context:
+    * license_front - Image data for front of driver's license
+    * license_back - Image data for back of driver's license
+    """
     # Request IAL2 Verification
     resp = do_request(context, "get", "/verify", "/verify/doc_auth")
     auth_token = authenticity_token(resp)
@@ -34,28 +38,24 @@ def do_ial2_proofing(context):
     auth_token = authenticity_token(resp)
 
     # Post the Front Image of the license
-    front_path = sys.path[0] + "/load_testing/mont-front.jpeg"
-    image = open(front_path, "rb")
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/front_image",
         "/verify/doc_auth/back_image",
         {"authenticity_token": auth_token,},
-        {"doc_auth[image]": image},
+        {"doc_auth[image]": context.license_front},
     )
     auth_token = authenticity_token(resp)
 
     # Post the Back Image of the license
-    back_path = sys.path[0] + "/load_testing/mont-back.jpeg"
-    image = open(back_path, "rb")
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/back_image",
         "/verify/doc_auth/ssn",
         {"authenticity_token": auth_token,},
-        {"doc_auth[image]": image},
+        {"doc_auth[image]": context.license_back},
     )
     auth_token = authenticity_token(resp)
 
