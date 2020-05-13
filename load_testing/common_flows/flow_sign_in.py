@@ -11,7 +11,7 @@ from .flow_helper import (
 *** Sign In Flow ***
 """
 
-def do_sign_in(context):
+def do_sign_in(context, remember_device = False):
 
     # This should match the number of users that were created for the DB with the rake task
     num_users = get_env("NUM_USERS")
@@ -24,18 +24,25 @@ def do_sign_in(context):
         print("You're already logged in. Quitting sign-in.")
         return resp
 
+    expected_path = "/login/two_factor/sms" if remember_device == False else None
+
     # Post login credentials
     resp = do_request(
         context,
         "post",
         "/",
-        "/login/two_factor/sms",
+        expected_path,
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
         },
     )
+
+    if "/account" in resp.url:
+        print("You're already logged in. Quitting sign-in.")
+        return resp
+
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
@@ -45,11 +52,20 @@ def do_sign_in(context):
         "post",
         "/login/two_factor/sms",
         "/account",
-        {"code": code, "authenticity_token": auth_token,},
+        {
+            "code": code,
+            "authenticity_token": auth_token,
+            "remember_device": remember_device_value(remember_device),
+        },
     )
 
     return resp
 
+def remember_device_value(value):
+    if value:
+        return "true"
+    else:
+        return "false"
 
 def do_sign_in_user_not_found(context):
     num_users = get_env("NUM_USERS")
