@@ -1,4 +1,4 @@
-from requests.utils import urlparse
+from urllib.parse import urlparse
 from .flow_helper import (
     authenticity_token,
     choose_cred,

@@ -14,7 +14,9 @@ from common_flows.flow_helper import (
     choose_cred,
     confirm_link,
     desktop_agent_headers,
+    export_cookies,
     get_env,
+    import_cookies,
     load_fixture,
     otp_code,
     querystring_value,
@@ -170,3 +172,52 @@ def test_load_file():
 
     with pytest.raises(RuntimeError):
         load_fixture("NotReallyThere")
+
+
+def test_export_import_cookies():
+    # Late load requests to avoid monkeypatch warning:
+    #  https://github.com/gevent/gevent/issues/1016
+    from requests import Session
+
+    domain = "oh.yea"
+
+    r = Session()
+
+    # Cookie that should be exported
+    r.cookies.set("remember_device", "Sure", domain=domain)
+    r.cookies.set("user_opted_remember_device_preference", "Yep", domain=domain)
+
+    # Cookies that should not be exported
+    r.cookies.set("remember_device", "Wrong_Domain", domain="other.place")
+    r.cookies.set("wrong_domain_and_name", "me", domain="sumthing")
+    r.cookies.set("wrong_name", "me", domain=domain)
+
+    ## Export tests
+    e = export_cookies(domain, r.cookies)
+
+    assert len(e) == 2, "Wrong number of cookies exported"
+    assert set([i.name for i in e]) == set(
+        ["remember_device", "user_opted_remember_device_preference"]
+    )
+    assert e[0].domain == domain
+
+    e2 = export_cookies(domain, r.cookies, savelist=["wrong_name"])
+    assert len(e2) == 1
+    assert e2[0].name == "wrong_name"
+
+    assert export_cookies("foo.bar", r.cookies) == []
+
+    r.cookies.clear()
+
+    assert len(export_cookies(domain, r.cookies)) == 0
+
+    ## Import tests
+    assert (
+        r.cookies.get("remember_device", domain=domain) is None
+    ), "Cookies did not clear"
+
+    import_cookies(r, e)
+
+    assert r.cookies.get("remember_device", domain=domain) == "Sure"
+    assert r.cookies.get("user_opted_remember_device_preference") == "Yep"
+    assert r.cookies.get("remember_device", domain="other_place") is None

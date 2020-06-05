@@ -1,7 +1,7 @@
 import locust
 import os
 import pyquery
-import urllib
+from urllib.parse import parse_qs, urlparse
 from random import choice, random, randint
 
 # Utility functions that are helpful in various locust contexts
@@ -81,8 +81,8 @@ def authenticity_token(response, index=0):
 
 def querystring_value(url, key):
     # Get a querystring value from a url
-    parsed = urllib.parse.urlparse(url)
-    return urllib.parse.parse_qs(parsed.query)[key][0]
+    parsed = urlparse(url)
+    return parse_qs(parsed.query)[key][0]
 
 
 def url_without_querystring(url):
@@ -275,40 +275,40 @@ def load_fixture(filename, path="./load_testing"):
     return fixture
 
 
-def export_cookies(host, cookies, savelist=[]):
+def export_cookies(domain, cookies, savelist=None):
     """
     Export cookies used for remembered device/other non-session use
     as list of Cookie objects.  Only looks in jar matching host name.
 
     Args:
-        host (str) - Cookie host to select
+        domain (str) - Domain to select cookies from
         cookies (requests.cookies.RequestsCookieJar) - Cookie jar object
+        savelist (list(str)) - (Optional) List of cookies to export
+
     Returns:
         list(Cookie) - restorable using set_device_cookies() function
     """
+    if savelist is None:
+        savelist = DEFAULT_COOKIE_SAVELIST
 
-    # Cookies to save
-    savelist = [
-        "user_opted_remember_device_preference",
-        "remember_device"
-    ]
+    # Pulling directly from internal data structure as there is
+    # no get_cookies method.
+    dcookies = cookies._cookies.get(domain, {}).get('/', None)
 
-    hcookies = cookies._cookies.get(host, {}).get('/', None)
-
-    if hcookies is None:
+    if dcookies is None:
         return []
 
-    return [c for c in [hcookies.get(si) for si in savelist] if c is not None] 
+    return [c for c in [dcookies.get(si) for si in savelist] if c is not None]
 
 
 def import_cookies(client, cookies):
     """
-    Restore saved cookies to the referenced client's cookie jar
+    Restore saved cookies to the referenced client's cookie jar.
 
     Args:
         client (requests.session) - Client to store cookies in
         cookies (list(Cookie)) - Saved list of Cookie objects
-    
+
     Returns:
         None
     """
