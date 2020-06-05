@@ -63,6 +63,18 @@ locust --locustfile load_testing/sign_up.locustfile.py --host http://localhost:3
 NUM_USERS=100 locust --locustfile load_testing/sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
+### Sign-In remembered device load test
+
+Tests sign ins simulating a very high (90%) ratio of users who are signing back
+in using a remembered browser (device).
+
+- You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
+- You also must pass in a matching `NUM_USERS=100` to the locust call.
+
+```sh
+NUM_USERS=100 locust --locustfile load_testing/sign_in_remember_me.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+```
+
 ### Sign up + Sign-In load test
 
 - This test mixes Sign-up and Sign-in together
@@ -95,6 +107,39 @@ NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host
 
 ```sh
 NUM_USERS=100 SP_HOST=http://localhost:9292 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+```
+
+
+### Production Simulator load test
+
+This is a hybrid test with the test mix roughly matching Login.gov's
+workload.  (Subject to change.   See test source for details.)
+
+The ratio of remembered devices for sign ins can be adjusted with
+the __REMEMBERED_PERCENT__ variable.  (Default: 60)
+
+For uniformity and simple calculation, test ratios should add up to
+10000 (1 == 0.01%) and can be adjusted by setting a corresponding
+environment variable.  The following are available, and defaults
+can be found at the top of `load_testing/production_simulator.locustfile.py`:
+
+* __RATIO_SIGN_IN__: Sign in test using REMEMBERED_PERCENT remember me
+                      ratio.
+* __RATIO_SIGN_UP__: Sign up test ratio.
+* __RATIO_SIGN_IN_AND_PROOF__: Sign in followed by IAL2 proofing ratio.
+* __RATIO_SIGN_UP_AND_PROOF__: Sign up followed by IAL2 proofing ratio.
+* __RATIO_SIGN_IN_USER_NOT_FOUND__: Failed sign in with nonexistent user.
+* __RATIO_SIGN_IN_INCORRECT_PASSWORD__: Failed sign in with bad password.
+* __RATIO_SIGN_IN_INCORRECT_SMS_OTP__: Failed sign in with bad SMS OTP.
+ 
+Test requirements:
+- Requires prepopulated users (See [Sign-In load test](#sign-in-load-test))
+- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images (See [IAL2 load tests](#ial2-load-tests))
+- You also must pass in a matching `NUM_USERS=100` to the locust call.
+
+Example (including overrides of the sign in and sign up tests)
+```sh
+NUM_USERS=100 RATIO_SIGN_IN=5000 RATIO_SIGN_UP=1010 locust --locustfile load_testing/production_simulator.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
 ```
 
 ## Running the test suite
