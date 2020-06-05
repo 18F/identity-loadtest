@@ -2,10 +2,13 @@ import locust
 import os
 import pyquery
 import urllib
-from random import randint
+from random import choice, random, randint
 
 # Utility functions that are helpful in various locust contexts
-
+DEFAULT_COOKIE_SAVELIST = [
+    "user_opted_remember_device_preference",
+    "remember_device"
+]
 
 def do_request(
     context, method, path, expected_redirect=None, data={}, files={}, name=None
@@ -22,7 +25,7 @@ def do_request(
         resp.raise_for_status()
 
         if expected_redirect:
-             if resp.url and expected_redirect not in resp.url:
+            if resp.url and expected_redirect not in resp.url:
                 if os.getenv("DEBUG"):
                     message = """
                     You wanted {}, but got {} for a response.
@@ -37,7 +40,11 @@ def do_request(
                     )
                     resp.failure(message)
                 else:
-                    resp.failure("You wanted {}, but got {} for a url".format(expected_redirect, resp.url))
+                    resp.failure(
+                        "You wanted {}, but got {} for a url".format(
+                            expected_redirect, resp.url
+                        )
+                    )
 
                 raise locust.exception.RescheduleTask
 
@@ -61,7 +68,9 @@ def authenticity_token(response, index=0):
             {}
             Response:
                 Body: {}
-            """.format(error, response.text)
+            """.format(
+                error, response.text
+            )
             response.failure(message)
         else:
             response.failure(error)
@@ -132,6 +141,7 @@ def sp_signin_link(response):
 
     return href
 
+
 def sp_signout_link(response):
     """
     Gets a Sign-in link from the SP, raises an error if not found
@@ -146,6 +156,7 @@ def sp_signout_link(response):
         raise locust.exception.RescheduleTask
 
     return href
+
 
 def resp_to_dom(resp):
     """
@@ -167,22 +178,60 @@ def random_cred(num_users):
 
     This will generate a set of credentials to match one of those entries.
     Note that YOU MUST run the rake task to put these users in the DB before using them.
-
     """
+    user_num = randint(0, int(num_users) - 1)
+
     credential = {
-        "email": "testuser{}@example.com".format(randint(0, int(num_users) - 1)),
+        "number": user_num,
+        "email": f"testuser{user_num}@example.com",
         "password": "salty pickles",
     }
 
     return credential
+
+
+def choose_cred(choose_from):
+    """
+    Same as random_cred but selects from a list of user IDs numbers.
+    """
+    # Coerce to list to make random.choice happy
+    user_num = choice(list(choose_from))
+
+    credential = {
+        "number": user_num,
+        "email": f"testuser{user_num}@example.com",
+        "password": "salty pickles",
+    }
+
+    return credential
+
+
+def use_previous_visitor(visited_count, visited_min, remembered_target):
+    """
+    Helper to decide if a specific sign in should use a previously used used.
+
+    Args:
+        visited_count (int)       - Number of previously visited users
+        visited_min (int)         - Lower threshold of visited users before reuse
+        remembered_target (float) - Target percentage of reuse
+    
+    Returns:
+        bool
+    """
+    if visited_count > visited_min and random() * 100 <= remembered_target:
+        return True
+
+    return False
+
 
 def random_phone():
     """
     IdP uses Phonelib.valid_for_country? to test phone numbers to make sure
     they look very real
     """
-    digits = "%0.4d" % randint(0,9999)
+    digits = "%0.4d" % randint(0, 9999)
     return "202555" + digits
+
 
 def desktop_agent_headers():
     """
@@ -192,6 +241,7 @@ def desktop_agent_headers():
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
     }
 
+
 def get_env(key):
     """
     Get an ENV value, and raise an error if it's not there
@@ -200,6 +250,7 @@ def get_env(key):
     if not value:
         raise Exception("You must pass in Environment Variable {}".format(key))
     return value
+
 
 def load_fixture(filename, path="./load_testing"):
     """
@@ -222,3 +273,44 @@ def load_fixture(filename, path="./load_testing"):
         raise RuntimeError(f"Could not find fixture {fullpath}")
 
     return fixture
+
+
+def export_cookies(host, cookies, savelist=[]):
+    """
+    Export cookies used for remembered device/other non-session use
+    as list of Cookie objects.  Only looks in jar matching host name.
+
+    Args:
+        host (str) - Cookie host to select
+        cookies (requests.cookies.RequestsCookieJar) - Cookie jar object
+    Returns:
+        list(Cookie) - restorable using set_device_cookies() function
+    """
+
+    # Cookies to save
+    savelist = [
+        "user_opted_remember_device_preference",
+        "remember_device"
+    ]
+
+    hcookies = cookies._cookies.get(host, {}).get('/', None)
+
+    if hcookies is None:
+        return []
+
+    return [c for c in [hcookies.get(si) for si in savelist] if c is not None] 
+
+
+def import_cookies(client, cookies):
+    """
+    Restore saved cookies to the referenced client's cookie jar
+
+    Args:
+        client (requests.session) - Client to store cookies in
+        cookies (list(Cookie)) - Saved list of Cookie objects
+    
+    Returns:
+        None
+    """
+    for c in cookies:
+        client.cookies.set_cookie(c)
