@@ -26,10 +26,10 @@ class SignInFailureLoad(TaskSet):
         flow_sign_in.do_sign_in_incorrect_password(self)
 
     @task(1)
-    def sign_in_load_test_incorrect_otp(self):
+    def sign_in_load_test_incorrect_sms_otp(self):
 
         # Do Sign In
-        flow_sign_in.do_sign_in_incorrect_otp(self)
+        flow_sign_in.do_sign_in_incorrect_sms_otp(self)
 
 
 class WebsiteUser(HttpLocust):
