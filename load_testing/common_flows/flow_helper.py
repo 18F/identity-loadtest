@@ -208,7 +208,8 @@ def choose_cred(choose_from):
 
 def use_previous_visitor(visited_count, visited_min, remembered_target):
     """
-    Helper to decide if a specific sign in should use a previously used used.
+    Helper to decide if a specific sign in should use a previously used user
+    number.
 
     Args:
         visited_count (int)       - Number of previously visited users
