@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_sign_up, flow_helper
 
 
@@ -27,6 +27,7 @@ class SignUpLoad(TaskSet):
         # You'd think that this would leave you at "/", but it returns a 204 and leaves you be.
         flow_helper.do_request(self, "get", "/logout", "/logout")
 
-class WebsiteUser(HttpLocust):
-    task_set = SignUpLoad
-    wait_time = between(5, 9) # number seconds simulated users wait between requests
+
+class WebsiteUser(HttpUser):
+    tasks = [SignUpLoad]
+    wait_time = between(5, 9)  # number seconds simulated users wait between requests
