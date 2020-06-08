@@ -1,5 +1,5 @@
 import os
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_ial2_proofing, flow_sign_in, flow_sign_up, flow_helper
 
 # Default ratios.  Sum should equal 10000.  (1 == 0.01%)
@@ -14,11 +14,11 @@ RATIOS = {
     "SIGN_UP_AND_PROOF": 5,
     "SIGN_IN_USER_NOT_FOUND": 900,
     "SIGN_IN_INCORRECT_PASSWORD": 900,
-    "SIGN_IN_INCORRECT_SMS_OTP": 80
+    "SIGN_IN_INCORRECT_SMS_OTP": 80,
 }
 
 # For sign ins, what percentage should simulate a remembered device
-REMEMBERED_PERCENT = os.getenv('REMEMBERED_PERCENT', 60)
+REMEMBERED_PERCENT = int(os.getenv("REMEMBERED_PERCENT", 60))
 
 # Runtime environment override with optional keys
 for k in RATIOS.keys():
@@ -36,9 +36,7 @@ class ProdSimulator(TaskSet):
     license_back = flow_helper.load_fixture("mont-back.jpeg")
 
     def on_start(self):
-
         num_users = int(flow_helper.get_env("NUM_USERS"))
-
         print(f"*** Production-like workload with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
@@ -60,7 +58,7 @@ class ProdSimulator(TaskSet):
         print("*** Ending Production-like load tests ***")
 
     # Sum should equal 10000.  (1 == 0.01%)
-    # 
+    #
     @task(RATIOS["SIGN_IN"])
     def sign_in_remembered_load_test(self):
         print("=== Starting Sign IN w/remembered device ===")
@@ -111,6 +109,6 @@ class ProdSimulator(TaskSet):
         flow_sign_in.do_sign_in_incorrect_sms_otp(self)
 
 
-class WebsiteUser(HttpLocust):
-    task_set = ProdSimulator
+class WebsiteUser(HttpUser):
+    tasks = [ProdSimulator]
     wait_time = between(5, 9)

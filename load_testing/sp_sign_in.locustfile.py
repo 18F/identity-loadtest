@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_sp_sign_in
 
 
@@ -9,6 +9,6 @@ class SPSignInLoad(TaskSet):
         flow_sp_sign_in.do_sp_sign_in(self)
 
 
-class WebsiteUser(HttpLocust):
-    task_set = SPSignInLoad
+class WebsiteUser(HttpUser):
+    tasks = [SPSignInLoad]
     wait_time = between(5, 9)

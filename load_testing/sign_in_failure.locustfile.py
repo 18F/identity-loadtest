@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_sign_in, flow_helper
 
 
@@ -32,6 +32,6 @@ class SignInFailureLoad(TaskSet):
         flow_sign_in.do_sign_in_incorrect_sms_otp(self)
 
 
-class WebsiteUser(HttpLocust):
-    task_set = SignInFailureLoad
+class WebsiteUser(HttpUser):
+    tasks = [SignInFailureLoad]
     wait_time = between(5, 9)

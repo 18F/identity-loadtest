@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_ial2_proofing, flow_sign_up, flow_helper
 
 
@@ -35,6 +35,6 @@ class IAL2SignUpLoad(TaskSet):
         flow_helper.do_request(self, "get", "/logout", "/")
 
 
-class WebsiteUser(HttpLocust):
-    task_set = IAL2SignUpLoad
+class WebsiteUser(HttpUser):
+    tasks = [IAL2SignUpLoad]
     wait_time = between(5, 9)
