@@ -53,11 +53,23 @@ def do_ial2_proofing(context):
         context,
         "put",
         "/verify/doc_auth/back_image",
-        "/verify/doc_auth/ssn",
+        "/verify/doc_auth/selfie",
         {"authenticity_token": auth_token,},
         {"doc_auth[image]": context.license_back},
     )
     auth_token = authenticity_token(resp)
+
+
+    # Post Selfie image
+    resp = do_request(
+        context,
+        "put",
+        "/verify/doc_auth/selfie",
+        "/verify/doc_auth/ssn",
+        {"authenticity_token": auth_token,},
+        {"doc_auth[image]": context.selfie},
+    )
+    auth_token = authenticity_token(resp) 
 
     # SSN - use faker to get unique SSNs
     fake = Faker()
