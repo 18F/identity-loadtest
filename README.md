@@ -29,16 +29,16 @@ otp_delivery_blocklist_maxretry: 1000000
 
 You can only run one locustfile at a time, there are many to choose from that end in `.locustfile.py`.
 
-- `clients` is the total number of concurrent Locust users.
+- `users` is the total number of concurrent Locust users.
 - `hatch-rate` is the number of users to spawn per second, starting from zero.
 
 ### Common `locust` cmd line arguments
 
 ```sh
---host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+--host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
-Or omit `--no-web` and open <http://localhost:8089> for a UI.
+Or omit `--headless` and open <http://localhost:8089> for a UI.
 
 Add `--csv=<base-name>` to generate CSV output
 
@@ -51,7 +51,7 @@ Add new `*.loucstfile.py` files to the project for new test scenarios.
 - This will create lots of users in your database
 
 ```sh
-locust --locustfile load_testing/sign_up.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+locust --locustfile load_testing/sign_up.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ### Sign-In load test
@@ -60,7 +60,7 @@ locust --locustfile load_testing/sign_up.locustfile.py --host http://localhost:3
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 ```sh
-NUM_USERS=100 locust --locustfile load_testing/sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 locust --locustfile load_testing/sign_in.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ### Sign-In remembered device load test
@@ -72,7 +72,7 @@ in using a remembered browser (device).
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 ```sh
-NUM_USERS=100 locust --locustfile load_testing/sign_in_remember_me.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 locust --locustfile load_testing/sign_in_remember_me.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ### Sign up + Sign-In load test
@@ -82,21 +82,21 @@ NUM_USERS=100 locust --locustfile load_testing/sign_in_remember_me.locustfile.py
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 ```sh
-NUM_USERS=100 locust --locustfile load_testing/sign_up_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 locust --locustfile load_testing/sign_up_sign_in.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ### IAL2 load tests
 
 - Same rules as above, but use `ial2_sign_*` filenames.
 - Uses "desktop proofing" experience, not mobile.
-- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images
+- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images and `selfie.jpeg`
 
 ```sh
-NUM_USERS=100 locust --locustfile load_testing/ial2_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 locust --locustfile load_testing/ial2_sign_in.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ```sh
-NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ### SP Sign in load test
@@ -106,7 +106,7 @@ NUM_USERS=100 locust --locustfile load_testing/ial2_sign_up.locustfile.py --host
 - This requires the `SP_HOST` env varible, something like `SP_HOST=http://localhost:9292`
 
 ```sh
-NUM_USERS=100 SP_HOST=http://localhost:9292 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 SP_HOST=http://localhost:9292 locust --locustfile load_testing/sp_sign_in.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 
@@ -134,12 +134,12 @@ can be found at the top of `load_testing/production_simulator.locustfile.py`:
  
 Test requirements:
 - Requires prepopulated users (See [Sign-In load test](#sign-in-load-test))
-- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images (See [IAL2 load tests](#ial2-load-tests))
+- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images and `selfie.jpeg` (See [IAL2 load tests](#ial2-load-tests))
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 Example (including overrides of the sign in and sign up tests)
 ```sh
-NUM_USERS=100 RATIO_SIGN_IN=5000 RATIO_SIGN_UP=1010 locust --locustfile load_testing/production_simulator.locustfile.py --host http://localhost:3000 --clients 1 --hatch-rate 1 --run-time 15m --no-web
+NUM_USERS=100 RATIO_SIGN_IN=5000 RATIO_SIGN_UP=1010 locust --locustfile load_testing/production_simulator.locustfile.py --host http://localhost:3000 --users 1 --hatch-rate 1 --run-time 15m --headless
 ```
 
 ## Running the test suite
