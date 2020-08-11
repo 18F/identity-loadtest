@@ -1,5 +1,5 @@
 from locust import HttpUser, TaskSet, task, between
-from common_flows import flow_ial2_proofing, flow_sign_in, flow_helper
+from common_flows import flow_ial2_proofing, flow_sign_in, flow_helper, flow_cli
 
 
 class IAL2SignInLoad(TaskSet):
@@ -9,10 +9,9 @@ class IAL2SignInLoad(TaskSet):
     selfie = flow_helper.load_fixture("selfie.jpeg")
 
     def on_start(self):
+        self.num_users = int(flow_helper.get_env("NUM_USERS"))
         print(
-            "*** Starting Sign-In and IAL2 proof load tests with "
-            + flow_helper.get_env("NUM_USERS")
-            + " users ***"
+            f"*** Starting Sign-In and IAL2 proof load tests with {self.num_users} users ***"
         )
 
     def on_stop(self):

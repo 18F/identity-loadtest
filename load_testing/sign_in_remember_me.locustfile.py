@@ -8,9 +8,9 @@ VISITED = {}
 class SignInRememberMeLoad(TaskSet):
     def on_start(self):
 
-        num_users = int(flow_helper.get_env("NUM_USERS"))
+        self.num_users = int(flow_helper.get_env("NUM_USERS"))
 
-        print(f"*** Starting Sign-In Remember Me load tests with {num_users} users ***")
+        print(f"*** Starting Sign-In Remember Me load tests with {self.num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -25,7 +25,7 @@ class SignInRememberMeLoad(TaskSet):
         self.remembered_target = 90
 
         # Calculate minimum number based on passed users
-        self.visited_min = int(0.01 * self.visited_min_pct * num_users)
+        self.visited_min = int(0.01 * self.visited_min_pct * self.num_users)
 
     def on_stop(self):
         print("*** Ending Sign-In load tests ***")

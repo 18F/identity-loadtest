@@ -36,8 +36,8 @@ class ProdSimulator(TaskSet):
     license_back = flow_helper.load_fixture("mont-back.jpeg")
 
     def on_start(self):
-        num_users = int(flow_helper.get_env("NUM_USERS"))
-        print(f"*** Production-like workload with {num_users} users ***")
+        self.num_users = int(flow_helper.get_env("NUM_USERS"))
+        print(f"*** Production-like workload with {self.num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -52,7 +52,7 @@ class ProdSimulator(TaskSet):
         self.remembered_target = REMEMBERED_PERCENT
 
         # Calculate minimum number based on passed users
-        self.visited_min = int(0.01 * self.visited_min_pct * num_users)
+        self.visited_min = int(0.01 * self.visited_min_pct * self.num_users)
 
     def on_stop(self):
         print("*** Ending Production-like load tests ***")

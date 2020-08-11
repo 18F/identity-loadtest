@@ -19,11 +19,9 @@ from .flow_helper import (
 
 
 def do_sign_in(
-    context, remember_device=False, visited={}, visited_min=0, remembered_target=0,
+    context, remember_device=False, visited={}, visited_min=0, remembered_target=0
 ):
     remembered = False
-    # This should match the number of users that were created for the DB with the rake task
-    num_users = get_env("NUM_USERS")
 
     # Crossed minimum visited user threshold AND passed random selector
     if remember_device and use_previous_visitor(
@@ -37,7 +35,7 @@ def do_sign_in(
 
     else:
         # Choose a random user
-        credentials = random_cred(num_users)
+        credentials = random_cred(context.num_users)
 
     usernum = credentials["number"]
 
@@ -100,8 +98,7 @@ def remember_device_value(value):
 
 
 def do_sign_in_user_not_found(context):
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users)
+    credentials = random_cred(context.num_users)
 
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
@@ -127,8 +124,7 @@ def do_sign_in_user_not_found(context):
 
 
 def do_sign_in_incorrect_password(context):
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users)
+    credentials = random_cred(context.num_users)
 
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
@@ -154,8 +150,7 @@ def do_sign_in_incorrect_password(context):
 
 
 def do_sign_in_incorrect_sms_otp(context):
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users)
+    credentials = random_cred(context.num_users)
 
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)

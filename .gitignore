@@ -10,6 +10,7 @@ bin/
 include/
 lib/
 pyvenv.cf
+.venv
 
 # Test drivers license images
 mont-front.jpeg

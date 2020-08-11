@@ -39,8 +39,7 @@ def do_sp_sign_in(context):
   request_id = querystring_value(resp.url, "request_id")
 
   # POST username and password
-  num_users = get_env("NUM_USERS")
-  credentials = random_cred(num_users)
+  credentials = random_cred(context.num_users)
   resp = do_request(
       context,
       "post",

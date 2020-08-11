@@ -4,10 +4,9 @@ from common_flows import flow_sign_in, flow_helper
 
 class SignInFailureLoad(TaskSet):
     def on_start(self):
+        self.num_users = int(flow_helper.get_env("NUM_USERS"))
         print(
-            "*** Starting Sign-In failure load tests with "
-            + flow_helper.get_env("NUM_USERS")
-            + " users ***"
+            f"*** Starting Sign-In failure load tests with {self.num_users} users ***"
         )
 
     def on_stop(self):
