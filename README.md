@@ -25,6 +25,9 @@ enable_rate_limiting: 'false'
 otp_delivery_blocklist_maxretry: 1000000
 ```
 
+Note that it's also important to assure that the scrypt cost is configured the same as prod. The values will
+inherit from the [idp-repo](https://github.com/18F/identity-idp/blob/master/config/application.yml.default) unless the values are overridden in the secrets s3 bucket.
+
 ## Running Locust
 
 You can only run one locustfile at a time, there are many to choose from that end in `.locustfile.py`.
@@ -56,7 +59,7 @@ locust --locustfile load_testing/sign_up.locustfile.py --host http://localhost:3
 
 ### Sign-In load test
 
-- You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
+- You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 ```sh
@@ -68,7 +71,7 @@ NUM_USERS=100 locust --locustfile load_testing/sign_in.locustfile.py --host http
 Tests sign ins simulating a very high (90%) ratio of users who are signing back
 in using a remembered browser (device).
 
-- You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
+- You must run a rake task in the IdP before using this test, something like: `rake dev:random_users NUM_USERS=100'` [(source)](https://github.com/18F/identity-idp/blob/master/lib/tasks/dev.rake)
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 ```sh

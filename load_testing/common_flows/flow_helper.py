@@ -169,7 +169,7 @@ def resp_to_dom(resp):
 def random_cred(num_users):
     """
     Given the rake task:
-    rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$'
+    rake dev:random_users NUM_USERS=1000'
 
     We should have 1000 existing users with credentials matching:
     * email address testuser1@example.com through testuser1000@example.com
