@@ -10,6 +10,7 @@ DEFAULT_COOKIE_SAVELIST = [
     "remember_device"
 ]
 
+
 def do_request(
     context, method, path, expected_redirect=None, data={}, files={}, name=None
 ):
@@ -132,6 +133,7 @@ def sp_signin_link(response):
     """
 
     dom = resp_to_dom(response)
+
     link = dom.find("div.sign-in-wrap a").eq(0)
     href = link.attr("href")
 
@@ -169,7 +171,7 @@ def resp_to_dom(resp):
 def random_cred(num_users):
     """
     Given the rake task:
-    rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$'
+    rake dev:random_users NUM_USERS=1000'
 
     We should have 1000 existing users with credentials matching:
     * email address testuser1@example.com through testuser1000@example.com
@@ -215,7 +217,7 @@ def use_previous_visitor(visited_count, visited_min, remembered_target):
         visited_count (int)       - Number of previously visited users
         visited_min (int)         - Lower threshold of visited users before reuse
         remembered_target (float) - Target percentage of reuse
-    
+
     Returns:
         bool
     """
