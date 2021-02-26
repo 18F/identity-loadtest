@@ -9,7 +9,7 @@ __pycache__
 bin/
 include/
 lib/
-pyvenv.cf
+pyvenv.cfg
 
 # Test drivers license images
 mont-front.jpeg
