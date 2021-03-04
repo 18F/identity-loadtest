@@ -1,23 +1,54 @@
 from faker import Faker
 from .flow_helper import (
-    resp_to_dom,
     authenticity_token,
-    random_cred,
     do_request,
+    get_env,
     confirm_link,
     otp_code,
-    random_phone
+    querystring_value,
+    random_cred,
+    random_phone,
+    resp_to_dom,
+    sp_signin_link,
+    sp_signout_link,
+    url_without_querystring,
 )
-
 """
-*** Sign Up Flow ***
+*** Service Provider Sign Up Flow ***
+
+Using this flow requires that a Service Provider be running and configured to work with HOST.
 """
 
 
-def do_sign_up(context):
-    fake = Faker()
-    new_email = "test+{}@test.com".format(fake.md5())
-    default_password = "salty pickles"
+def do_sp_sign_up(context):
+    sp_root_url = get_env("SP_HOST")
+
+    # GET the SP root, which should contain a login link, give it a friendly name for output
+    resp = do_request(
+        context,
+        "get",
+        sp_root_url,
+        sp_root_url,
+        {},
+        {},
+        sp_root_url
+    )
+
+    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+
+    # submit signin form
+    resp = do_request(
+        context,
+        "get",
+        sp_signin_endpoint,
+        '',
+        {},
+        {},
+        sp_signin_endpoint
+    )
+
+    auth_token = authenticity_token(resp)
+    request_id = querystring_value(resp.url, "request_id")
 
     # GET the new email page
     resp = do_request(context, "get", "/sign_up/enter_email",
@@ -25,6 +56,10 @@ def do_sign_up(context):
     auth_token = authenticity_token(resp)
 
     # Post fake email and get confirmation link (link shows up in "load test mode")
+    fake = Faker()
+    new_email = "test+{}@test.com".format(fake.md5())
+    default_password = "salty pickles"
+
     resp = do_request(
         context,
         "post",
@@ -88,8 +123,30 @@ def do_sign_up(context):
         context,
         "post",
         "/login/two_factor/sms",
-        "/account",
+        "/sign_up/completed",
         {"code": code, "authenticity_token": auth_token},
     )
+    auth_token = authenticity_token(resp)
 
-    return resp
+    # Agree to share information with the service provider
+    # Visit security code page and submit pre-filled OTP
+    resp = do_request(
+        context,
+        "post",
+        "/sign_up/completed",
+        "https://sp-oidc-sinatra.pt.identitysandbox.gov/",
+        {"authenticity_token": auth_token},
+    )
+
+    # We should now be at the SP root, with a "logout" link.
+    # The test SP goes back to the root, so we'll test that for now
+    logout_link = sp_signout_link(resp)
+    do_request(
+        context,
+        "get",
+        logout_link,
+        sp_root_url,
+        {},
+        {},
+        url_without_querystring(logout_link),
+    )
