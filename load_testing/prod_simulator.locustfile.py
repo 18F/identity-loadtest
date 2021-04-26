@@ -38,7 +38,8 @@ class ProdSimulator(TaskSet):
 
     def on_start(self):
         num_users = int(flow_helper.get_env("NUM_USERS"))
-        print(f"*** Production-like workload with {num_users} users ***")
+        if os.getenv("DEBUG"):
+            print(f"*** Production-like workload with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -56,13 +57,15 @@ class ProdSimulator(TaskSet):
         self.visited_min = int(0.01 * self.visited_min_pct * num_users)
 
     def on_stop(self):
-        print("*** Ending Production-like load tests ***")
+        if os.getenv("DEBUG"):
+            print("*** Ending Production-like load tests ***")
 
     # Sum should equal 10000.  (1 == 0.01%)
     #
     @task(RATIOS["SIGN_IN"])
     def sign_in_remembered_load_test(self):
-        print("=== Starting Sign IN w/remembered device ===")
+        if os.getenv("DEBUG"):
+            print("=== Starting Sign IN w/remembered device ===")
         flow_sign_in.do_sign_in(
             self,
             remember_device=True,
@@ -75,7 +78,8 @@ class ProdSimulator(TaskSet):
 
     @task(RATIOS["SIGN_UP"])
     def sign_up_load_test(self):
-        print("=== Starting Sign UP ===")
+        if os.getenv("DEBUG"):
+            print("=== Starting Sign UP ===")
         flow_helper.do_request(self, "get", "/", "/")
         flow_sign_up.do_sign_up(self)
         flow_helper.do_request(self, "get", "/account", "/account")
