@@ -6,19 +6,20 @@ from common_flows import flow_ial2_proofing, flow_sign_in, flow_sign_up, flow_he
 # These can be overridden by setting the corresponding environment
 # variable.  Example:  RATIO_SIGN_UP will override RATIOS["SIGN_UP"]
 
-# Defaults updated based on measurements from 2020-05-18
+# Defaults updated based on measurements from 2021-04-13
+
 RATIOS = {
-    "SIGN_IN": 7310,
-    "SIGN_UP": 800,
-    "SIGN_IN_AND_PROOF": 5,
-    "SIGN_UP_AND_PROOF": 5,
-    "SIGN_IN_USER_NOT_FOUND": 900,
-    "SIGN_IN_INCORRECT_PASSWORD": 900,
-    "SIGN_IN_INCORRECT_SMS_OTP": 80,
+    "SIGN_IN": 7263,
+    "SIGN_UP": 813,
+    "SIGN_IN_AND_PROOF": 9,
+    "SIGN_UP_AND_PROOF": 9,
+    "SIGN_IN_USER_NOT_FOUND": 885,
+    "SIGN_IN_INCORRECT_PASSWORD": 885,
+    "SIGN_IN_INCORRECT_SMS_OTP": 79,
 }
 
 # For sign ins, what percentage should simulate a remembered device
-REMEMBERED_PERCENT = int(os.getenv("REMEMBERED_PERCENT", 60))
+REMEMBERED_PERCENT = int(os.getenv("REMEMBERED_PERCENT", 54))
 
 # Runtime environment override with optional keys
 for k in RATIOS.keys():
@@ -37,7 +38,8 @@ class ProdSimulator(TaskSet):
 
     def on_start(self):
         num_users = int(flow_helper.get_env("NUM_USERS"))
-        print(f"*** Production-like workload with {num_users} users ***")
+        if os.getenv("DEBUG"):
+            print(f"*** Production-like workload with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -55,13 +57,15 @@ class ProdSimulator(TaskSet):
         self.visited_min = int(0.01 * self.visited_min_pct * num_users)
 
     def on_stop(self):
-        print("*** Ending Production-like load tests ***")
+        if os.getenv("DEBUG"):
+            print("*** Ending Production-like load tests ***")
 
     # Sum should equal 10000.  (1 == 0.01%)
     #
     @task(RATIOS["SIGN_IN"])
     def sign_in_remembered_load_test(self):
-        print("=== Starting Sign IN w/remembered device ===")
+        if os.getenv("DEBUG"):
+            print("=== Starting Sign IN w/remembered device ===")
         flow_sign_in.do_sign_in(
             self,
             remember_device=True,
@@ -74,7 +78,8 @@ class ProdSimulator(TaskSet):
 
     @task(RATIOS["SIGN_UP"])
     def sign_up_load_test(self):
-        print("=== Starting Sign UP ===")
+        if os.getenv("DEBUG"):
+            print("=== Starting Sign UP ===")
         flow_helper.do_request(self, "get", "/", "/")
         flow_sign_up.do_sign_up(self)
         flow_helper.do_request(self, "get", "/account", "/account")
