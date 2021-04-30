@@ -22,6 +22,16 @@ def do_ial2_proofing(context):
         context,
         "put",
         "/verify/doc_auth/welcome",
+        "/verify/doc_auth/agreement",
+        {"authenticity_token": auth_token, },
+    )
+    auth_token = authenticity_token(resp)
+
+    # Post consent to Welcome
+    resp = do_request(
+        context,
+        "put",
+        "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         {"ial2_consent_given": "true", "authenticity_token": auth_token, },
     )
