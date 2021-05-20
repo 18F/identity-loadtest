@@ -19,11 +19,16 @@ from .flow_helper import (
 
 
 def do_sign_in(
-    context, remember_device=False, visited={}, visited_min=0, remembered_target=0,
+    context,
+    remember_device=False,
+    visited={},
+    visited_min=0,
+    remembered_target=0,
 ):
-    remembered = False
-    # This should match the number of users that were created for the DB with the rake task
+    # This should match the number of users that were created for the DB with
+    # the rake task
     num_users = get_env("NUM_USERS")
+    remembered = False
 
     # Crossed minimum visited user threshold AND passed random selector
     if remember_device and use_previous_visitor(
@@ -68,7 +73,8 @@ def do_sign_in(
             print(f"You're already logged in. Quitting sign-in for {usernum}")
         return resp
 
-    remembered and print(f"Unexpected SMS prompt for remembered user {usernum}")
+    remembered and print(
+        f"Unexpected SMS prompt for remembered user {usernum}")
 
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
@@ -87,7 +93,8 @@ def do_sign_in(
     )
 
     # Mark user as visited and save remembered device cookies
-    visited[usernum] = export_cookies(urlparse(resp.url).netloc, context.client.cookies)
+    visited[usernum] = export_cookies(
+        urlparse(resp.url).netloc, context.client.cookies)
 
     return resp
 
