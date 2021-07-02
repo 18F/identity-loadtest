@@ -13,6 +13,9 @@ from .flow_helper import (
     sp_signout_link,
     url_without_querystring,
 )
+import logging
+LOG_NAME = __file__.split('/')[-1].split('.')[0]
+
 """
 *** Service Provider Sign Up Flow ***
 
@@ -20,8 +23,9 @@ Using this flow requires that a Service Provider be running and configured to wo
 """
 
 
-def do_sp_sign_up(context):
+def do_sign_up(context):
     sp_root_url = get_env("SP_HOST")
+    context.client.cookies.clear()
 
     # GET the SP root, which should contain a login link, give it a friendly name for output
     resp = do_request(
@@ -65,7 +69,10 @@ def do_sp_sign_up(context):
         "post",
         "/sign_up/enter_email",
         "/sign_up/verify_email",
-        {"user[email]": new_email, "authenticity_token": auth_token, },
+        {
+            "user[email]": new_email,
+            "authenticity_token": auth_token,
+            "user[terms_accepted]": 'true'},
     )
 
     conf_url = confirm_link(resp)
@@ -141,7 +148,7 @@ def do_sp_sign_up(context):
     # We should now be at the SP root, with a "logout" link.
     # The test SP goes back to the root, so we'll test that for now
     logout_link = sp_signout_link(resp)
-    do_request(
+    resp = do_request(
         context,
         "get",
         logout_link,
@@ -150,3 +157,7 @@ def do_sp_sign_up(context):
         {},
         url_without_querystring(logout_link),
     )
+
+    # Does it include the logged out text signature?
+    if resp.text.find('You have been logged out') == -1:
+        logging.error(f"{LOG_NAME}: user has not been logged out")

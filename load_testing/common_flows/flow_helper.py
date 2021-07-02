@@ -1,14 +1,16 @@
+from random import choice, random, randint
+from urllib.parse import parse_qs, urlparse
 import locust
+import logging
 import os
 import pyquery
-from urllib.parse import parse_qs, urlparse
-from random import choice, random, randint
 
 # Utility functions that are helpful in various locust contexts
 DEFAULT_COOKIE_SAVELIST = [
     "user_opted_remember_device_preference",
     "remember_device"
 ]
+LOG_NAME = __file__.split('/')[-1].split('.')[0]
 
 
 def do_request(
@@ -83,7 +85,13 @@ def authenticity_token(response, index=0):
 def querystring_value(url, key):
     # Get a querystring value from a url
     parsed = urlparse(url)
-    return parse_qs(parsed.query)[key][0]
+    try:
+        return parse_qs(parsed.query)[key][0]
+    except KeyError as e:
+        logging.error(
+            f'{LOG_NAME}: No querystring found for {key} in {response.url}')
+        logging.debug(e)
+        raise locust.exception.RescheduleTask
 
 
 def url_without_querystring(url):
@@ -158,6 +166,23 @@ def sp_signout_link(response):
         raise locust.exception.RescheduleTask
 
     return href
+
+
+def personal_key(response):
+    """
+    Gets a personal key from the /verify/confirmations page and raises an error
+    if not found
+    """
+    dom = resp_to_dom(response)
+    personal_key = ''
+    try:
+        for x in range(4):
+            personal_key += dom.find("code.monospace")[x].text
+    except IndexError as e:
+        logging.error(f'{LOG_NAME}: No personal key found in {response.url}')
+        logging.debug(e)
+        raise locust.exception.RescheduleTask
+    return personal_key
 
 
 def resp_to_dom(resp):
@@ -278,7 +303,7 @@ def load_fixture(filename, path="./load_testing"):
     return fixture
 
 
-def export_cookies(domain, cookies, savelist=None):
+def export_cookies(domain, cookies, savelist=None, sp_domain=None):
     """
     Export cookies used for remembered device/other non-session use
     as list of Cookie objects.  Only looks in jar matching host name.
@@ -296,12 +321,15 @@ def export_cookies(domain, cookies, savelist=None):
 
     # Pulling directly from internal data structure as there is
     # no get_cookies method.
-    dcookies = cookies._cookies.get(domain, {}).get('/', None)
+    cookies_dict = cookies._cookies.get(domain, {}).get('/', None)
+    # if they exist, add sp cookies to idp cookies
+    if 'sp_domain' in locals() and sp_domain is not None:
+        cookies_dict.update(cookies._cookies.get(sp_domain, {}).get('/', None))
 
-    if dcookies is None:
+    if cookies_dict is None:
         return []
 
-    return [c for c in [dcookies.get(si) for si in savelist] if c is not None]
+    return [c for c in [cookies_dict.get(si) for si in savelist] if c is not None]
 
 
 def import_cookies(client, cookies):
@@ -315,5 +343,6 @@ def import_cookies(client, cookies):
     Returns:
         None
     """
+
     for c in cookies:
         client.cookies.set_cookie(c)

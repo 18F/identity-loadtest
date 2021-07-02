@@ -1,6 +1,14 @@
 import os
 from locust import HttpUser, TaskSet, task, between
-from common_flows import flow_ial2_proofing, flow_sign_in, flow_sign_up, flow_helper
+from common_flows import (
+    flow_ial2_proofing,
+    flow_sp_ial2_sign_in,
+    flow_sp_ial2_sign_up,
+    flow_sign_in,
+    flow_sp_sign_in,
+    flow_sp_sign_up,
+    flow_helper,
+)
 
 # Default ratios.  Sum should equal 10000.  (1 == 0.01%)
 # These can be overridden by setting the corresponding environment
@@ -48,7 +56,7 @@ class ProdSimulator(TaskSet):
         # TODO - Make these tunable
         # Wait till this percentage of users have visited before enabling
         # random visited user selection.
-        self.visited_min_pct = 1
+        self.visited_min_pct = 0.01
 
         # Target percentage of remembered users for regular sign_in
         self.remembered_target = REMEMBERED_PERCENT
@@ -66,52 +74,38 @@ class ProdSimulator(TaskSet):
     def sign_in_remembered_load_test(self):
         if os.getenv("DEBUG"):
             print("=== Starting Sign IN w/remembered device ===")
-        flow_sign_in.do_sign_in(
+        flow_sp_sign_in.do_sign_in(
             self,
             remember_device=True,
             visited=self.visited,
             visited_min=self.visited_min,
-            remembered_target=self.remembered_target,
-        )
-        flow_helper.do_request(self, "get", "/account", "/account")
-        flow_helper.do_request(self, "get", "/logout", "/")
+            remembered_target=self.remembered_target,)
 
     @task(RATIOS["SIGN_UP"])
     def sign_up_load_test(self):
         if os.getenv("DEBUG"):
             print("=== Starting Sign UP ===")
-        flow_helper.do_request(self, "get", "/", "/")
-        flow_sign_up.do_sign_up(self)
-        flow_helper.do_request(self, "get", "/account", "/account")
-        flow_helper.do_request(self, "get", "/logout", "/logout")
+        flow_sp_sign_up.do_sign_up(self)
 
     @task(RATIOS["SIGN_IN_AND_PROOF"])
     def sign_in_and_proof_load_test(self):
-        flow_sign_in.do_sign_in(self)
-        flow_helper.do_request(self, "get", "/account", "/account")
-        flow_ial2_proofing.do_ial2_proofing(self)
-        flow_helper.do_request(self, "get", "/account", "/account")
-        flow_helper.do_request(self, "get", "/logout", "/")
+        flow_sp_ial2_sign_in.ial2_sign_in(self)
 
     @task(RATIOS["SIGN_UP_AND_PROOF"])
     def sign_up_and_proof_load_test(self):
-        flow_sign_up.do_sign_up(self)
-        flow_helper.do_request(self, "get", "/account", "/account")
-        flow_ial2_proofing.do_ial2_proofing(self)
-        flow_helper.do_request(self, "get", "/account", "/account")
-        flow_helper.do_request(self, "get", "/logout", "/")
+        flow_sp_ial2_sign_up.ial2_sign_up(self)
 
     @task(RATIOS["SIGN_IN_USER_NOT_FOUND"])
     def sign_in_load_test_user_not_found(self):
-        flow_sign_in.do_sign_in_user_not_found(self)
+        flow_sp_sign_in.do_sign_in_user_not_found(self)
 
     @task(RATIOS["SIGN_IN_INCORRECT_PASSWORD"])
     def sign_in_load_test_incorrect_password(self):
-        flow_sign_in.do_sign_in_incorrect_password(self)
+        flow_sp_sign_in.do_sign_in_incorrect_password(self)
 
     @task(RATIOS["SIGN_IN_INCORRECT_SMS_OTP"])
     def sign_in_load_test_incorrect_sms_otp(self):
-        flow_sign_in.do_sign_in_incorrect_sms_otp(self)
+        flow_sp_sign_in.do_sign_in_incorrect_sms_otp(self)
 
 
 class WebsiteUser(HttpUser):
