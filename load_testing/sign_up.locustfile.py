@@ -1,13 +1,14 @@
 from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_sign_up, flow_helper
+import logging
 
 
 class SignUpLoad(TaskSet):
     def on_start(self):
-        print("*** Starting Sign-Up load tests ***")
+        logging.info("*** Starting Sign-Up load tests ***")
 
     def on_stop(self):
-        print("*** Ending Sign-Up load tests ***")
+        logging.info("*** Ending Sign-Up load tests ***")
 
     """ @task(<weight>) : value=3 executes 3x as often as value=1 """
     """ Things inside task are synchronous. Tasks are async """
@@ -15,19 +16,20 @@ class SignUpLoad(TaskSet):
     @task(1)
     def sign_up_load_test(self):
         # GET the root
-        flow_helper.do_request(self, "get", "/", "/")
+        flow_helper.do_request(self, "get", "/", "/", "")
 
         # This performs the entire sign-up flow
         flow_sign_up.do_sign_up(self)
 
         # Should be able to get the /account page now
-        flow_helper.do_request(self, "get", "/account", "/account")
+        flow_helper.do_request(self, "get", "/account", "/account", "")
 
         # Now log out.
         # You'd think that this would leave you at "/", but it returns a 204 and leaves you be.
-        flow_helper.do_request(self, "get", "/logout", "/logout")
+        flow_helper.do_request(self, "get", "/logout", "/logout", "")
 
 
 class WebsiteUser(HttpUser):
     tasks = [SignUpLoad]
-    wait_time = between(5, 9)  # number seconds simulated users wait between requests
+    # number seconds simulated users wait between requests
+    wait_time = between(5, 9)

@@ -30,7 +30,12 @@ def do_sign_up(context):
         "post",
         "/sign_up/enter_email",
         "/sign_up/verify_email",
-        {"user[email]": new_email, "authenticity_token": auth_token, },
+        "",
+        {
+            "user[email]": new_email,
+            "authenticity_token": auth_token,
+            "user[terms_accepted]": 'true'
+        },
     )
 
     conf_url = confirm_link(resp)
@@ -41,6 +46,7 @@ def do_sign_up(context):
         "get",
         conf_url,
         "/sign_up/enter_password?confirmation_token=",
+        "",
         {},
         {},
         "/sign_up/email/confirm?confirmation_token=",
@@ -55,6 +61,7 @@ def do_sign_up(context):
         "post",
         "/sign_up/create_password",
         "/two_factor_options",
+        "",
         {
             "password_form[password]": default_password,
             "authenticity_token": auth_token,
@@ -71,6 +78,7 @@ def do_sign_up(context):
         "post",
         "/phone_setup",
         "/login/two_factor/sms",
+        "",
         {
             "_method": "patch",
             "new_phone_form[international_code]": "US",
@@ -89,6 +97,7 @@ def do_sign_up(context):
         "post",
         "/login/two_factor/sms",
         "/account",
+        "",
         {"code": code, "authenticity_token": auth_token},
     )
 

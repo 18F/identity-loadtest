@@ -49,7 +49,7 @@ def test_url_without_querystring():
 
 
 def test_random_cred():
-    cred = random_cred(1)
+    cred = random_cred(1, {})
     assert cred["number"] == 0
     assert cred["email"] == "testuser0@example.com"
     assert cred["password"] == "salty pickles"

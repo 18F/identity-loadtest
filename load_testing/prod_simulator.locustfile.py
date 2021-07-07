@@ -1,4 +1,3 @@
-import os
 from locust import HttpUser, TaskSet, task, between
 from common_flows import (
     flow_ial2_proofing,
@@ -9,6 +8,8 @@ from common_flows import (
     flow_sp_sign_up,
     flow_helper,
 )
+import os
+import logging
 
 # Default ratios.  Sum should equal 10000.  (1 == 0.01%)
 # These can be overridden by setting the corresponding environment
@@ -46,8 +47,8 @@ class ProdSimulator(TaskSet):
 
     def on_start(self):
         num_users = int(flow_helper.get_env("NUM_USERS"))
-        if os.getenv("DEBUG"):
-            print(f"*** Production-like workload with {num_users} users ***")
+        logging.debug(
+            f"*** Production-like workload with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -65,15 +66,13 @@ class ProdSimulator(TaskSet):
         self.visited_min = int(0.01 * self.visited_min_pct * num_users)
 
     def on_stop(self):
-        if os.getenv("DEBUG"):
-            print("*** Ending Production-like load tests ***")
+        logging.debug("*** Ending Production-like load tests ***")
 
     # Sum should equal 10000.  (1 == 0.01%)
     #
     @task(RATIOS["SIGN_IN"])
     def sign_in_remembered_load_test(self):
-        if os.getenv("DEBUG"):
-            print("=== Starting Sign IN w/remembered device ===")
+        logging.debug("=== Starting Sign IN w/remembered device ===")
         flow_sp_sign_in.do_sign_in(
             self,
             remember_device=True,
@@ -83,8 +82,7 @@ class ProdSimulator(TaskSet):
 
     @task(RATIOS["SIGN_UP"])
     def sign_up_load_test(self):
-        if os.getenv("DEBUG"):
-            print("=== Starting Sign UP ===")
+        logging.debug("=== Starting Sign UP ===")
         flow_sp_sign_up.do_sign_up(self)
 
     @task(RATIOS["SIGN_IN_AND_PROOF"])
@@ -105,7 +103,8 @@ class ProdSimulator(TaskSet):
 
     @task(RATIOS["SIGN_IN_INCORRECT_SMS_OTP"])
     def sign_in_load_test_incorrect_sms_otp(self):
-        flow_sp_sign_in.do_sign_in_incorrect_sms_otp(self)
+        flow_sp_sign_in.do_sign_in_incorrect_sms_otp(
+            self, visited=self.visited)
 
 
 class WebsiteUser(HttpUser):

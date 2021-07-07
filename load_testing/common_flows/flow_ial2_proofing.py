@@ -23,6 +23,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/doc_auth/welcome",
         "/verify/doc_auth/agreement",
+        "",
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -33,6 +34,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
+        "",
         {"ial2_consent_given": "true", "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -43,6 +45,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/doc_auth/upload?type=desktop",
         "/verify/doc_auth/document_capture",
+        "",
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -56,6 +59,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/doc_auth/document_capture",
         "/verify/doc_auth/ssn",
+        "",
         {"authenticity_token": auth_token, },
         files
     )
@@ -70,6 +74,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/doc_auth/ssn",
         "/verify/doc_auth/verify",
+        "",
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
     # There are three auth tokens on the response, get the second
@@ -81,6 +86,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/doc_auth/verify",
         "/verify/phone",
+        "",
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -91,6 +97,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/phone",
         "/verify/otp_delivery_method",
+        "",
         {"authenticity_token": auth_token,
             "idv_phone_form[phone]": random_phone(), },
     )
@@ -102,6 +109,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/otp_delivery_method",
         "/verify/phone_confirmation",
+        "",
         {"authenticity_token": auth_token, "otp_delivery_preference": "sms", },
     )
     auth_token = authenticity_token(resp)
@@ -113,6 +121,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/phone_confirmation",
         "/verify/review",
+        "",
         {"authenticity_token": auth_token, "code": code, },
     )
     auth_token = authenticity_token(resp)
@@ -123,6 +132,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/review",
         "/verify/confirmations",
+        "",
         {"authenticity_token": auth_token,
             "user[password]": "salty pickles", },
     )
@@ -134,10 +144,11 @@ def do_ial2_proofing(context):
         "post",
         "/verify/confirmations",
         "/account",
+        "",
         {"authenticity_token": auth_token, },
     )
 
     # Re-Check verification activated
-    do_request(context, "get", "/verify", "/verify/activated")
+    do_request(context, "get", "/verify", "/verify/activated", "")
 
     return resp

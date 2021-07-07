@@ -15,6 +15,12 @@ from .flow_helper import (
     url_without_querystring,
     use_previous_visitor,
 )
+import locust
+import logging
+
+# TODO: add code to set this via env var or CLI flag
+# import locust.stats
+# locust.stats.CONSOLE_STATS_INTERVAL_SEC = 15
 
 """
 *** Service Provider Sign In Flow ***
@@ -33,7 +39,8 @@ def do_sign_in(
 ):
     sp_root_url = get_env("SP_HOST")
     context.client.cookies.clear()
-    # print(f"cookie count for user: {len(context.client.cookies)}")
+
+    logging.debug(f"cookie count for user: {len(context.client.cookies)}")
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
@@ -42,6 +49,7 @@ def do_sign_in(
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -53,6 +61,7 @@ def do_sign_in(
         context,
         "get",
         sp_signin_endpoint,
+        '/',
         '',
         {},
         {},
@@ -72,17 +81,31 @@ def do_sign_in(
     ):
         # Choose a specific previous user
         credentials = choose_cred(visited.keys())
-
         # Restore remembered device cookies to client jar
         import_cookies(context.client, visited[credentials["number"]])
         remembered = True
     else:
-        # Choose a random user
-        credentials = random_cred(num_users)
+        # remove the first 6% of visited users if more than 66% of the users
+        # have signed in. Note: this was picked arbitrarily and seems to work.
+        # We may want to better tune this per NUM_USERS.
+        if float(len(visited))/float(num_users) > 0.66:
+            logging.info(
+                'You have used more than two thirds of the userspace.')
+            removal_range = int(0.06 * float(num_users))
+            count = 0
+            for key in list(visited):
+                logging.debug(f'removing user #{key}')
+                if count < removal_range:
+                    visited.pop(key)
+        # grab an random and unused credential
+        credentials = random_cred(num_users, visited)
 
     usernum = credentials["number"]
-    auth_token = authenticity_token(resp)
-    expected_path = "/login/two_factor/sms" if remember_device is False else None
+
+    if remember_device is False:
+        expected_path = "/login/two_factor/sms"
+    else:
+        expected_path = sp_root_url
 
     # POST username and password
     resp = do_request(
@@ -90,6 +113,7 @@ def do_sign_in(
         "post",
         "/",
         expected_path,
+        '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -99,7 +123,8 @@ def do_sign_in(
     )
 
     if remembered and "/login/two_factor/sms" in resp.url:
-        print(f"Unexpected SMS prompt for remembered user {usernum}")
+        logging.error(f'Unexpected SMS prompt for remembered user {usernum}')
+        logging.error(f'resp.url = {resp.url}')
 
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
@@ -111,6 +136,7 @@ def do_sign_in(
         "post",
         "/login/two_factor/sms",
         None,
+        '',
         {
             "code": code,
             "authenticity_token": auth_token,
@@ -126,6 +152,7 @@ def do_sign_in(
             "post",
             "/sign_up/completed",
             sp_root_url,
+            'You are logged in',
             {"authenticity_token": auth_token, },
         )
 
@@ -139,14 +166,15 @@ def do_sign_in(
         "get",
         logout_link,
         sp_root_url,
+        'You have been logged out',
         {},
         {},
         url_without_querystring(logout_link),
     )
     # Does it include the you have been logged out text?
     if resp.text.find('You have been logged out') == -1:
-        print("ERROR: user has not been logged out")
-
+        logging.error('The user has not been logged out')
+        logging.error(f'resp.url = {resp.url}')
     # Mark user as visited and save remembered device cookies
     visited[usernum] = export_cookies(
         idp_domain, context.client.cookies, None, sp_domain)
@@ -170,6 +198,7 @@ def do_sign_in_user_not_found(context):
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -182,6 +211,7 @@ def do_sign_in_user_not_found(context):
         "get",
         sp_signin_endpoint,
         '',
+        '',
         {},
         {},
         sp_signin_endpoint
@@ -192,7 +222,7 @@ def do_sign_in_user_not_found(context):
     # This should match the number of users that were created for the DB with
     # the rake task
     num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users)
+    credentials = random_cred(num_users, None)
 
     # POST username and password
     resp = do_request(
@@ -200,6 +230,7 @@ def do_sign_in_user_not_found(context):
         "post",
         "/",
         "/",
+        '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -216,18 +247,13 @@ def do_sign_in_user_not_found(context):
         "post",
         "/",
         "/",
+        'The email or password you’ve entered is wrong',
         {
             "user[email]":  "actually-not-" + credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
         },
     )
-
-    # Validate that we got the expected response and were not redirect back for
-    # some other reason.
-    if resp.text.find('The email or password you’ve entered is wrong') == -1:
-        print("ERROR: the expected response for incorrect l/p is not present")
-
     return resp
 
 
@@ -242,6 +268,7 @@ def do_sign_in_incorrect_password(context):
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -254,6 +281,7 @@ def do_sign_in_incorrect_password(context):
         "get",
         sp_signin_endpoint,
         '',
+        '',
         {},
         {},
         sp_signin_endpoint
@@ -264,7 +292,7 @@ def do_sign_in_incorrect_password(context):
     # This should match the number of users that were created for the DB with
     # the rake task
     num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users)
+    credentials = random_cred(num_users, None)
 
     # POST username and password
     resp = do_request(
@@ -272,6 +300,7 @@ def do_sign_in_incorrect_password(context):
         "post",
         "/",
         "/",
+        '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -288,6 +317,7 @@ def do_sign_in_incorrect_password(context):
         "post",
         "/",
         "/",
+        'The email or password you’ve entered is wrong',
         {
             "user[email]": credentials["email"],
             "user[password]": "bland pickles",
@@ -295,15 +325,8 @@ def do_sign_in_incorrect_password(context):
         },
     )
 
-    # Validate that we got the expected response and were not redirect back for
-    # some other reason.
-    if resp.text.find('The email or password you’ve entered is wrong') == -1:
-        print("ERROR: the expected response for incorrect l/p is not present")
 
-    return resp
-
-
-def do_sign_in_incorrect_sms_otp(context):
+def do_sign_in_incorrect_sms_otp(context, visited={}):
     sp_root_url = get_env("SP_HOST")
     context.client.cookies.clear()
 
@@ -314,6 +337,7 @@ def do_sign_in_incorrect_sms_otp(context):
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -326,6 +350,7 @@ def do_sign_in_incorrect_sms_otp(context):
         "get",
         sp_signin_endpoint,
         '',
+        '',
         {},
         {},
         sp_signin_endpoint
@@ -336,7 +361,7 @@ def do_sign_in_incorrect_sms_otp(context):
     # This should match the number of users that were created for the DB with
     # the rake task
     num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users)
+    credentials = random_cred(num_users, visited)
 
     # POST username and password
     resp = do_request(
@@ -344,6 +369,7 @@ def do_sign_in_incorrect_sms_otp(context):
         "post",
         "/",
         "/",
+        '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -360,6 +386,7 @@ def do_sign_in_incorrect_sms_otp(context):
         "post",
         "/",
         "/login/two_factor/sms",
+        '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -374,12 +401,30 @@ def do_sign_in_incorrect_sms_otp(context):
         "post",
         "/login/two_factor/sms",
         "/login/two_factor/sms",
+        'That security code is invalid',
         {"code": "000000", "authenticity_token": auth_token},
     )
 
     # Validate that we got the expected response and were not redirect back for
     # some other reason.
     if resp.text.find('That security code is invalid.') == -1:
-        print("ERROR: the expected response for incorrect OTP is not present")
 
-    return resp
+        # handle case when account is locked
+        account_locked_string = 'For your security, your account is '\
+            'temporarily locked because you have entered the one-time '\
+            'security code incorrectly too many times.'
+        if resp.text.find(account_locked_string):
+            error = 'sign in with incorrect sms otp failed because the '\
+                f'account for testuser{credentials["number"]} has been locked.'
+            logging.error(error)
+            resp.failure(error)
+        # handle other errors states yet to be discovered
+        else:
+            error = f'The expected response for incorrect OTP is not '\
+                'present. resp.url: {resp.url}'
+            logging.error(error)
+            resp.failure(error)
+
+    # Mark user as visited and save remembered device cookies
+    visited[credentials["number"]] = export_cookies(
+        urlparse(resp.url).netloc, context.client.cookies, None, None)

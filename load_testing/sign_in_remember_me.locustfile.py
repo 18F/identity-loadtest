@@ -1,5 +1,6 @@
 from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_sign_in, flow_helper
+import logging
 
 # Singletons... everyone's fav!
 VISITED = {}
@@ -10,7 +11,8 @@ class SignInRememberMeLoad(TaskSet):
 
         num_users = int(flow_helper.get_env("NUM_USERS"))
 
-        print(f"*** Starting Sign-In Remember Me load tests with {num_users} users ***")
+        logging.info(
+            f"*** Starting Sign-In Remember Me load tests with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -28,7 +30,7 @@ class SignInRememberMeLoad(TaskSet):
         self.visited_min = int(0.01 * self.visited_min_pct * num_users)
 
     def on_stop(self):
-        print("*** Ending Sign-In load tests ***")
+        logging.info("*** Ending Sign-In load tests ***")
 
     """ @task(<weight>) : value=3 executes 3x as often as value=1 """
     """ Things inside task are synchronous. Tasks are async """
@@ -46,10 +48,10 @@ class SignInRememberMeLoad(TaskSet):
         )
 
         # Get the /account page now
-        flow_helper.do_request(self, "get", "/account", "/account")
+        flow_helper.do_request(self, "get", "/account", "/account", "")
 
         # Now log out
-        flow_helper.do_request(self, "get", "/logout", "/")
+        flow_helper.do_request(self, "get", "/logout", "/", "")
 
 
 class WebsiteUser(HttpUser):
