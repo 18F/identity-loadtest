@@ -33,6 +33,7 @@ def do_sign_up(context):
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -45,6 +46,7 @@ def do_sign_up(context):
         context,
         "get",
         sp_signin_endpoint,
+        '',
         '',
         {},
         {},
@@ -69,6 +71,7 @@ def do_sign_up(context):
         "post",
         "/sign_up/enter_email",
         "/sign_up/verify_email",
+        '',
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
@@ -83,6 +86,7 @@ def do_sign_up(context):
         "get",
         conf_url,
         "/sign_up/enter_password?confirmation_token=",
+        '',
         {},
         {},
         "/sign_up/email/confirm?confirmation_token=",
@@ -97,6 +101,7 @@ def do_sign_up(context):
         "post",
         "/sign_up/create_password",
         "/two_factor_options",
+        '',
         {
             "password_form[password]": default_password,
             "authenticity_token": auth_token,
@@ -113,6 +118,7 @@ def do_sign_up(context):
         "post",
         "/phone_setup",
         "/login/two_factor/sms",
+        '',
         {
             "_method": "patch",
             "new_phone_form[international_code]": "US",
@@ -131,6 +137,7 @@ def do_sign_up(context):
         "post",
         "/login/two_factor/sms",
         "/sign_up/completed",
+        '',
         {"code": code, "authenticity_token": auth_token},
     )
     auth_token = authenticity_token(resp)
@@ -142,6 +149,7 @@ def do_sign_up(context):
         "post",
         "/sign_up/completed",
         "https://sp-oidc-sinatra.pt.identitysandbox.gov/",
+        '',
         {"authenticity_token": auth_token},
     )
 
@@ -153,6 +161,7 @@ def do_sign_up(context):
         "get",
         logout_link,
         sp_root_url,
+        '',
         {},
         {},
         url_without_querystring(logout_link),

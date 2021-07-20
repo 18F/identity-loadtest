@@ -38,6 +38,7 @@ def ial2_sign_up(context):
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -49,6 +50,7 @@ def ial2_sign_up(context):
         context,
         "get",
         sp_signin_endpoint,
+        '',
         '',
         {},
         {},
@@ -72,6 +74,7 @@ def ial2_sign_up(context):
         "post",
         "/sign_up/enter_email",
         "/sign_up/verify_email",
+        '',
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
@@ -86,6 +89,7 @@ def ial2_sign_up(context):
         "get",
         conf_url,
         "/sign_up/enter_password?confirmation_token=",
+        '',
         {},
         {},
         "/sign_up/email/confirm?confirmation_token=",
@@ -100,6 +104,7 @@ def ial2_sign_up(context):
         "post",
         "/sign_up/create_password",
         "/two_factor_options",
+        '',
         {
             "password_form[password]": default_password,
             "authenticity_token": auth_token,
@@ -116,6 +121,7 @@ def ial2_sign_up(context):
         "post",
         "/phone_setup",
         "/login/two_factor/sms",
+        '',
         {
             "_method": "patch",
             "new_phone_form[international_code]": "US",
@@ -137,6 +143,7 @@ def ial2_sign_up(context):
         "post",
         "/login/two_factor/sms",
         "/verify/doc_auth/welcome",
+        '',
         {"code": code, "authenticity_token": auth_token},
     )
     auth_token = authenticity_token(resp)
@@ -149,6 +156,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/doc_auth/welcome",
         "/verify/doc_auth/agreement",
+        '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -161,6 +169,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
+        '',
         {"ial2_consent_given": "true", "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -173,6 +182,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/doc_auth/upload?type=desktop",
         "/verify/doc_auth/document_capture",
+        '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -188,6 +198,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/doc_auth/document_capture",
         "/verify/doc_auth/ssn",
+        '',
         {"authenticity_token": auth_token, },
         files
     )
@@ -203,6 +214,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/doc_auth/ssn",
         "/verify/doc_auth/verify",
+        '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
     # There are three auth tokens on the response, get the second
@@ -216,6 +228,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/doc_auth/verify",
         "/verify/phone",
+        '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -228,6 +241,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/phone",
         "/verify/otp_delivery_method",
+        '',
         {"authenticity_token": auth_token,
             "idv_phone_form[phone]": random_phone(), },
     )
@@ -241,6 +255,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/otp_delivery_method",
         "/verify/phone_confirmation",
+        '',
         {"authenticity_token": auth_token, "otp_delivery_preference": "sms", },
     )
     auth_token = authenticity_token(resp)
@@ -254,6 +269,7 @@ def ial2_sign_up(context):
         "put",
         "/verify/phone_confirmation",
         "/verify/review",
+        '',
         {"authenticity_token": auth_token, "code": code, },
     )
     auth_token = authenticity_token(resp)
@@ -266,8 +282,11 @@ def ial2_sign_up(context):
         "put",
         "/verify/review",
         "/verify/confirmations",
-        {"authenticity_token": auth_token,
-            "user[password]": "salty pickles", },
+        '',
+        {
+            "authenticity_token": auth_token,
+            "user[password]": "salty pickles",
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -279,6 +298,7 @@ def ial2_sign_up(context):
         "post",
         "/verify/confirmations",
         "/sign_up/completed",
+        '',
         {
             "authenticity_token": auth_token,
             "personal_key": personal_key(resp)
@@ -294,8 +314,11 @@ def ial2_sign_up(context):
         "post",
         "/sign_up/completed",
         None,
-        {"authenticity_token": auth_token,
-         "commit": "Agree and continue"},
+        '',
+        {
+            "authenticity_token": auth_token,
+            "commit": "Agree and continue"
+        },
     )
 
     ial2_sig = "ACR: http://idmanagement.gov/ns/assurance/ial/2"
@@ -312,6 +335,7 @@ def ial2_sign_up(context):
         "get",
         logout_link,
         sp_root_url,
+        '',
         {},
         {},
         url_without_querystring(logout_link),

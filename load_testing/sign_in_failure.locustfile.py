@@ -1,17 +1,18 @@
 from locust import HttpUser, TaskSet, task, between
 from common_flows import flow_sign_in, flow_helper
+import logging
 
 
 class SignInFailureLoad(TaskSet):
     def on_start(self):
-        print(
+        logging.info(
             "*** Starting Sign-In failure load tests with "
             + flow_helper.get_env("NUM_USERS")
             + " users ***"
         )
 
     def on_stop(self):
-        print("*** Ending Sign-In failure load tests ***")
+        logging.info("*** Ending Sign-In failure load tests ***")
 
     @task(1)
     def sign_in_load_test_user_not_found(self):

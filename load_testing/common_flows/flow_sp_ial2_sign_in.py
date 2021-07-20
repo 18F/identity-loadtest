@@ -36,6 +36,7 @@ def ial2_sign_in(context):
         "get",
         sp_root_url,
         sp_root_url,
+        '',
         {},
         {},
         sp_root_url
@@ -47,6 +48,7 @@ def ial2_sign_in(context):
         context,
         "get",
         sp_signin_endpoint,
+        '',
         '',
         {},
         {},
@@ -62,7 +64,7 @@ def ial2_sign_in(context):
     # the rake task
     num_users = get_env("NUM_USERS")
     # Choose a random user
-    credentials = random_cred(num_users)
+    credentials = random_cred(num_users, None)
 
     # POST username and password
     resp = do_request(
@@ -70,6 +72,7 @@ def ial2_sign_in(context):
         "post",
         "/",
         "/login/two_factor/sms",
+        '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -91,6 +94,7 @@ def ial2_sign_in(context):
         "post",
         "/login/two_factor/sms",
         "/verify/doc_auth/welcome",
+        '',
         {
             "code": code,
             "authenticity_token": auth_token,
@@ -106,6 +110,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/doc_auth/welcome",
         "/verify/doc_auth/agreement",
+        '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -118,6 +123,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
+        '',
         {"ial2_consent_given": "true", "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -130,6 +136,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/doc_auth/upload?type=desktop",
         "/verify/doc_auth/document_capture",
+        '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -145,6 +152,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/doc_auth/document_capture",
         "/verify/doc_auth/ssn",
+        '',
         {"authenticity_token": auth_token, },
         files
     )
@@ -160,6 +168,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/doc_auth/ssn",
         "/verify/doc_auth/verify",
+        '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
     # There are three auth tokens on the response, get the second
@@ -173,6 +182,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/doc_auth/verify",
         "/verify/phone",
+        '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
@@ -185,6 +195,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/phone",
         "/verify/otp_delivery_method",
+        '',
         {"authenticity_token": auth_token,
             "idv_phone_form[phone]": random_phone(), },
     )
@@ -198,6 +209,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/otp_delivery_method",
         "/verify/phone_confirmation",
+        '',
         {"authenticity_token": auth_token, "otp_delivery_preference": "sms", },
     )
     auth_token = authenticity_token(resp)
@@ -211,6 +223,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/phone_confirmation",
         "/verify/review",
+        '',
         {"authenticity_token": auth_token, "code": code, },
     )
     auth_token = authenticity_token(resp)
@@ -223,6 +236,7 @@ def ial2_sign_in(context):
         "put",
         "/verify/review",
         "/verify/confirmations",
+        '',
         {"authenticity_token": auth_token,
             "user[password]": "salty pickles", },
     )
@@ -236,6 +250,7 @@ def ial2_sign_in(context):
         "post",
         "/verify/confirmations",
         "/sign_up/completed",
+        '',
         {
             "authenticity_token": auth_token,
             "personal_key": personal_key(resp)
@@ -251,6 +266,7 @@ def ial2_sign_in(context):
         "post",
         "/sign_up/completed",
         None,
+        '',
         {"authenticity_token": auth_token,
          "commit": "Agree and continue"},
     )
@@ -269,6 +285,7 @@ def ial2_sign_in(context):
         "get",
         logout_link,
         sp_root_url,
+        '',
         {},
         {},
         url_without_querystring(logout_link),
