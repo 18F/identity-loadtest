@@ -102,9 +102,8 @@ def do_sign_in(
 
     usernum = credentials["number"]
 
-    if remember_device is False:
-        expected_path = "/login/two_factor/sms"
-    else:
+    expected_path = "/login/two_factor/sms" if remember_device is False else None
+    if remembered:
         expected_path = sp_root_url
 
     # POST username and password
