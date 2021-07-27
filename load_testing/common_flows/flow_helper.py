@@ -72,6 +72,7 @@ def check_fail_text(response_text):
         'domain name',
         'Your login credentials were used in another browser. Please sign in '
         'again to continue in this browser',
+        'This website is under heavy load (queue full)',
     ]
     found_fail_msgs = []
     for msg in known_failure_messages:
