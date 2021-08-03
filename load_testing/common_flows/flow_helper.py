@@ -73,6 +73,10 @@ def check_fail_text(response_text):
         'Your login credentials were used in another browser. Please sign in '
         'again to continue in this browser',
         'This website is under heavy load (queue full)',
+        'Need more time?',
+        'Oops, something went wrong. Please try again.',
+        # occurs under high load with async workers
+        'The server took too long to respond. Please try again.',
     ]
     found_fail_msgs = []
     for msg in known_failure_messages:
@@ -105,9 +109,39 @@ def authenticity_token(response, index=0):
             response.failure(message)
         else:
             response.failure(error)
+            logging.error(
+                f'Failed to find authenticity token in {response.url}')
         raise locust.exception.RescheduleTask
 
     return token
+
+
+def idv_phone_form_value(response):
+    """
+    Retrieves the phone number value from /verify/phone so the user does not
+    have to verify a new phone number in the IAL2 flow.
+    """
+    selector = 'input[name="idv_phone_form[phone]"]'
+
+    dom = resp_to_dom(response)
+    value = dom.find(selector).eq(0).attr("value")
+
+    if not value:
+        error = "Could not find idv_phone_form value on page"
+        if os.getenv("DEBUG"):
+            message = """
+            {}
+            Response:
+                Body: {}
+            """.format(
+                error, response.text
+            )
+            response.failure(message)
+        else:
+            response.failure(error)
+        raise locust.exception.RescheduleTask
+
+    return value
 
 
 def querystring_value(url, key):
