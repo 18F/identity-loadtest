@@ -117,17 +117,18 @@ def remember_device_value(value):
         return "false"
 
 
-def do_sign_in_user_not_found(context):
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users, None)
+def do_sign_in_with_params(context, param="user_not_found"):
 
     resp = do_request(context, "get", "/", "/")
-    auth_token = authenticity_token(resp)
-
     if "/account" in resp.url:
         print("You're already logged in. Quitting sign-in.")
         return resp
 
+    num_users = get_env("NUM_USERS")
+    auth_token = authenticity_token(resp)
+    credentials = random_cred(num_users, None)
+
+    if param == "user_not_found":
     # Post login credentials
     resp = do_request(
         context,
@@ -141,21 +142,7 @@ def do_sign_in_user_not_found(context):
             "authenticity_token": auth_token,
         },
     )
-
-    return resp
-
-
-def do_sign_in_incorrect_password(context):
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users, None)
-
-    resp = do_request(context, "get", "/", "/")
-    auth_token = authenticity_token(resp)
-
-    if "/account" in resp.url:
-        print("You're already logged in. Quitting sign-in.")
-        return resp
-
+    elif param == "incorrect_password":
     # Post login credentials
     resp = do_request(
         context,
@@ -169,21 +156,7 @@ def do_sign_in_incorrect_password(context):
             "authenticity_token": auth_token,
         },
     )
-
-    return resp
-
-
-def do_sign_in_incorrect_sms_otp(context):
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users, None)
-
-    resp = do_request(context, "get", "/", "/")
-    auth_token = authenticity_token(resp)
-
-    if "/account" in resp.url:
-        print("You're already logged in. Quitting sign-in.")
-        return resp
-
+    elif param == "incorrect_sms_otp":
     # Post login credentials
     resp = do_request(
         context,
@@ -208,5 +181,27 @@ def do_sign_in_incorrect_sms_otp(context):
         "",
         {"code": "000000", "authenticity_token": auth_token},
     )
+
+    return resp
+
+
+
+def do_sign_in_user_not_found(context):
+    
+    resp = do_sign_in_with_params(context,"user_not_found")
+
+    return resp
+
+
+def do_sign_in_incorrect_password(context):
+    
+    resp = do_sign_in_with_params(context, "incorrect_password")
+
+    return resp
+
+
+def do_sign_in_incorrect_sms_otp(context):
+    
+    resp = do_sign_in_with_params(context, "incorrect_sms_otp")
 
     return resp
