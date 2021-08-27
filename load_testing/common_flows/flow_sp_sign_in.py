@@ -211,7 +211,7 @@ def do_sign_in_with_param(context,param="user_not_found"):
     )
     elif (param == "incorrect_password"):
     # Post login credentials
-    resp = do_request(
+        resp = do_request(
         context,
         "post",
         "/",
@@ -222,7 +222,7 @@ def do_sign_in_with_param(context,param="user_not_found"):
             "user[password]": "bland pickles",
             "authenticity_token": auth_token,
         },
-    )
+        )
 
     return resp
 
