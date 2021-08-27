@@ -24,10 +24,26 @@ import logging
 
 """
 *** Service Provider Sign In Flow ***
-
 Using this flow requires that a Service Provider be running and configured to work with HOST. It
 also requires that users are pre-generated in the IdP database.
 """
+
+
+def do_prepare(context):
+    sp_root_url = get_env("SP_HOST")
+    context.client.cookies.clear()
+
+    # GET the SP root, which should contain a login link, give it a friendly
+    # name for output
+    resp = do_request(context, "get", sp_root_url,
+                      sp_root_url, '', {}, {}, sp_root_url)
+
+    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+    # submit signin form
+    resp = do_request(context, "get", sp_signin_endpoint,
+                      '', '', {}, {}, sp_signin_endpoint)
+
+    return resp
 
 
 def do_sign_in(
@@ -38,35 +54,8 @@ def do_sign_in(
     remembered_target=0,
 ):
     sp_root_url = get_env("SP_HOST")
-    context.client.cookies.clear()
+    resp = do_prepare(context)
 
-    logging.debug(f"cookie count for user: {len(context.client.cookies)}")
-
-    # GET the SP root, which should contain a login link, give it a friendly
-    # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
-
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
-    # submit signin form
-    resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '/',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
-    )
     auth_token = authenticity_token(resp)
     request_id = querystring_value(resp.url, "request_id")
 
@@ -186,35 +175,10 @@ def remember_device_value(value):
         return "false"
 
 
-def do_sign_in_user_not_found(context):
-    sp_root_url = get_env("SP_HOST")
-    context.client.cookies.clear()
+def do_sign_in_with_param(context,param="user_not_found"):
 
-    # GET the SP root, which should contain a login link, give it a friendly
-    # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_prepare(context)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
-    # submit signin form
-    resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
-    )
     auth_token = authenticity_token(resp)
     request_id = querystring_value(resp.url, "request_id")
 
@@ -224,12 +188,7 @@ def do_sign_in_user_not_found(context):
     credentials = random_cred(num_users, None)
 
     # POST username and password
-    resp = do_request(
-        context,
-        "post",
-        "/",
-        "/",
-        '',
+    resp = do_request(context, "post", "/", "/", '',
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -240,12 +199,9 @@ def do_sign_in_user_not_found(context):
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
 
+    if (param == "user_not_found"):
     # Post login credentials
-    resp = do_request(
-        context,
-        "post",
-        "/",
-        "/",
+        resp = do_request(context, "post", "/", "/",
         'The email or password you’ve entered is wrong',
         {
             "user[email]":  "actually-not-" + credentials["email"],
@@ -253,63 +209,7 @@ def do_sign_in_user_not_found(context):
             "authenticity_token": auth_token,
         },
     )
-    return resp
-
-
-def do_sign_in_incorrect_password(context):
-    sp_root_url = get_env("SP_HOST")
-    context.client.cookies.clear()
-
-    # GET the SP root, which should contain a login link, give it a friendly
-    # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
-
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
-    # submit signin form
-    resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
-    )
-    auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
-
-    # This should match the number of users that were created for the DB with
-    # the rake task
-    num_users = get_env("NUM_USERS")
-    credentials = random_cred(num_users, None)
-
-    # POST username and password
-    resp = do_request(
-        context,
-        "post",
-        "/",
-        "/",
-        '',
-        {
-            "user[email]": credentials["email"],
-            "user[password]": credentials["password"],
-            "user[request_id]": request_id,
-            "authenticity_token": auth_token,
-        }
-    )
-    resp = do_request(context, "get", "/", "/")
-    auth_token = authenticity_token(resp)
-
+    elif (param == "incorrect_password"):
     # Post login credentials
     resp = do_request(
         context,
@@ -324,36 +224,24 @@ def do_sign_in_incorrect_password(context):
         },
     )
 
+    return resp
+
+def do_sign_in_user_not_found(context):
+
+    resp = do_sign_in_with_param(context, "user_not_found")
+    return resp
+
+
+def do_sign_in_incorrect_password(context):
+    
+    resp = do_sign_in_with_param(context, "incorrect_password")
+    return resp
+
 
 def do_sign_in_incorrect_sms_otp(context, visited={}):
-    sp_root_url = get_env("SP_HOST")
-    context.client.cookies.clear()
 
-    # GET the SP root, which should contain a login link, give it a friendly
-    # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_prepare(context)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
-    # submit signin form
-    resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
-    )
     auth_token = authenticity_token(resp)
     request_id = querystring_value(resp.url, "request_id")
 

@@ -86,33 +86,50 @@ def check_fail_text(response_text):
         return found_fail_msgs
 
 
+error_messages = {
+    "otp": ("Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"),
+    "confirm": ("Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?"),
+    "signin": ("Could not find SP Sign in link"),
+    "token": ("Could not find authenticity_token on page"),
+    "signout": ("Your login credentials were used in another browser"),
+
+}
+
+
+def find_selector(response, selector):
+    dom = resp_to_dom(response)
+    result = dom.find(selector)
+    return result
+
+
+def raise_error(response, message):
+    response.failure(message)
+    raise locust.exception.RescheduleTask
+
+
 def authenticity_token(response, index=0):
     """
     Retrieves the CSRF auth token from the DOM for submission.
     If you need to differentiate between multiple CSRF tokens on one page,
     pass the optional index of the CSRF on the page
     """
-    selector = 'input[name="authenticity_token"]'
 
-    dom = resp_to_dom(response)
-    token = dom.find(selector).eq(index).attr("value")
+    token = find_selector(response, 'input[name="authenticity_token"]').eq(
+        index).attr("value")
     if not token:
-        error = "Could not find authenticity_token on page"
         if os.getenv("DEBUG"):
             message = """
             {}
             Response:
                 Body: {}
             """.format(
-                error, response.text
+                error_messages["token"], response.text
             )
-            response.failure(message)
         else:
-            response.failure(error)
             logging.error(
                 f'Failed to find authenticity token in {response.url}')
-        raise locust.exception.RescheduleTask
-
+            message = error_messages["token"]
+        raise_error(response, message)
     return token
 
 
@@ -165,75 +182,47 @@ def otp_code(response):
     """
     Retrieves the auto-populated OTP code from the DOM for submission.
     """
-    dom = resp_to_dom(response)
-    selector = 'input[name="code"]'
-    error_message = (
-        "Could not find pre-filled OTP code, is IDP telephony_adapter: 'test' ?"
-    )
-
-    code = dom.find(selector).attr("value")
-
-    if not code:
-        response.failure(error_message)
-        raise locust.exception.RescheduleTask
-
-    return code
+    result = find_selector(response, 'input[name="code"]').attr("value")
+    if not result:
+        raise_error(response, error_messages['OTP'])
+    return result
 
 
 def confirm_link(response):
     """
     Retrieves the "CONFIRM NOW" link during the sign-up process.
     """
-
-    dom = resp_to_dom(response)
-    error_message = (
-        "Could not find CONFIRM NOW link, is IDP enable_load_testing_mode: 'true' ?"
-    )
-    confirmation_link = dom.find("#confirm-now")[0].attrib["href"]
-    if not confirmation_link:
-        response.failure(error_message)
-        raise locust.exception.RescheduleTask
-
-    return confirmation_link
+    result = find_selector(response, "#confirm-now")[0].attrib["href"]
+    if not result:
+        raise_error(response, error_messages['confirm'])
+    return result
 
 
 def sp_signin_link(response):
     """
     Gets a Sign-in link from the SP, raises an error if not found
     """
-
-    dom = resp_to_dom(response)
-
-    link = dom.find("div.sign-in-wrap a").eq(0)
-    href = link.attr("href")
-
-    if "/openid_connect/authorize" not in href:
-        response.failure("Could not find SP Sign in link")
-        raise locust.exception.RescheduleTask
-
-    return href
+    result = find_selector(response, "div.sign-in-wrap a").eq(0).attr("href")
+    if "/openid_connect/authorize" not in result:
+        raise_error(response, error_messages['signin'])
+    return result
 
 
 def sp_signout_link(response):
     """
     Gets a Sign-in link from the SP, raises an error if not found
     """
-
-    dom = resp_to_dom(response)
-    link = dom.find("div.sign-in-wrap a").eq(0)
-
-    failtext = "Your login credentials were used in another browser"
+    failtext = error_messages['signout']
+    link = find_selector(response, "div.sign-in-wrap a").eq(0)
     if len(link) == 0 and failtext in response.text:
         logging.error(
             f'{LOG_NAME}: failed to find SP logout link. Redirected to IdP: "{failtext}"')
-        response.failure(f"Redirected to IdP: {failtext}")
-        raise locust.exception.RescheduleTask
+        raise_error(response, f"Redirected to IdP: {failtext}")
     else:
         href = link.attr("href")
         try:
             if "/logout" not in href:
-                response.failure("Could not find SP Log out link")
-                raise locust.exception.RescheduleTask
+                raise_error(response, "Could not find SP Log out link")
             return href
         except TypeError as e:
             logging.debug(f'{LOG_NAME}: {e}')
@@ -249,11 +238,10 @@ def personal_key(response):
     Gets a personal key from the /verify/confirmations page and raises an error
     if not found
     """
-    dom = resp_to_dom(response)
     personal_key = ''
     try:
         for x in range(4):
-            personal_key += dom.find("code.monospace")[x].text
+            personal_key += find_selector(response, "code.monospace")[x].text
     except IndexError as e:
         logging.error(f'{LOG_NAME}: No personal key found in {response.url}')
         logging.debug(e)
@@ -269,16 +257,32 @@ def resp_to_dom(resp):
     return pyquery.PyQuery(resp.content)
 
 
+def random_phone():
+    """
+    IdP uses Phonelib.valid_for_country? to test phone numbers to make sure
+    they look very real
+    """
+    digits = "%0.4d" % randint(0, 9999)
+    return "202555" + digits
+
+
+def make_credential(user_num):
+    credential = {
+        "number": user_num,
+        "email": f"testuser{user_num}@example.com",
+        "password": "salty pickles",
+    }
+    return credential
+
+
 def random_cred(num_users, used_nums):
     """
     Given the rake task:
     rake dev:random_users NUM_USERS=1000'
-
     We should have 1000 existing users with credentials matching:
     * email address testuser1@example.com through testuser1000@example.com
     * the password "salty pickles"
     * a phone number between +1 (415) 555-0001 and +1 (415) 555-1000.
-
     This will generate a set of credentials to match one of those entries.
     Note that YOU MUST run the rake task to put these users in the DB before using them.
     """
@@ -293,11 +297,7 @@ def random_cred(num_users, used_nums):
             logging.debug(
                 f'{LOG_NAME}: User #{user_num} ready for service.')
 
-    credential = {
-        "number": user_num,
-        "email": f"testuser{user_num}@example.com",
-        "password": "salty pickles",
-    }
+    credential = make_credential(user_num)
 
     logging.debug(f'{LOG_NAME}: {credential["email"]}')
     return credential
@@ -310,11 +310,7 @@ def choose_cred(choose_from):
     # Coerce to list to make random.choice happy
     user_num = choice(list(choose_from))
 
-    credential = {
-        "number": user_num,
-        "email": f"testuser{user_num}@example.com",
-        "password": "salty pickles",
-    }
+    credential = make_credential(user_num)
 
     return credential
 
@@ -323,12 +319,10 @@ def use_previous_visitor(visited_count, visited_min, remembered_target):
     """
     Helper to decide if a specific sign in should use a previously used user
     number.
-
     Args:
         visited_count (int)       - Number of previously visited users
         visited_min (int)         - Lower threshold of visited users before reuse
         remembered_target (float) - Target percentage of reuse
-
     Returns:
         bool
     """
@@ -336,15 +330,6 @@ def use_previous_visitor(visited_count, visited_min, remembered_target):
         return True
 
     return False
-
-
-def random_phone():
-    """
-    IdP uses Phonelib.valid_for_country? to test phone numbers to make sure
-    they look very real
-    """
-    digits = "%0.4d" % randint(0, 9999)
-    return "202555" + digits
 
 
 def desktop_agent_headers():
@@ -369,7 +354,6 @@ def get_env(key):
 def load_fixture(filename, path="./load_testing"):
     """
     Preload data for use by tests.
-
     Args:
         filename (str) - File to load, relative to path
         path (str)     - (Optional)  Path files are under
@@ -393,12 +377,10 @@ def export_cookies(domain, cookies, savelist=None, sp_domain=None):
     """
     Export cookies used for remembered device/other non-session use
     as list of Cookie objects.  Only looks in jar matching host name.
-
     Args:
         domain (str) - Domain to select cookies from
         cookies (requests.cookies.RequestsCookieJar) - Cookie jar object
         savelist (list(str)) - (Optional) List of cookies to export
-
     Returns:
         list(Cookie) - restorable using set_device_cookies() function
     """
@@ -421,11 +403,9 @@ def export_cookies(domain, cookies, savelist=None, sp_domain=None):
 def import_cookies(client, cookies):
     """
     Restore saved cookies to the referenced client's cookie jar.
-
     Args:
         client (requests.session) - Client to store cookies in
         cookies (list(Cookie)) - Saved list of Cookie objects
-
     Returns:
         None
     """
