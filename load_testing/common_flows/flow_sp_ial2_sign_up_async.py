@@ -201,9 +201,7 @@ def ial2_sign_up_async(context):
     auth_token = authenticity_token(resp)
 
     logging.debug('/verify/doc_auth/ssn')
-    # SSN - use faker to get unique SSNs
-    fake = Faker()
-    ssn = fake.ssn()
+    ssn = '900-12-3456'
     resp = do_request(
         context,
         "put",
