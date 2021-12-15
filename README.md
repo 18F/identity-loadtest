@@ -92,7 +92,7 @@ NUM_USERS=100 locust --locustfile load_testing/sign_up_sign_in.locustfile.py --h
 
 - Same rules as above, but use `ial2_sign_*` filenames.
 - Uses "desktop proofing" experience, not mobile.
-- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images and `selfie.jpeg`
+- Requires two images that represent the front and back of a drivers license. By default we have included two files, `mock-front.jpeg` and `mock-back.jpeg` which were chosen since they are similar to the average size of the images used on login.gov.
 
 ```sh
 NUM_USERS=100 locust --locustfile load_testing/ial2_sign_in.locustfile.py --host http://localhost:3000 --users 1 --spawn-rate 1 --run-time 15m --headless
@@ -137,7 +137,6 @@ can be found at the top of `load_testing/production_simulator.locustfile.py`:
  
 Test requirements:
 - Requires prepopulated users (See [Sign-In load test](#sign-in-load-test))
-- Requires `mont-front.jpeg` and `mont-back.jpeg` drivers license images and `selfie.jpeg` (See [IAL2 load tests](#ial2-load-tests))
 - You also must pass in a matching `NUM_USERS=100` to the locust call.
 
 Example (including overrides of the sign in and sign up tests)
