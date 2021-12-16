@@ -5,8 +5,8 @@ import logging
 
 class SP_IAL2_SignUpLoad(TaskSet):
     # Preload drivers license data
-    license_front = flow_helper.load_fixture("mont-front.jpeg")
-    license_back = flow_helper.load_fixture("mont-back.jpeg")
+    license_front = flow_helper.load_fixture("mock-front.jpeg")
+    license_back = flow_helper.load_fixture("mock-back.jpeg")
     logging.info('starting sp_sign_up_load_test')
 
     @task(1)

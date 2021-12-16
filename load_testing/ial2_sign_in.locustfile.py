@@ -5,9 +5,8 @@ import logging
 
 class IAL2SignInLoad(TaskSet):
     # Preload drivers license data
-    license_front = flow_helper.load_fixture("mont-front.jpeg")
-    license_back = flow_helper.load_fixture("mont-back.jpeg")
-    selfie = flow_helper.load_fixture("selfie.jpeg")
+    license_front = flow_helper.load_fixture("mock-front.jpeg")
+    license_back = flow_helper.load_fixture("mock-back.jpeg")
 
     def on_start(self):
         logging.info(
