@@ -65,9 +65,7 @@ def do_ial2_proofing(context):
     )
     auth_token = authenticity_token(resp)
 
-    # SSN - use faker to get unique SSNs
-    fake = Faker()
-    ssn = fake.ssn()
+    ssn = '900-12-3456'
     # print("*** Using ssn: " + ssn)
     resp = do_request(
         context,

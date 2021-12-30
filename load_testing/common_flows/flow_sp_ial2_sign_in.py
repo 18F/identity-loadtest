@@ -158,9 +158,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    # SSN - use faker to get unique SSNs
-    fake = Faker()
-    ssn = fake.ssn()
+    ssn = '900-12-3456'
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/doc_auth/ssn")
     resp = do_request(

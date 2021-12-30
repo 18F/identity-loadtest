@@ -152,9 +152,7 @@ def ial2_sign_in_async(context):
     )
     auth_token = authenticity_token(resp)
 
-    # SSN - use faker to get unique SSNs
-    fake = Faker()
-    ssn = fake.ssn()
+    ssn = '900-12-3456'
     logging.debug('/verify/doc_auth/ssn')
     resp = do_request(
         context,
