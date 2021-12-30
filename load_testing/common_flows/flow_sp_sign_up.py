@@ -75,7 +75,7 @@ def do_sign_up(context):
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
-            "user[terms_accepted]": 'true'},
+            "user[terms_accepted]": '1'},
     )
 
     conf_url = confirm_link(resp)
