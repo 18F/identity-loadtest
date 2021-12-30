@@ -35,7 +35,7 @@ def do_ial2_proofing(context):
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         "",
-        {"ial2_consent_given": "1", "authenticity_token": auth_token, },
+        {"doc_auth[ial2_consent_given]": "1", "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
