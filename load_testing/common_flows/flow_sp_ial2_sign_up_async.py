@@ -80,7 +80,7 @@ def ial2_sign_up_async(context):
             # this is in sign in, not needed here?
             #  "user[request_id]": request_id,
             "authenticity_token": auth_token,
-            "user[terms_accepted]": 'true'},
+            "user[terms_accepted]": '1'},
     )
 
     conf_url = confirm_link(resp)
@@ -168,7 +168,7 @@ def ial2_sign_up_async(context):
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         '',
-        {"ial2_consent_given": "true", "authenticity_token": auth_token, },
+        {"ial2_consent_given": "1", "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
