@@ -168,7 +168,8 @@ def ial2_sign_up_async(context):
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         '',
-        {"doc_auth[ial2_consent_given]": "1", "authenticity_token": auth_token, },
+        {"doc_auth[ial2_consent_given]": "1",
+            "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
@@ -215,8 +216,7 @@ def ial2_sign_up_async(context):
 
     logging.debug('/verify/doc_auth/verify')
     # Verify
-    expected_text = 'This might take up to a minute. We’ll load the next step '\
-        'automatically when it’s done.'
+    expected_text = 'This might take up to a minute'
     resp = do_request(
         context,
         "put",
@@ -225,7 +225,6 @@ def ial2_sign_up_async(context):
         expected_text,
         {"authenticity_token": auth_token, },
     )
-
     while resp.url == 'https://idp.pt.identitysandbox.gov/verify/doc_auth/verify_wait':
         time.sleep(3)
         logging.debug(
@@ -307,7 +306,7 @@ def ial2_sign_up_async(context):
         context,
         "put",
         "/verify/review",
-        "/verify/confirmations",
+        "/verify/personal_key",
         '',
         {
             "authenticity_token": auth_token,
@@ -321,7 +320,7 @@ def ial2_sign_up_async(context):
     resp = do_request(
         context,
         "post",
-        "/verify/confirmations",
+        "/verify/personal_key",
         "/sign_up/completed",
         '',
         {
