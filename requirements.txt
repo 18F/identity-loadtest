@@ -3,3 +3,4 @@ Faker==13.11.1
 locust==2.8.6
 pyquery==1.4.3
 pytest==6.2.5
+pyzmq<=23.0.0
