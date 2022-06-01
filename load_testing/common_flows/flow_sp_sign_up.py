@@ -148,7 +148,7 @@ def do_sign_up(context):
         context,
         "post",
         "/sign_up/completed",
-        "https://sp-oidc-sinatra.pt.identitysandbox.gov/",
+        sp_root_url,
         '',
         {"authenticity_token": auth_token},
     )
