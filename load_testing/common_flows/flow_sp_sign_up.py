@@ -100,7 +100,7 @@ def do_sign_up(context):
         context,
         "post",
         "/sign_up/create_password",
-        "/two_factor_options",
+        "/authentication_methods_setup",
         '',
         {
             "password_form[password]": default_password,
