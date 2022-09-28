@@ -1,51 +1,9 @@
-
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-
-  tags = {
-    Name = var.cluster_name
-  }
-}
-
-resource "aws_subnet" "subnet1" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[0]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "${var.cluster_name}-subnet1"
-  }
-}
-
-resource "aws_subnet" "subnet2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.2.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[1]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "${var.cluster_name}-subnet2"
-  }
-}
-
-resource "aws_subnet" "subnet3" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.3.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[2]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "${var.cluster_name}-subnet3"
-  }
-}
-
 module "loadtest" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.11.0"
 
   # EKS Cluster VPC and Subnet mandatory config
-  vpc_id             = aws_vpc.main.id
-  private_subnet_ids = [aws_subnet.subnet1.id, aws_subnet.subnet2.id, aws_subnet.subnet3.id]
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
 
   # EKS CLUSTER VERSION
   cluster_version = "1.23"
@@ -57,7 +15,10 @@ module "loadtest" {
     mg_5 = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
       instance_types  = ["m5.large"]
-      min_size        = "2"
+      min_size        = 2
+      max_size        = 5
+      desired_size    = 2
+      subnet_ids      = module.vpc.private_subnets
     }
   }
 }
@@ -72,12 +33,53 @@ module "kubernetes_addons" {
   enable_amazon_eks_vpc_cni            = true
   enable_amazon_eks_coredns            = true
   enable_amazon_eks_kube_proxy         = true
-  enable_amazon_eks_aws_ebs_csi_driver = true
 
   # Self-managed Add-ons
   enable_aws_for_fluentbit            = true
   enable_aws_load_balancer_controller = true
-  enable_aws_efs_csi_driver           = true
   enable_cluster_autoscaler           = true
   enable_metrics_server               = true
+}
+
+locals {
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr = "10.0.0.0/16"
+}
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = var.cluster_name
+  cidr = local.vpc_cidr
+
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${var.cluster_name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${var.cluster_name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${var.cluster_name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = 1
+  }
+
+  tags = {
+    Name = "${var.cluster_name}-vpcstuff"
+  }
 }
