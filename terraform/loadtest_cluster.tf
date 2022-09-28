@@ -12,16 +12,31 @@ module "loadtest" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    mg_5 = {
+    ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
-      instance_types  = ["m5.large"]
       min_size        = 2
-      max_size        = 5
+      max_size        = 3
       desired_size    = 2
       subnet_ids      = module.vpc.private_subnets
+      capacity_type   = "SPOT"
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+    }
+
+    spot = {
+      node_group_name = "${var.cluster_name}-managed-spot"
+      min_size        = 1
+      max_size        = 10
+      desired_size    = 1
+      subnet_ids      = module.vpc.private_subnets
+      capacity_type   = "SPOT"
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }] // Avoid scheduling stateful workloads in SPOT nodes
     }
   }
 }
+
 
 # Add-ons
 module "kubernetes_addons" {
