@@ -4,9 +4,9 @@ kind: Kustomization
 resources:
 - locust.yaml
 configMapGenerator:
-- name: login-sign_up_sign_in-locustfile
+- name: login-sign-up-sign-in-locustfile
   files:
-  - load_testing/sign_up_sign_in.locustfile.py
+  - load_testing/sign-up-sign-in.locustfile.py
 - name: login-loadtest-lib
   namespace: locust
   files:
