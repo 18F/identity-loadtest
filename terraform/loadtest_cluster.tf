@@ -20,7 +20,7 @@ module "loadtest" {
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "SPOT"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      disk_size       = 100                                                             # disk_size will be ignored when using Launch Templates  
     }
 
     spot = {
@@ -30,8 +30,8 @@ module "loadtest" {
       desired_size    = 1
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "SPOT"
-      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100 # disk_size will be ignored when using Launch Templates  
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]    // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates  
       k8s_taints      = [{ key = "spotInstance", value = "true", effect = "NO_SCHEDULE" }] // Avoid scheduling stateful workloads in SPOT nodes
     }
   }
@@ -45,24 +45,31 @@ module "kubernetes_addons" {
   eks_cluster_id = module.loadtest.eks_cluster_id
 
   # EKS Add-ons
-  enable_amazon_eks_vpc_cni            = true
-  enable_amazon_eks_coredns            = true
-  enable_amazon_eks_kube_proxy         = true
-  enable_argocd                        = true
-  argocd_manage_add_ons                = true
-
-
-  # Self-managed Add-ons
-  enable_aws_for_fluentbit            = true
-  enable_aws_load_balancer_controller = true
-  enable_cluster_autoscaler           = true
-  enable_metrics_server               = true
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
+  enable_argocd                = true
+  argocd_manage_add_ons        = true
 
   argocd_applications = {
-    loadtest_apps = {
-      path                = "."
-      repo_url            = "https://github.com/18F/identity-loadtest.git"
-      type                = "kustomize"
+    loadtest-apps = {
+      path     = "."
+      repo_url = "https://github.com/18F/identity-loadtest.git"
+      type     = "kustomize"
+    }
+
+    # Below are all magic add-ons that you can see how to configure here:
+    # https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons
+    clusterAutoscaler = {
+      enable = true
+    }
+
+    awsForFluentBit = {
+      enable = true
+    }
+
+    metricsServer = {
+      enable = true
     }
   }
 }
@@ -97,12 +104,12 @@ module "vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = 1
+    "kubernetes.io/role/elb"                    = 1
   }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = 1
+    "kubernetes.io/role/internal-elb"           = 1
   }
 
   tags = {
