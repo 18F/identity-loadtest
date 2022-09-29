@@ -23,7 +23,7 @@ spec:
     helm:
       values: |
         loadtest:
-          name: login-sign-up-sign-up-sign-in
+          name: login-sign-up-sign-in
           locust_host: https://localhost:3000/
           locust_locustfile_configmap: login-sign-up-sign-in-locustfile
           locust_lib_configmap: login-loadtest-lib
