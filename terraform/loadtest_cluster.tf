@@ -60,16 +60,21 @@ module "kubernetes_addons" {
 
     # Below are all magic add-ons that you can see how to configure here:
     # https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons
-    clusterAutoscaler = {
-      enable = true
-    }
-
-    awsForFluentBit = {
-      enable = true
-    }
-
-    metricsServer = {
-      enable = true
+    addons = {
+      path                = "chart"
+      repo_url            = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+      add_on_application  = true # Indicates the root add-on application.
+      values              = {
+        clusterAutoscaler = {
+          enable = true
+        }
+        awsForFluentBit = {
+          enable = true
+        }
+        metricsServer = {
+          enable = true
+        }
+      }
     }
   }
 }
