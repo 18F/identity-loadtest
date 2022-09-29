@@ -8,6 +8,7 @@ configMapGenerator:
   files:
   - load_testing/sign_up_sign_in.locustfile.py
 - name: login-loadtest-lib
+  namespace: locust
   files:
   - load_testing/common_flows/flow_helper.py
   - load_testing/common_flows/flow_ial2_proofing.py

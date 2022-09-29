@@ -17,7 +17,6 @@ metadata:
 spec:
   project: default
   source:
-    # chart: deliveryhero/locust
     chart: locust
     repoURL: https://charts.deliveryhero.io
     targetRevision: 0.30.0
