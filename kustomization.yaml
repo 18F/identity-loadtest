@@ -5,6 +5,7 @@ resources:
 - locust.yaml
 configMapGenerator:
 - name: login-sign-up-sign-in-locustfile
+  namespace: locust
   files:
   - load_testing/sign_up_sign_in.locustfile.py
 - name: login-loadtest-lib
