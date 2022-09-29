@@ -15,7 +15,6 @@ metadata:
   labels:
     name: locust
 spec:
-  project: locust
   source:
     chart: deliveryhero/locust
     repoURL: https://charts.deliveryhero.io
