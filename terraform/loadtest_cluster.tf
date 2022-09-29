@@ -56,7 +56,7 @@ module "kubernetes_addons" {
       path            = "."
       repo_url        = "https://github.com/18F/identity-loadtest.git"
       type            = "kustomize"
-      target_revision = "tspencer/loadtestcluster"
+      target_revision = "main"
     }
 
     # Below are all magic add-ons that you can see how to configure here:
