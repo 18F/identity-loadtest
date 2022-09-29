@@ -30,3 +30,5 @@ spec:
   # Destination cluster and namespace to deploy the application
   destination:
     namespace: locust
+    server: https://kubernetes.default.svc
+
