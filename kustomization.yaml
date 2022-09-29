@@ -1,0 +1,22 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- locust.yaml
+configMapGenerator:
+- name: login-sign_up_sign_in-locustfile
+  files:
+  - load_testing/sign_up_sign_in.locustfile.py
+configMapGenerator:
+- name: login-loadtest-lib
+  files:
+  - load_testing/common_flows/flow_helper.py
+  - load_testing/common_flows/flow_ial2_proofing.py
+  - load_testing/common_flows/flow_sign_in.py
+  - load_testing/common_flows/flow_sign_up.py
+  - load_testing/common_flows/flow_sp_ial2_sign_in.py
+  - load_testing/common_flows/flow_sp_ial2_sign_in_async.py
+  - load_testing/common_flows/flow_sp_ial2_sign_up.py
+  - load_testing/common_flows/flow_sp_ial2_sign_up_async.py
+  - load_testing/common_flows/flow_sp_sign_in.py
+  - load_testing/common_flows/flow_sp_sign_up.py

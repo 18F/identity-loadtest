@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "locust"
+  labels:
+    name: "locust"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: locust
+  namespace: argocd
+  labels:
+    name: locust
+spec:
+  project: locust
+  source:
+    chart: deliveryhero/locust
+    repoURL: https://charts.deliveryhero.io
+    helm:
+      values: |
+        loadtest:
+          name: login-sign_up_sign_in
+          locust_host: https://localhost:3000/
+          locust_locustfile_configmap: login-sign_up_sign_in-locustfile
+          locust_lib_configmap: login-loadtest-lib
+  # Destination cluster and namespace to deploy the application
+  destination:
+    namespace: locust
