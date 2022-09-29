@@ -7,7 +7,6 @@ configMapGenerator:
 - name: login-sign_up_sign_in-locustfile
   files:
   - load_testing/sign_up_sign_in.locustfile.py
-configMapGenerator:
 - name: login-loadtest-lib
   files:
   - load_testing/common_flows/flow_helper.py
