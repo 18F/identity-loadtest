@@ -1,3 +1,8 @@
+locals {
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr = "10.0.0.0/16"
+}
+
 module "loadtest" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.11.0"
 
@@ -53,6 +58,8 @@ module "kubernetes_addons" {
   enable_aws_for_fluentbit            = true
   enable_aws_load_balancer_controller = true
   enable_cluster_autoscaler           = true
+  enable_external_dns                 = true
+  eks_cluster_domain                  = var.dnszone
 
   argocd_applications = {
     loadtest-apps = {
@@ -75,11 +82,6 @@ module "kubernetes_addons" {
       }
     }
   }
-}
-
-locals {
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-  vpc_cidr = "10.0.0.0/16"
 }
 
 module "vpc" {
@@ -118,4 +120,8 @@ module "vpc" {
   tags = {
     Name = "${var.cluster_name}-vpcstuff"
   }
+}
+
+resource "aws_route53_zone" "primary" {
+  name = var.dnszone
 }

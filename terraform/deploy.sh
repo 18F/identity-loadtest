@@ -29,7 +29,7 @@ terraform init -backend-config="bucket=$BUCKET" \
 
 # initial setup steps to make sure there's no dependency problems
 if [ "$2" = "-s" ] ; then
-	terraform apply -target="module.vpc"
+	terraform apply -target="module.vpc" -target="aws_route53_zone.primary"
 	terraform apply -target="module.loadtest"
 fi
 
