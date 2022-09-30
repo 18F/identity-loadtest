@@ -45,11 +45,14 @@ module "kubernetes_addons" {
   eks_cluster_id = module.loadtest.eks_cluster_id
 
   # EKS Add-ons
-  enable_amazon_eks_vpc_cni    = true
-  enable_amazon_eks_coredns    = true
-  enable_amazon_eks_kube_proxy = true
-  enable_argocd                = true
-  argocd_manage_add_ons        = true
+  enable_amazon_eks_vpc_cni           = true
+  enable_amazon_eks_coredns           = true
+  enable_amazon_eks_kube_proxy        = true
+  enable_argocd                       = true
+  argocd_manage_add_ons               = true
+  enable_aws_for_fluentbit            = true
+  enable_aws_load_balancer_controller = true
+  enable_cluster_autoscaler           = true
 
   argocd_applications = {
     loadtest-apps = {
