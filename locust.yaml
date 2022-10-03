@@ -28,6 +28,8 @@ spec:
           locust_locustfile_configmap: login-sign-up-sign-in-locustfile
           locust_lib_configmap: login-loadtest-lib
           locust_locustfile: sign_up_sign_in.locustfile.py
+          pip_packages:
+            - pyquery==1.4.3
   # Destination cluster and namespace to deploy the application
   destination:
     namespace: locust
