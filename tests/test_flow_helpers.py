@@ -8,11 +8,12 @@ import sys
 
 sys.path.append(
     os.path.abspath(
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), "load_testing")
+        os.path.join(os.path.dirname(
+            os.path.dirname(__file__)), "load_testing")
     )
 )
 
-from common_flows.flow_helper import (
+from lib.flow_helper import (
     authenticity_token,
     choose_cred,
     confirm_link,
@@ -192,14 +193,15 @@ def test_export_import_cookies():
 
     # Cookie that should be exported
     r.cookies.set("remember_device", "Sure", domain=domain)
-    r.cookies.set("user_opted_remember_device_preference", "Yep", domain=domain)
+    r.cookies.set("user_opted_remember_device_preference",
+                  "Yep", domain=domain)
 
     # Cookies that should not be exported
     r.cookies.set("remember_device", "Wrong_Domain", domain="other.place")
     r.cookies.set("wrong_domain_and_name", "me", domain="sumthing")
     r.cookies.set("wrong_name", "me", domain=domain)
 
-    ## Export tests
+    # Export tests
     e = export_cookies(domain, r.cookies)
 
     assert len(e) == 2, "Wrong number of cookies exported"
@@ -218,7 +220,7 @@ def test_export_import_cookies():
 
     assert len(export_cookies(domain, r.cookies)) == 0
 
-    ## Import tests
+    # Import tests
     assert (
         r.cookies.get("remember_device", domain=domain) is None
     ), "Cookies did not clear"

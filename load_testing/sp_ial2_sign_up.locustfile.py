@@ -1,5 +1,5 @@
 from locust import HttpUser, TaskSet, task, between
-from common_flows import flow_sp_ial2_sign_up, flow_helper
+from lib import flow_sp_ial2_sign_up, flow_helper
 
 
 class SP_IAL2_SignUpLoad(TaskSet):
