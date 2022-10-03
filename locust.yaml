@@ -29,7 +29,10 @@ spec:
           locust_lib_configmap: login-loadtest-lib
           locust_locustfile: sign_up_sign_in.locustfile.py
           pip_packages:
+            - coverage==6.2
+            - Faker==13.11.1
             - pyquery==1.4.3
+            - pyzmq==24.0.1
   # Destination cluster and namespace to deploy the application
   destination:
     namespace: locust
