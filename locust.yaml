@@ -42,7 +42,7 @@ spec:
               minReplicas: 1
               maxReplicas: 100
               targetCPUUtilizationPercentage: 40
-            resources: {}
+            resources:
               limits:
                 cpu: 500m
                 memory: 256Mi
