@@ -3,12 +3,15 @@ import os
 import re
 import test_helper
 
-# Import load_testing files
-# :/ this kind of import only works when you run `pytest` from the root
-# of the project.
+# Import load_testing files using a sad hack to support running from anywhere
 import sys
 
-sys.path.append("./load_testing")
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "load_testing")
+    )
+)
+
 from common_flows.flow_helper import (
     authenticity_token,
     choose_cred,
@@ -166,9 +169,13 @@ def test_sp_signout_link():
 
 
 def test_load_file():
-    orig = open("README.md", "rb").read()
+    readme_path = os.path.abspath(
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "README.md")
+    )
 
-    assert load_fixture("README.md", ".") == orig
+    orig = open(readme_path, "rb").read()
+
+    assert load_fixture(readme_path, ".") == orig
 
     with pytest.raises(RuntimeError):
         load_fixture("NotReallyThere")
