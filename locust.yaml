@@ -25,8 +25,6 @@ spec:
         loadtest:
           name: login-sign-up-sign-in
           headless: false
-          environment:
-            NUM_USERS: 1000
           locust_host: https://sp-oidc-sinatra.pt.identitysandbox.gov
           locust_locustfile_configmap: login-sign-up-sign-in-locustfile
           locust_lib_configmap: login-loadtest-lib
