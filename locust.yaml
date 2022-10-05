@@ -36,16 +36,16 @@ spec:
             - Faker==13.11.1
             - pyquery==1.4.3
             - pyzmq==24.0.1
-          worker:
-            hpa:
-              enabled: true
-            resources:
-              limits:
-                cpu: "500m"
-                memory: "256Mi"
-              requests:
-                cpu: "500m"
-                memory: "256Mi"
+        worker:
+          hpa:
+            enabled: true
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
 
   # Destination cluster and namespace to deploy the application
   destination:
