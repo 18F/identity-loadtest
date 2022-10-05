@@ -25,6 +25,8 @@ spec:
         loadtest:
           name: login-sign-up-sign-in
           headless: true
+          environment:
+            NUM_USERS: 1000
           locust_host: https://sp-oidc-sinatra.pt.identitysandbox.gov/
           locust_locustfile_configmap: login-sign-up-sign-in-locustfile
           locust_lib_configmap: login-loadtest-lib
@@ -34,6 +36,20 @@ spec:
             - Faker==13.11.1
             - pyquery==1.4.3
             - pyzmq==24.0.1
+          worker:
+            hpa:
+              enabled: true
+              minReplicas: 1
+              maxReplicas: 100
+              targetCPUUtilizationPercentage: 40
+            resources: {}
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 500m
+                memory: 256Mi
+
   # Destination cluster and namespace to deploy the application
   destination:
     namespace: locust
