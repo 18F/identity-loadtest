@@ -1,5 +1,8 @@
 from unittest.mock import MagicMock
 
+import os
+
+FIXDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "fixtures"))
 
 def mock_response(fixture_name):
 
@@ -8,7 +11,7 @@ def mock_response(fixture_name):
     Returns a mocked response object
     """
 
-    f = open("tests/fixtures/" + fixture_name, "r")
+    f = open(os.path.abspath(os.path.join(FIXDIR, fixture_name)), "r")
     fixture_content = f.read()
 
     response = MagicMock()
