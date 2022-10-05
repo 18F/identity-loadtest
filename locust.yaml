@@ -39,9 +39,6 @@ spec:
           worker:
             hpa:
               enabled: true
-              minReplicas: 1
-              maxReplicas: 100
-              targetCPUUtilizationPercentage: 40
             resources:
               limits:
                 cpu: 500m
