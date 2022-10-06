@@ -1,5 +1,5 @@
 from locust import HttpUser, TaskSet, task, between
-from common_flows import flow_sign_up, flow_helper
+from lib import flow_sign_up, flow_helper
 import logging
 
 

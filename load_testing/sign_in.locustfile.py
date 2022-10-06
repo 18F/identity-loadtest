@@ -1,4 +1,4 @@
-from common_flows import flow_sign_in, flow_helper
+from lib import flow_sign_in, flow_helper
 from locust import HttpUser, TaskSet, task, between
 import logging
 

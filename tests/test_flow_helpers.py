@@ -12,7 +12,7 @@ sys.path.append(
     )
 )
 
-from common_flows.flow_helper import (
+from lib.flow_helper import (
     authenticity_token,
     choose_cred,
     confirm_link,
