@@ -366,7 +366,7 @@ def get_env(key):
     return value
 
 
-def load_fixture(filename, path="./lib"):
+def load_fixture(filename, path="./load_testing"):
     """
     Preload data for use by tests.
 

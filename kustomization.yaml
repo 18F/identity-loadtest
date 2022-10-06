@@ -36,8 +36,5 @@ configMapGenerator:
   - load_testing/lib/flow_sp_ial2_sign_up_async.py
   - load_testing/lib/flow_sp_sign_in.py
   - load_testing/lib/flow_sp_sign_up.py
-  - load_testing/lib/mock-back.jpeg
-  - load_testing/lib/mock-front.jpeg
-  - load_testing/lib/selfie.jpeg
 generatorOptions:
  disableNameSuffixHash: true
