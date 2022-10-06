@@ -23,10 +23,10 @@ spec:
     helm:
       values: |
         loadtest:
-          name: login-sign-up-sign-in
+          name: prod-simulator
           headless: false
           environment:
-            NUM_USERS: 100
+            NUM_USERS: 10000
             RATIO_SIGN_IN: 5000
             RATIO_SIGN_UP: 1010
             SP_HOST: https://sp-oidc-sinatra.pt.identitysandbox.gov
