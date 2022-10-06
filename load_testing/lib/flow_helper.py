@@ -383,8 +383,13 @@ def load_fixture(filename, path="./load_testing"):
         with open(fullpath, "rb") as infile:
             fixture = infile.read()
     except FileNotFoundError:
-        # Be a little more helpful
-        raise RuntimeError(f"Could not find fixture {fullpath}")
+        try:
+            url = 'https://github.com/18F/identity-loadtest/raw/main/load_testing/' + filename
+            r = requests.get(url)
+            fixture = r.content
+        except requests.exceptions.RequestException:
+            # Be a little more helpful
+            raise RuntimeError(f"Could not find fixture {fullpath} or {url}")
 
     return fixture
 
