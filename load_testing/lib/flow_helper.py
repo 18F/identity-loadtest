@@ -1,4 +1,4 @@
-from random import choice, random, randint
+ from random import choice, random, randint
 from urllib.parse import parse_qs, urlparse
 import locust
 import logging
@@ -366,7 +366,7 @@ def get_env(key):
     return value
 
 
-def load_fixture(filename, path="./load_testing"):
+def load_fixture(filename, path="./lib"):
     """
     Preload data for use by tests.
 
