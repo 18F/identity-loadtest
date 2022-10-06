@@ -1,0 +1,119 @@
+#
+# This will create a deployment of the oidc-sinatra app
+# that will live on https://oidc-sinatra.loadtest.identitysandbox.gov.
+# This needs a few things set up by hand:
+#  * The loadtest.identitysandbox.gov dns zone needed to be created
+#    and delegated from identitysandbox.gov in the account this is going
+#    to be created in.  This is already done.
+#  * An SSL cert for oidc-sinatra.loadtest.identitysandbox.gov
+#    needs to be created and have it's magic auth stuff put in the loadtest
+#    subdomain.
+#  * You will also need to create the sp_private_key secret with the demo_sp.key
+#    in it. Like 
+#      kubectl create secret generic sp_private_key --from-file=demo_sp.key -n oidc-sinatra
+# 
+# Everything else is done automagically.  Logs should be going into cloudwatch.
+#
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oidc-sinatra
+  labels:
+    app: oidc-sinatra
+spec:
+  selector:
+    matchLabels:
+      app: oidc-sinatra
+  template:
+    metadata:
+      labels:
+        app: oidc-sinatra
+    spec:
+      containers:
+      - name: oidc-sinatra
+        image: logindotgov/oidc-sinatra:latest
+        env:
+        - name: idp_url
+          value: "https://idp.pt.identitysandbox.gov/"
+        - name: acr_values
+          value: "http://idmanagement.gov/ns/assurance/loa/1"
+        - name: redirect_uri
+          value: "https://sp-oidc-sinatra.pt.identitysandbox.gov/"
+        - name: client_id
+          value: "urn:gov:gsa:openidconnect:sp:sinatra"
+        - name: sp_private_key
+          valueFrom:
+            secretKeyRef:
+              name: sp_private_key
+              key: demo_sp.key
+              optional: false
+        resources:
+          requests:
+            cpu: "75m"
+            memory: "256Mi"
+          limits:
+            cpu: "80m"
+            memory: "512Mi"
+        ports:
+        - containerPort: 9292
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oidc-sinatra
+spec:
+  ports:
+    - port: 9292
+      targetPort: 9292
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: oidc-sinatra
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: oidc-sinatra
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: oidc-sinatra
+  minReplicas: 1
+  maxReplicas: 100
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oidc-sinatra
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    external-dns.alpha.kubernetes.io/hostname: oidc-sinatra.loadtest.identitysandbox.gov
+spec:
+  ingressClassName: alb
+  tls:
+  - hosts:
+    - oidc-sinatra.loadtest.identitysandbox.gov
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: oidc-sinatra
+                port:
+                  number: 9292

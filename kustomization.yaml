@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
 - locust.yaml
 - fake-server.yaml
+- oidc-sinatra.yaml
 configMapGenerator:
 - name: login-locustfiles
   namespace: locust
