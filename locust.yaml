@@ -29,8 +29,8 @@ spec:
             NUM_USERS: 100
             RATIO_SIGN_IN: 5000
             RATIO_SIGN_UP: 1010
-            SP_HOST: https://sp-oidc-sinatra.pt.identitysandbox.gov
-          locust_host: https://sp-oidc-sinatra.pt.identitysandbox.gov
+            SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
+          locust_host: https://oidc-sinatra.loadtest.identitysandbox.gov
           locust_locustfile_configmap: login-locustfiles
           locust_lib_configmap: login-loadtest-lib
           locust_locustfile: prod_simulator.locustfile.py

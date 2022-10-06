@@ -40,7 +40,7 @@ spec:
         - name: acr_values
           value: "http://idmanagement.gov/ns/assurance/loa/1"
         - name: redirect_uri
-          value: "https://sp-oidc-sinatra.pt.identitysandbox.gov/"
+          value: "https://oidc-sinatra.loadtest.identitysandbox.gov/"
         - name: client_id
           value: "urn:gov:gsa:openidconnect:sp:sinatra"
         - name: sp_private_key
