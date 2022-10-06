@@ -8,9 +8,9 @@
 #  * An SSL cert for oidc-sinatra.loadtest.identitysandbox.gov
 #    needs to be created and have it's magic auth stuff put in the loadtest
 #    subdomain.
-#  * You will also need to create the sp_private_key secret with the demo_sp.key
+#  * You will also need to create the sp-private-key secret with the demo_sp.key
 #    in it. Like 
-#      kubectl create secret generic sp_private_key --from-file=demo_sp.key -n oidc-sinatra
+#      kubectl create secret generic sp-private-key --from-file=demo_sp.key -n oidc-sinatra
 # 
 # Everything else is done automagically.  Logs should be going into cloudwatch.
 #
@@ -46,7 +46,7 @@ spec:
         - name: sp_private_key
           valueFrom:
             secretKeyRef:
-              name: sp_private_key
+              name: sp-private-key
               key: demo_sp.key
               optional: false
         resources:
