@@ -26,9 +26,9 @@ spec:
           name: login-sign-up-sign-in
           headless: false
           locust_host: https://sp-oidc-sinatra.pt.identitysandbox.gov
-          locust_locustfile_configmap: login-sign-up-sign-in-locustfile
+          locust_locustfile_configmap: login-locustfiles
           locust_lib_configmap: login-loadtest-lib
-          locust_locustfile: sign_up_sign_in.locustfile.py
+          locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==6.2
             - Faker==13.11.1

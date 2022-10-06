@@ -1,5 +1,5 @@
 from locust import HttpUser, TaskSet, task, between
-from common_flows import flow_sp_sign_in
+from lib import flow_sp_sign_in
 
 
 class SPSignInLoad(TaskSet):
