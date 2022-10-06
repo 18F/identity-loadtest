@@ -1,6 +1,7 @@
 from random import choice, random, randint
 from urllib.parse import parse_qs, urlparse
 import locust
+import requests
 import logging
 import os
 import pyquery
