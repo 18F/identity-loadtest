@@ -23,7 +23,7 @@ spec:
     helm:
       values: |
         loadtest:
-          name: prod-simulator
+          name: login-sign-up-sign-in
           headless: false
           environment:
             NUM_USERS: 10000
