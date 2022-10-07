@@ -41,7 +41,7 @@ spec:
             - pyzmq==24.0.1
         master:
           args: 
-            - "-t 3m"
+            - "-t 6m"
         worker:
           hpa:
             enabled: true
