@@ -353,7 +353,8 @@ def desktop_agent_headers():
     Use this in headers to act as a Desktop
     """
     return {
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
+        "accept-language": "en-US,en;q=0.9",
+        "user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
     }
 
 
