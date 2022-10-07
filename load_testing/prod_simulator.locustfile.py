@@ -10,6 +10,15 @@ from lib import (
 )
 import os
 import logging
+import sys
+
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+root.addHandler(handler)
 
 # Default ratios.  Sum should equal 10000.  (1 == 0.01%)
 # These can be overridden by setting the corresponding environment
