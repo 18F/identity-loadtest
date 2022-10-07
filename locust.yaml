@@ -24,7 +24,7 @@ spec:
       values: |
         loadtest:
           name: login-sign-up-sign-in
-          headless: false
+          headless: true
           environment:
             NUM_USERS: 10000
             RATIO_SIGN_IN: 5000
