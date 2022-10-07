@@ -40,7 +40,8 @@ spec:
             - pyquery==1.4.3
             - pyzmq==24.0.1
         master:
-          args_include_default: -t 3m
+          args: 
+            - -t 3m
         worker:
           hpa:
             enabled: true
