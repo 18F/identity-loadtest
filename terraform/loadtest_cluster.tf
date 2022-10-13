@@ -42,6 +42,20 @@ module "kubernetes_addons" {
   enable_amazon_eks_coredns           = true
   enable_amazon_eks_kube_proxy        = true
   enable_argocd                       = true
+  amazon_eks_coredns_config = {
+    cluster_proportional_autoscaler_helm_config = {
+      "config" = {
+        "linear" = {
+          "coresPerReplica" = 2
+          "min" = 2
+          "max" = 100
+          "nodesPerReplica" = 1
+          "includeUnschedulableNodes" = true
+          "preventSinglePointFailure" = true
+        }
+      }
+    }
+  }
   argocd_manage_add_ons               = true
   enable_aws_for_fluentbit            = true
   enable_aws_load_balancer_controller = true

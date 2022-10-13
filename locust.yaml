@@ -31,8 +31,8 @@ spec:
                                                   # to the events/sec requested in the 100x load test plan
             RATIO_SIGN_IN: 7000                   # 2000 events/sec for sign ins
             RATIO_SIGN_IN_USER_NOT_FOUND: 7       #
-            RATIO_SIGN_IN_INCORRECT_PASSWORD: 200 #
-            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 200  #
+            RATIO_SIGN_IN_INCORRECT_PASSWORD: 0 #
+            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 0  #
             RATIO_SIGN_UP: 1851                   # 500 events/sec for new user registrations
             RATIO_SIGN_IN_AND_PROOF: 0            # 40 - 200 events/sec for identity proofings
             RATIO_SIGN_UP_AND_PROOF: 0            # 700 - 
