@@ -160,13 +160,31 @@ def do_sign_up(context):
         context,
         "get",
         logout_link,
-        sp_root_url,
         '',
+        'Do you want to sign out of',
         {},
         {},
-        url_without_querystring(logout_link),
+        '/openid_connect/logout?client_id=...'
     )
 
-    # Does it include the logged out text signature?
+    auth_token = authenticity_token(resp)
+    state = querystring_value(resp.url, 'state')
+    # Confirm the logout request on the IdP
+    resp = do_request(
+        context,
+        "post",
+        "/openid_connect/logout",
+        sp_root_url,
+        'You have been logged out',
+        {
+            "authenticity_token": auth_token,
+            "_method": "delete",
+            "client_id": "urn:gov:gsa:openidconnect:sp:sinatra",
+            "post_logout_redirect_uri": "https://oidc-sinatra.loadtest.identitysandbox.gov/logout",
+            "state": state
+        }
+    )
+    # Does it include the you have been logged out text?
     if resp.text.find('You have been logged out') == -1:
-        logging.error(f"{LOG_NAME}: user has not been logged out")
+        logging.error('The user has not been logged out')
+        logging.error(f'resp.url = {resp.url}')

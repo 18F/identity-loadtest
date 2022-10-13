@@ -16,7 +16,8 @@ root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 root.addHandler(handler)
 
@@ -29,8 +30,8 @@ root.addHandler(handler)
 RATIOS = {
     "SIGN_IN": 7263,
     "SIGN_UP": 813,
-    "SIGN_IN_AND_PROOF": 9,
-    "SIGN_UP_AND_PROOF": 9,
+    "SIGN_IN_AND_PROOF": 0,
+    "SIGN_UP_AND_PROOF": 0,
     "SIGN_IN_USER_NOT_FOUND": 885,
     "SIGN_IN_INCORRECT_PASSWORD": 885,
     "SIGN_IN_INCORRECT_SMS_OTP": 79,

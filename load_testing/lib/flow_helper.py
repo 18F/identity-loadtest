@@ -15,7 +15,14 @@ LOG_NAME = __file__.split('/')[-1].split('.')[0]
 
 
 def do_request(
-    context, method, path, expected_redirect=None, expected_text=None, data={}, files={}, name=None
+    context,
+    method,
+    path,
+    expected_redirect=None,
+    expected_text=None,
+    data={},
+    files={},
+    name=None
 ):
 
     with getattr(context.client, method)(
