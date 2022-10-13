@@ -26,7 +26,7 @@ spec:
           name: login-sign-up-sign-in
           headless: false
           environment:
-            NUM_USERS: 2000000
+            NUM_USERS: "2000000"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
             RATIO_SIGN_IN: 7000                   # 2000 events/sec for sign ins
