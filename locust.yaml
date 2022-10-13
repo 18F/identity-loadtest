@@ -52,6 +52,7 @@ spec:
         worker:
           hpa:
             enabled: true
+            maxReplicas: 200
           resources:
             limits:
               cpu: "500m"

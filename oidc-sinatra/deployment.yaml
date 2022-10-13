@@ -84,7 +84,7 @@ spec:
     kind: Deployment
     name: oidc-sinatra
   minReplicas: 1
-  maxReplicas: 250
+  maxReplicas: 300
   metrics:
   - type: Resource
     resource:
