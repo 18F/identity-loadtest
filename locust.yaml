@@ -53,7 +53,7 @@ spec:
           hpa:
             enabled: true
             maxReplicas: 100
-            targetCPUUtilizationPercentage: 70
+            targetCPUUtilizationPercentage: 100
           resources:
             requests:
               cpu: "300m"
