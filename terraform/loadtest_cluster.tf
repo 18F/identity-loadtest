@@ -42,20 +42,6 @@ module "kubernetes_addons" {
   enable_amazon_eks_coredns           = true
   enable_amazon_eks_kube_proxy        = true
   enable_argocd                       = true
-  amazon_eks_coredns_config = {
-    cluster_proportional_autoscaler_helm_config = {
-      "config" = {
-        "linear" = {
-          "coresPerReplica" = 2
-          "min" = 2
-          "max" = 100
-          "nodesPerReplica" = 1
-          "includeUnschedulableNodes" = true
-          "preventSinglePointFailure" = true
-        }
-      }
-    }
-  }
   argocd_manage_add_ons               = true
   enable_aws_for_fluentbit            = true
   enable_aws_load_balancer_controller = true
@@ -63,6 +49,14 @@ module "kubernetes_addons" {
   enable_external_dns                 = true
   eks_cluster_domain                  = var.dnszone
   enable_kubernetes_dashboard = true
+  kubernetes_dashboard_helm_config = {
+    set = [
+      {
+        name  = "metricsScraper.enabled"
+        value = true
+      }
+    ]
+  }
 
   argocd_applications = {
     loadtest-apps = {
