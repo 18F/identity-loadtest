@@ -55,10 +55,10 @@ spec:
             maxReplicas: 200
           resources:
             limits:
-              cpu: "500m"
+              cpu: "200m"
               memory: "1024Mi"
             requests:
-              cpu: "500m"
+              cpu: "80m"
               memory: "512Mi"
 
   # Destination cluster and namespace to deploy the application
