@@ -62,6 +62,7 @@ module "kubernetes_addons" {
   enable_cluster_autoscaler           = true
   enable_external_dns                 = true
   eks_cluster_domain                  = var.dnszone
+  enable_kubernetes_dashboard = true
 
   argocd_applications = {
     loadtest-apps = {
@@ -70,7 +71,7 @@ module "kubernetes_addons" {
       type            = "kustomize"
       target_revision = "main"
     }
-
+    
     # Below are all magic add-ons that you can see how to configure here:
     # https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons
     addons = {
