@@ -54,12 +54,12 @@ spec:
             enabled: true
             maxReplicas: 200
           resources:
-            limits:
-              cpu: "200m"
-              memory: "1024Mi"
             requests:
               cpu: "100m"
               memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
 
   # Destination cluster and namespace to deploy the application
   destination:
