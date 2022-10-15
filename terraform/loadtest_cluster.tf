@@ -20,7 +20,7 @@ module "loadtest" {
     spot = {
       node_group_name = "${var.cluster_name}-managed-spot"
       min_size        = 1
-      max_size        = 35
+      max_size        = 40
       desired_size    = 2
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "SPOT"
