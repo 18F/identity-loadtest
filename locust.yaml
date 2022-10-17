@@ -46,9 +46,11 @@ spec:
             - Faker==13.11.1
             - pyquery==1.4.3
             - pyzmq==24.0.1
-        # master:
-        #   args:
-        #     - "-t 6m"
+        master:
+          nodeSelector:
+            eks.amazonaws.com/capacityType: "ON_DEMAND"
+          # args:
+          #   - "-t 6m"
         worker:
           hpa:
             enabled: true
@@ -61,11 +63,6 @@ spec:
             limits:
               cpu: "1000m"
               memory: "1024Mi"
-          tolerations:
-            - key: "spot"
-              operator: "Equal"
-              value: "true"
-              effect: "NoSchedule"
 
 
   # Destination cluster and namespace to deploy the application
