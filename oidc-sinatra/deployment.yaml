@@ -51,6 +51,8 @@ spec:
               optional: false
         - name: RACK_ENV
           value: production
+        - name: cache_oidc_config
+          value: "true"
         resources:
           requests:
             cpu: "100m"
