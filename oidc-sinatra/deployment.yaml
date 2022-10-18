@@ -49,6 +49,8 @@ spec:
               name: sp-private-key
               key: demo_sp.key
               optional: false
+        - name: RACK_ENV
+          value: production
         resources:
           requests:
             cpu: "100m"
