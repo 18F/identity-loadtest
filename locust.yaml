@@ -60,7 +60,7 @@ spec:
               memory: 1024Mi
         worker:
           hpa:
-            enabled: true
+            enabled: false
             maxReplicas: 200
             targetCPUUtilizationPercentage: 95
           resources:
