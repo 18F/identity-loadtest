@@ -47,5 +47,13 @@ You can find the `admin` password by issuing this command wrapped in aws-vault:
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d ;echo
 ```
 
+## Locust
+
+To get to the locust server, run this command wrapped in aws-vault:
+```
+kubectl port-forward service/locust 8089:8089 -n locust
+```
+And then point your browser at http://localhost:8089/.
+
 Have fun!!
 
