@@ -44,7 +44,7 @@ module "loadtest" {
 
 # Add-ons
 module "kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.11.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.13.1"
 
   eks_cluster_id = module.loadtest.eks_cluster_id
 
@@ -59,7 +59,6 @@ module "kubernetes_addons" {
   enable_cluster_autoscaler           = true
   enable_external_dns                 = true
   eks_cluster_domain                  = var.dnszone
-  enable_kubernetes_dashboard         = true
 
   argocd_applications = {
     loadtest-apps = {
