@@ -49,8 +49,8 @@ spec:
         master:
           nodeSelector:
             eks.amazonaws.com/capacityType: "ON_DEMAND"
-          # args:
-          #   - "-t 6m"
+          args:
+            - "--enable-rebalancing"
           resources:
             limits:
               cpu: 2000m
@@ -60,6 +60,8 @@ spec:
               memory: 1024Mi
         worker:
           replicas: 35
+          args:
+            - "--enable-rebalancing"
           hpa:
             enabled: false
             maxReplicas: 200
