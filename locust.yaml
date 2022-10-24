@@ -51,6 +51,13 @@ spec:
             eks.amazonaws.com/capacityType: "ON_DEMAND"
           # args:
           #   - "-t 6m"
+          resources:
+            limits:
+              cpu: 3000m
+              memory: 2048Mi
+            requests:
+              cpu: 2000m
+              memory: 1024Mi
         worker:
           hpa:
             enabled: true
