@@ -52,7 +52,7 @@ spec:
           args:
             - "--enable-rebalancing"
           annotations:
-            cluster-autoscaler.kubernetes.io/safe-to-evict: false
+            cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
           resources:
             limits:
               cpu: 2000m
