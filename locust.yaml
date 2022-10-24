@@ -53,10 +53,10 @@ spec:
           #   - "-t 6m"
           resources:
             limits:
-              cpu: 3000m
+              cpu: 2000m
               memory: 2048Mi
             requests:
-              cpu: 2000m
+              cpu: 1500m
               memory: 1024Mi
         worker:
           hpa:
