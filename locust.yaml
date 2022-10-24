@@ -51,6 +51,8 @@ spec:
             eks.amazonaws.com/capacityType: "ON_DEMAND"
           args:
             - "--enable-rebalancing"
+          deploymentAnnotations:
+            cluster-autoscaler.kubernetes.io/safe-to-evict: false
           resources:
             limits:
               cpu: 2000m
@@ -62,8 +64,6 @@ spec:
           # replicas: 35
           args:
             - "--enable-rebalancing"
-          deploymentAnnotations:
-            cluster-autoscaler.kubernetes.io/safe-to-evict: false
           hpa:
             enabled: true
             minReplicas: 10
