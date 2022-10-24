@@ -51,7 +51,7 @@ spec:
             eks.amazonaws.com/capacityType: "ON_DEMAND"
           args:
             - "--enable-rebalancing"
-          deploymentAnnotations:
+          annotations:
             cluster-autoscaler.kubernetes.io/safe-to-evict: false
           resources:
             limits:
