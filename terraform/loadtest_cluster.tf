@@ -17,17 +17,17 @@ module "loadtest" {
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
-    spot = {
-      node_group_name = "${var.cluster_name}-managed-spot"
-      min_size        = 1
-      max_size        = 40
-      desired_size    = 2
-      subnet_ids      = module.vpc.private_subnets
-      capacity_type   = "SPOT"
-      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]    // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates  
-      k8s_taints      = [{key= "spot", value="true", effect="NO_SCHEDULE"}]
-    }
+    # spot = {
+    #   node_group_name = "${var.cluster_name}-managed-spot"
+    #   min_size        = 1
+    #   max_size        = 40
+    #   desired_size    = 2
+    #   subnet_ids      = module.vpc.private_subnets
+    #   capacity_type   = "SPOT"
+    #   instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]    // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+    #   disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates  
+    #   k8s_taints      = [{key= "spot", value="true", effect="NO_SCHEDULE"}]
+    # }
     ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
       min_size        = 2
