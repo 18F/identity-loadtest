@@ -55,5 +55,15 @@ kubectl port-forward service/locust 8089:8089 -n locust
 ```
 And then point your browser at http://localhost:8089/.
 
+## Kubernetes Dashboard
+
+To access the kubernetes dashboard to see pods and cpu/memory usage stuff:
+```
+aws-vault exec sandbox-admin -- kubectl -n kubernetes-dashboard create token admin-user
+aws-vault exec sandbox-admin -- kubectl port-forward service/kubernetes-dashboard 4443:443 -n kubernetes-dashboard
+```
+Then open up https://localhost:4443/ and use the token you just got to log in.
+
+
 Have fun!!
 
