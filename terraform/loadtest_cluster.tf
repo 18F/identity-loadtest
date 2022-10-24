@@ -59,15 +59,7 @@ module "kubernetes_addons" {
   enable_cluster_autoscaler           = true
   enable_external_dns                 = true
   eks_cluster_domain                  = var.dnszone
-  enable_kubernetes_dashboard = true
-  kubernetes_dashboard_helm_config = {
-    set = [
-      {
-        name  = "metricsScraper.enabled"
-        value = true
-      }
-    ]
-  }
+  enable_kubernetes_dashboard         = true
 
   argocd_applications = {
     loadtest-apps = {
