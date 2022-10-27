@@ -6,6 +6,7 @@ resources:
 - fake-server.yaml
 - oidc-sinatra.yaml
 - dashboard.yaml
+- coredns.yaml
 configMapGenerator:
 - name: login-locustfiles
   namespace: locust

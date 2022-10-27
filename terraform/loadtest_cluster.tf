@@ -31,16 +31,15 @@ module "loadtest" {
     ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
       min_size        = 2
-      max_size        = 30
+      max_size        = 40
       desired_size    = 2
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "ON_DEMAND"
-      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]    // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates  
+      instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      disk_size       = 100                                                             # disk_size will be ignored when using Launch Templates  
     }
   }
 }
-
 
 # Add-ons
 module "kubernetes_addons" {
@@ -49,16 +48,17 @@ module "kubernetes_addons" {
   eks_cluster_id = module.loadtest.eks_cluster_id
 
   # EKS Add-ons
-  enable_amazon_eks_vpc_cni           = true
-  enable_amazon_eks_coredns           = true
-  enable_amazon_eks_kube_proxy        = true
-  enable_argocd                       = true
-  argocd_manage_add_ons               = true
-  enable_aws_for_fluentbit            = true
-  enable_aws_load_balancer_controller = true
-  enable_cluster_autoscaler           = true
-  enable_external_dns                 = true
-  eks_cluster_domain                  = var.dnszone
+  enable_amazon_eks_vpc_cni                      = true
+  enable_amazon_eks_coredns                      = true
+  enable_coredns_cluster_proportional_autoscaler = false
+  enable_amazon_eks_kube_proxy                   = true
+  enable_argocd                                  = true
+  argocd_manage_add_ons                          = true
+  enable_aws_for_fluentbit                       = true
+  enable_aws_load_balancer_controller            = true
+  enable_cluster_autoscaler                      = true
+  enable_external_dns                            = true
+  eks_cluster_domain                             = var.dnszone
 
   argocd_applications = {
     loadtest-apps = {
@@ -67,7 +67,7 @@ module "kubernetes_addons" {
       type            = "kustomize"
       target_revision = "main"
     }
-    
+
     # Below are all magic add-ons that you can see how to configure here:
     # https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons
     addons = {
