@@ -22,6 +22,8 @@ spec:
     targetRevision: 0.30.0
     helm:
       values: |
+        image:
+          repository: 894947205914.dkr.ecr.eu-west-1.amazonaws.com/ecr-public/docker/library/locustio/locust
         loadtest:
           name: login-sign-up-sign-in
           headless: false
