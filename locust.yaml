@@ -47,7 +47,7 @@ spec:
             - pyquery==1.4.3
             - pyzmq==24.0.1
         image:
-          repository: 894947205914.dkr.ecr.eu-west-1.amazonaws.com/ecr-public/docker/library/locustio/locust
+          repository: "894947205914.dkr.ecr.eu-west-1.amazonaws.com/ecr-public/docker/library/locustio/locust"
         master:
           nodeSelector:
             eks.amazonaws.com/capacityType: "ON_DEMAND"
