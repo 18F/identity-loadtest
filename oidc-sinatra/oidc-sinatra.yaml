@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: oidc-sinatra
-        image: logindotgov/oidc-sinatra:1.1
+        image: logindotgov/oidc-sinatra:1.2
         env:
         - name: idp_url
           value: "https://idp.pt.identitysandbox.gov/"
