@@ -57,6 +57,8 @@ spec:
               optional: false
         - name: NEWRELIC_APP_NAME
           value: oidc-sinatra.loadtest.identitysandbox.gov
+        - name: NEW_RELIC_HOST
+          value: gov-collector.newrelic.com
         - name: RACK_ENV
           value: production
         - name: cache_oidc_config
