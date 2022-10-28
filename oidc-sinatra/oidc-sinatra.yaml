@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: oidc-sinatra
-        image: logindotgov/oidc-sinatra:1.3
+        image: logindotgov/oidc-sinatra:1.4
         env:
         - name: idp_url
           value: "https://idp.pt.identitysandbox.gov/"
@@ -49,13 +49,13 @@ spec:
               name: sp-private-key
               key: demo_sp.key
               optional: false
-        - name: NEWRELIC_LICENSE
+        - name: NEW_RELIC_LICENSE_KEY
           valueFrom:
             secretKeyRef:
               name: newrelic-license
               key: newrelic-license
               optional: false
-        - name: NEWRELIC_APP_NAME
+        - name: NEW_RELIC_APP_NAME
           value: oidc-sinatra.loadtest.identitysandbox.gov
         - name: NEW_RELIC_HOST
           value: gov-collector.newrelic.com
