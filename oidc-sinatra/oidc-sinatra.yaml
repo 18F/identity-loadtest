@@ -1,11 +1,11 @@
 #
-# This will create a deployment of the oidc-sinatra app
-# that will live on https://oidc-sinatra.loadtest.identitysandbox.gov.
+# This will create a deployment of the oidc-sinatra2 app
+# that will live on https://oidc-sinatra2.loadtest.identitysandbox.gov.
 # This needs a few things set up by hand:
 #  * The loadtest.identitysandbox.gov dns zone needed to be created
 #    and delegated from identitysandbox.gov in the account this is going
 #    to be created in.  This is already done.
-#  * An SSL cert for oidc-sinatra.loadtest.identitysandbox.gov
+#  * An SSL cert for oidc-sinatra2.loadtest.identitysandbox.gov
 #    needs to be created and have it's magic auth stuff put in the loadtest
 #    subdomain.
 #  * You will also need to create the sp-private-key secret with the demo_sp.key
@@ -40,7 +40,7 @@ spec:
         - name: acr_values
           value: "http://idmanagement.gov/ns/assurance/loa/1"
         - name: redirect_uri
-          value: "https://oidc-sinatra.loadtest.identitysandbox.gov/"
+          value: "https://oidc-sinatra2.loadtest.identitysandbox.gov/"
         - name: client_id
           value: "urn:gov:gsa:openidconnect:sp:sinatra"
         - name: sp_private_key
@@ -56,7 +56,7 @@ spec:
               key: newrelic-license
               optional: false
         - name: NEW_RELIC_APP_NAME
-          value: oidc-sinatra.loadtest.identitysandbox.gov
+          value: oidc-sinatra2.loadtest.identitysandbox.gov
         - name: NEW_RELIC_HOST
           value: gov-collector.newrelic.com
         - name: RACK_ENV
@@ -123,12 +123,12 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
     alb.ingress.kubernetes.io/target-type: ip
-    external-dns.alpha.kubernetes.io/hostname: oidc-sinatra.loadtest.identitysandbox.gov
+    external-dns.alpha.kubernetes.io/hostname: oidc-sinatra2.loadtest.identitysandbox.gov
 spec:
   ingressClassName: alb
   tls:
   - hosts:
-    - oidc-sinatra.loadtest.identitysandbox.gov
+    - oidc-sinatra2.loadtest.identitysandbox.gov
   rules:
     - http:
         paths:

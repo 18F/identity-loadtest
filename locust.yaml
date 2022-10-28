@@ -36,7 +36,7 @@ spec:
             RATIO_SIGN_UP: 1851                   # 1851 = 500 events/sec for new user registrations
             RATIO_SIGN_IN_AND_PROOF: 0            # 40 - 200 events/sec for identity proofings
             RATIO_SIGN_UP_AND_PROOF: 0            # 700 - 
-            SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
+            SP_HOST: https://oidc-sinatra2.loadtest.identitysandbox.gov
           locust_host: https://idp.pt.identitysandbox.gov
           locust_locustfile_configmap: login-locustfiles
           locust_lib_configmap: login-loadtest-lib

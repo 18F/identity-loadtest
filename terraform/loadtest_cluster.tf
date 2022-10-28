@@ -65,7 +65,7 @@ module "kubernetes_addons" {
       path            = "."
       repo_url        = "https://github.com/18F/identity-loadtest.git"
       type            = "kustomize"
-      target_revision = "main"
+      target_revision = "loadtest2"
     }
 
     # Below are all magic add-ons that you can see how to configure here:
