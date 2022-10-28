@@ -113,29 +113,29 @@ spec:
         type: Utilization
         averageUtilization: 35
 
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: oidc-sinatra2
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
-    alb.ingress.kubernetes.io/target-type: ip
-    external-dns.alpha.kubernetes.io/hostname: oidc-sinatra2.loadtest.identitysandbox.gov
-spec:
-  ingressClassName: alb
-  tls:
-  - hosts:
-    - oidc-sinatra2.loadtest.identitysandbox.gov
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: oidc-sinatra
-                port:
-                  number: 9292
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: oidc-sinatra2
+#   annotations:
+#     alb.ingress.kubernetes.io/scheme: internet-facing
+#     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+#     alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
+#     alb.ingress.kubernetes.io/target-type: ip
+#     external-dns.alpha.kubernetes.io/hostname: oidc-sinatra2.loadtest.identitysandbox.gov
+# spec:
+#   ingressClassName: alb
+#   tls:
+#   - hosts:
+#     - oidc-sinatra2.loadtest.identitysandbox.gov
+#   rules:
+#     - http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: oidc-sinatra
+#                 port:
+#                   number: 9292
