@@ -53,7 +53,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: newrelic-license
-              key: demo_sp.key
+              key: newrelic-license
               optional: false
         - name: NEWRELIC_APP_NAME
           value: oidc-sinatra.loadtest.identitysandbox.gov
