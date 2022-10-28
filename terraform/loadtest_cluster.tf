@@ -57,7 +57,7 @@ module "kubernetes_addons" {
   enable_aws_for_fluentbit                       = true
   enable_aws_load_balancer_controller            = true
   enable_cluster_autoscaler                      = true
-  enable_external_dns                            = true
+  # enable_external_dns                            = true
   eks_cluster_domain                             = var.dnszone
 
   argocd_applications = {
