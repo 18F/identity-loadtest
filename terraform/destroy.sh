@@ -4,9 +4,9 @@
 # 
 set -e
 
-if [ -z "$1" ]; then
-     echo "usage:   $0 <cluster_name>"
-     echo "example: $0 loadtest2"
+if [ -z "$1" || "$2" != "-yesreallydestroyit" ]; then
+     echo "usage:   $0 <cluster_name> -yesreallydestroyit"
+     echo "example: $0 loadtest2 -yesreallydestroyit"
      exit 1
 else
      export TF_VAR_cluster_name="$1"
