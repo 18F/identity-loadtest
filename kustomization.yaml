@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
 - locust.yaml
 # - fake-server.yaml
-- oidc-sinatra.yaml
+# - oidc-sinatra.yaml
 - dashboard.yaml
 - coredns.yaml
 configMapGenerator:
