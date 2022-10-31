@@ -121,6 +121,8 @@ module "vpc" {
   }
 }
 
-resource "aws_route53_zone" "primary" {
-  name = var.dnszone
+# this is to ensure that the loadtest dns zone has been set up already by hand
+data "aws_route53_zone" "primary" {
+  name         = var.dnszone
+  private_zone = false
 }
