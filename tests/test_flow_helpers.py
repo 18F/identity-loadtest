@@ -92,7 +92,7 @@ def test_random_phone():
 
 def test_desktop_agent_headers():
     agent = desktop_agent_headers()
-    assert "Firefox" in agent["User-Agent"]
+    assert "Firefox" in agent["user-agent"]
 
 
 def test_get_env():
