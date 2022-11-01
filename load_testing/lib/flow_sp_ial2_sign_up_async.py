@@ -105,12 +105,47 @@ def ial2_sign_up_async(context):
         context,
         "post",
         "/sign_up/create_password",
-        "/two_factor_options",
+        "/authentication_methods_setup",
         '',
         {
             "password_form[password]": default_password,
             "authenticity_token": auth_token,
             "confirmation_token": token,
+        },
+    )
+
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/authentication_methods_setup",
+        "/phone_setup",
+        "",
+        {
+            "_method": "patch",
+            "two_factor_options_form[selection][]": "",
+            "two_factor_options_form[selection][]": "phone",
+            "authenticity_token": auth_token,
+        },
+    )
+
+    # After password creation set up SMS 2nd factor
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/phone_setup",
+        "/login/two_factor/sms",
+        "",
+        {
+            "_method": "patch",
+            "new_phone_form[international_code]": "US",
+            "new_phone_form[phone]": random_phone(),
+            "new_phone_form[otp_delivery_preference]": "sms",
+            "authenticity_token": auth_token,
+            "commit": "Send security code",
         },
     )
 
@@ -142,9 +177,20 @@ def ial2_sign_up_async(context):
         context,
         "post",
         "/login/two_factor/sms",
-        "/verify/doc_auth/welcome",
+        "/auth_method_confirmation",
         '',
         {"code": code, "authenticity_token": auth_token},
+    )
+
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/auth_method_confirmation/skip",
+        "/verify/doc_auth/welcome",
+        "",
+        {"authenticity_token": auth_token},
     )
     auth_token = authenticity_token(resp)
 

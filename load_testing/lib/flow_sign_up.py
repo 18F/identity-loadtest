@@ -60,7 +60,7 @@ def do_sign_up(context):
         context,
         "post",
         "/sign_up/create_password",
-        "/two_factor_options",
+        "/authentication_methods_setup",
         "",
         {
             "password_form[password]": default_password,
@@ -69,8 +69,23 @@ def do_sign_up(context):
         },
     )
 
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/authentication_methods_setup",
+        "/phone_setup",
+        "",
+        {
+            "_method": "patch",
+            "two_factor_options_form[selection][]": "",
+            "two_factor_options_form[selection][]": "phone",
+            "authenticity_token": auth_token,
+        },
+    )
+
     # After password creation set up SMS 2nd factor
-    resp = do_request(context, "get", "/phone_setup", "/phone_setup")
     auth_token = authenticity_token(resp)
 
     resp = do_request(
@@ -96,9 +111,20 @@ def do_sign_up(context):
         context,
         "post",
         "/login/two_factor/sms",
-        "/account",
+        "/auth_method_confirmation",
         "",
         {"code": code, "authenticity_token": auth_token},
+    )
+
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/auth_method_confirmation/skip",
+        "/account",
+        "",
+        {"authenticity_token": auth_token},
     )
 
     return resp
