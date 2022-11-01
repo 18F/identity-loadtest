@@ -31,7 +31,7 @@ module "loadtest" {
     ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
       min_size        = 4
-      max_size        = 40
+      max_size        = 48
       desired_size    = 6
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "ON_DEMAND"
