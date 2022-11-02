@@ -123,7 +123,6 @@ def ial2_sign_up(context):
         "",
         {
             "_method": "patch",
-            "two_factor_options_form[selection][]": "",
             "two_factor_options_form[selection][]": "phone",
             "authenticity_token": auth_token,
         },
