@@ -15,6 +15,7 @@ from .flow_helper import (
 
 
 def do_sign_up(context):
+    context.client.cookies.clear()
     fake = Faker()
     new_email = "test+{}@test.com".format(fake.md5())
     default_password = "salty pickles"
