@@ -8,6 +8,6 @@ echo "scaling down pods"
 aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=10 --namespace=kube-system
 aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=1 --namespace=oidc-sinatra
 
-echo "scale the nodes in the cluster down to 6 or so"
+echo "scale the nodes in the cluster down to 6 or so, and make the max be 10."
 echo "change the locust-worker replicas in locust.yaml to 5, push it up there."
 
