@@ -6,8 +6,8 @@
 #   aws-vault exec sandbox-admin -- aws eks --region us-west-2  update-kubeconfig --name clustername
 #
 
-echo "scale the nodes in the cluster up to 126 or so, and the max to 200"
-echo "change the locust-worker replicas in locust.yaml to 300, push it up there and wait until 300 are running"
+echo "scale the nodes in the cluster up to 126 or so, and the max to 250"
+echo "change the locust-worker replicas in locust.yaml to 350, push it up there and wait until 350 are running"
 
 echo "<press return once you have done this> "
 read line
