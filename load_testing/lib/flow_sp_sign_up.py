@@ -75,7 +75,8 @@ def do_sign_up(context):
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
-            "user[terms_accepted]": '1'},
+            "user[terms_accepted]": '1'
+        },
     )
 
     conf_url = confirm_link(resp)
@@ -109,8 +110,22 @@ def do_sign_up(context):
         },
     )
 
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/authentication_methods_setup",
+        "/phone_setup",
+        "",
+        {
+            "_method": "patch",
+            "two_factor_options_form[selection][]": "phone",
+            "authenticity_token": auth_token,
+        },
+    )
+
     # After password creation set up SMS 2nd factor
-    resp = do_request(context, "get", "/phone_setup", "/phone_setup")
     auth_token = authenticity_token(resp)
 
     resp = do_request(
@@ -136,10 +151,22 @@ def do_sign_up(context):
         context,
         "post",
         "/login/two_factor/sms",
-        "/sign_up/completed",
+        "/auth_method_confirmation",
         '',
         {"code": code, "authenticity_token": auth_token},
     )
+
+    auth_token = authenticity_token(resp)
+
+    resp = do_request(
+        context,
+        "post",
+        "/auth_method_confirmation/skip",
+        "/sign_up/completed",
+        "",
+        {"authenticity_token": auth_token},
+    )
+
     auth_token = authenticity_token(resp)
 
     # Agree to share information with the service provider

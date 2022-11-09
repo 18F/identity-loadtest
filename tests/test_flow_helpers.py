@@ -92,7 +92,7 @@ def test_random_phone():
 
 def test_desktop_agent_headers():
     agent = desktop_agent_headers()
-    assert "Firefox" in agent["User-Agent"]
+    assert "Firefox" in agent["user-agent"]
 
 
 def test_get_env():
@@ -166,20 +166,6 @@ def test_sp_signout_link():
 
     with pytest.raises(Exception):
         sp_signout_link("A response without a sign-out link")
-
-
-def test_load_file():
-    readme_path = os.path.abspath(
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), "README.md")
-    )
-
-    orig = open(readme_path, "rb").read()
-
-    assert load_fixture(readme_path, ".") == orig
-
-    with pytest.raises(RuntimeError):
-        load_fixture("NotReallyThere")
-
 
 def test_export_import_cookies():
     # Late load requests to avoid monkeypatch warning:
