@@ -4,7 +4,7 @@
 # 
 set -e
 
-if [ -z "$1" || "$2" != "-yesreallydestroyit" ]; then
+if [ -z "$1" ] || [ "$2" != "-yesreallydestroyit" ]; then
      echo "usage:   $0 <cluster_name> -yesreallydestroyit"
      echo "example: $0 loadtest2 -yesreallydestroyit"
      exit 1
