@@ -184,7 +184,7 @@ def do_sign_in(
             "authenticity_token": auth_token,
             "_method": "delete",
             "client_id": "urn:gov:gsa:openidconnect:sp:sinatra",
-            "post_logout_redirect_uri": "https://oidc-sinatra.loadtest.identitysandbox.gov/logout",
+            "post_logout_redirect_uri": f"{sp_root_url}/logout",
             "state": state
         }
     )
