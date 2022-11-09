@@ -22,12 +22,13 @@ def do_request(
     expected_text=None,
     data={},
     files={},
-    name=None
+    name=None,
+    headers={}
 ):
 
     with getattr(context.client, method)(
         path,
-        headers=desktop_agent_headers(),
+        headers=desktop_agent_headers() | headers,
         data=data,
         files=files,
         catch_response=True,
