@@ -1,0 +1,38 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-adapter
+  namespace: prometheus
+  labels:
+    name: prometheus-adapter
+spec:
+  project: default
+  source:
+    chart: prometheus-community/prometheus-adapter
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 3.4.2
+    helm:
+      values: |
+        rules:
+          custom:
+          - seriesQuery: 'http_connections{pod!="",namespace!=""}'
+            resources:
+              overrides:
+                namespace: {resource: "namespace"},
+                pod: {resource: "pod"},
+            name:
+              matches: ""
+              as: "http_connections"
+            metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+
+  # Destination cluster and namespace to deploy the application
+  destination:
+    namespace: prometheus
+    server: https://kubernetes.default.svc
+
+  # keep in sync
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).

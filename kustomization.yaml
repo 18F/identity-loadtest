@@ -5,6 +5,7 @@ resources:
 - locust.yaml
 - fake-server.yaml
 - oidc-sinatra.yaml
+- prometheus-adapter.yaml
 # - dashboard.yaml
 - coredns.yaml
 configMapGenerator:
