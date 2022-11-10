@@ -32,7 +32,7 @@ module "loadtest" {
       node_group_name = "${var.cluster_name}-managed-ondemand"
       min_size        = 2
       max_size        = 250
-      desired_size    = 4
+      desired_size    = 9
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "ON_DEMAND"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
@@ -59,6 +59,10 @@ module "kubernetes_addons" {
   enable_cluster_autoscaler                      = true
   enable_external_dns                            = true
   eks_cluster_domain                             = var.dnszone
+  enable_amazon_prometheus                       = true
+  enable_prometheus                              = true
+  enable_amazon_eks_aws_ebs_csi_driver           = true
+
 
   argocd_applications = {
     loadtest-apps = {
