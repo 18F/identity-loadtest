@@ -9,7 +9,8 @@ metadata:
 spec:
   project: default
   source:
-    chart: prometheus-community/prometheus-adapter
+    # chart: prometheus-community/prometheus-adapter
+    chart: prometheus-adapter
     repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: 3.4.2
     helm:
