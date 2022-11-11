@@ -20,8 +20,10 @@ spec:
           - seriesQuery: 'http_connections{pod!="",namespace!=""}'
             resources:
               overrides:
-                namespace: {resource: "namespace"},
-                pod: {resource: "pod"},
+                namespace:
+                  resource: "namespace"
+                pod:
+                  resource: "pod"
             name:
               matches: ""
               as: "http_connections"
