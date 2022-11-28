@@ -59,17 +59,6 @@ module "kubernetes_addons" {
   enable_cluster_autoscaler                      = true
   enable_external_dns                            = true
   eks_cluster_domain                             = var.dnszone
-  enable_amazon_prometheus                       = true
-  enable_prometheus                              = false
-  prometheus_helm_config = {
-    name       = "prometheus"                                         # (Required) Release name.
-    repository = "https://prometheus-community.github.io/helm-charts" # (Optional) Repository URL where to locate the requested chart.
-    chart      = "prometheus"                                         # (Required) Chart name to be installed.
-    version    = "15.18.0"                                             # (Optional) Specify the exact chart version to install. If this is not specified, it defaults to the version set within default_helm_config: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/kubernetes-addons/prometheus/locals.tf
-    values = [templatefile("${path.module}/prometheus-values.yaml", {
-      operating_system = "linux"
-    })]
-  }
   enable_amazon_eks_aws_ebs_csi_driver           = true
 
 
