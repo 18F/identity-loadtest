@@ -27,10 +27,10 @@ spec:
           resources:
             limits:
               cpu: 1000m
-              memory: 8192Mi
+              memory: 10240Mi
             requests:
               cpu: 500m
-              memory: 2048Mi
+              memory: 8192Mi
 
   # Destination cluster and namespace to deploy the application
   destination:
