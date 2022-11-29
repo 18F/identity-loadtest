@@ -24,6 +24,10 @@ spec:
     helm:
       values: |
         server:
+          extraArgs:
+            storage.tsdb.max-block-duration: 4h
+            storage.tsdb.min-block-duration: 2h
+            storage.tsdb.retention.time: 8h
           resources:
             limits:
               cpu: 1000m
