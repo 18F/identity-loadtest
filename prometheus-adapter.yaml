@@ -75,7 +75,7 @@ spec:
             name:
               matches: ""
               as: "http_connections"
-            metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+            metricsQuery: avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 
   # Destination cluster and namespace to deploy the application
   destination:
