@@ -28,7 +28,7 @@ def do_request(
 
     with getattr(context.client, method)(
         path,
-        headers=desktop_agent_headers() | headers,
+        headers={**desktop_agent_headers(), **headers},
         data=data,
         files=files,
         catch_response=True,
