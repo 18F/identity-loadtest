@@ -6,7 +6,8 @@
 #   aws-vault exec sandbox-admin -- aws eks --region us-west-2  update-kubeconfig --name clustername
 #
 
-echo "make sure the idp, worker, and obproxy ASGs have the proper number of instances"
+echo "make sure that the obproxy ASGs are scaled out!"
+echo "make sure the idp and worker ASGs have the proper number of instances"
 echo "make sure the idp and worker dbs are scaled up properly"
 echo "make sure the idp elasticache redis is scaled up too"
 echo "scale the nodes in the cluster up to 126 or so, and the max to 250"
@@ -18,5 +19,5 @@ read line
 echo "scaling up pods"
 aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=51 --namespace=kube-system
 aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=1000 --namespace=oidc-sinatra
-aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=800 --namespace=fake-server
+aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=1000 --namespace=fake-server
 
