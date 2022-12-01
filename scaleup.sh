@@ -18,5 +18,5 @@ read line
 echo "scaling up pods"
 aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=51 --namespace=kube-system
 aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=1000 --namespace=oidc-sinatra
-aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=200 --namespace=fake-server
+aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=800 --namespace=fake-server
 
