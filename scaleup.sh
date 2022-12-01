@@ -6,9 +6,9 @@
 #   aws-vault exec sandbox-admin -- aws eks --region us-west-2  update-kubeconfig --name clustername
 #
 
-echo "make sure that the obproxy ASGs are scaled out!"
-echo "make sure the idp and worker ASGs have the proper number of instances"
-echo "make sure the idp and worker dbs are scaled up properly"
+echo "make sure that the obproxy ASGs are scaled out! At least 4, maybe 10"
+echo "make sure the idp and worker ASGs have the proper number of instances.  20-40 each"
+echo "make sure the idp and worker dbs are scaled up properly 16xl for worker, 24xl for idp"
 echo "make sure the idp elasticache redis is scaled up too"
 echo "scale the nodes in the cluster up to 126 or so, and the max to 250"
 echo "change the locust-worker replicas in locust.yaml to 350, push it up there and wait until 350 are running"
