@@ -29,13 +29,13 @@ spec:
             NUM_USERS: "2000000"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
-            RATIO_SIGN_IN: 2000                   # 2000 events/sec for sign ins
-            RATIO_SIGN_IN_USER_NOT_FOUND: 7       # 7
-            RATIO_SIGN_IN_INCORRECT_PASSWORD: 200 # 200
-            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 200  # 200
-            RATIO_SIGN_UP: 1851                   # 1851 = 500 events/sec for new user registrations
-            RATIO_SIGN_IN_AND_PROOF: 40           # 40 - 200 events/sec for identity proofings
-            RATIO_SIGN_UP_AND_PROOF: 700          # 700 - 
+            RATIO_SIGN_IN: 7106                   #
+            RATIO_SIGN_IN_USER_NOT_FOUND: 7       #
+            RATIO_SIGN_IN_INCORRECT_PASSWORD: 185 #
+            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 185  #
+            RATIO_SIGN_UP: 1777                   #
+            RATIO_SIGN_IN_AND_PROOF: 592          #
+            RATIO_SIGN_UP_AND_PROOF: 148          #
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
           locust_host: https://idp.pt.identitysandbox.gov
           locust_locustfile_configmap: login-locustfiles
