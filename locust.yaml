@@ -63,7 +63,7 @@ spec:
               memory: 1500Mi
         worker:
           image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.12.1
-          replicas: 350
+          replicas: 1
           args:
             - "--enable-rebalancing"
           hpa:
@@ -85,7 +85,7 @@ spec:
           effect: "NoSchedule"
 
   # Destination cluster and namespace to deploy the application
-  destination:
+  destination:35
     namespace: locust
     server: https://kubernetes.default.svc
 
