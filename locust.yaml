@@ -34,7 +34,7 @@ spec:
             RATIO_SIGN_IN_INCORRECT_PASSWORD: 185 # 200
             RATIO_SIGN_IN_INCORRECT_SMS_OTP: 185  # 200
             RATIO_SIGN_UP: 1333                   # goal of 500 events/sec for new user registrations
-            RATIO_SIGN_IN_AND_PROOF: 0            # 0 - 200 events/sec for identity proofings
+            RATIO_SIGN_IN_AND_PROOF: 1            # 0 - 200 events/sec for identity proofings
             RATIO_SIGN_UP_AND_PROOF: 2960         # 740 -
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
           locust_host: https://idp.pt.identitysandbox.gov
