@@ -124,7 +124,8 @@ def ial2_sign_in(context):
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         '',
-        {"doc_auth[ial2_consent_given]": "1", "authenticity_token": auth_token, },
+        {"doc_auth[ial2_consent_given]": "1",
+            "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
@@ -139,10 +140,19 @@ def ial2_sign_in(context):
         '',
         {"authenticity_token": auth_token, },
     )
-    auth_token = authenticity_token(resp)
 
-    files = {"doc_auth[front_image]": context.license_front,
-             "doc_auth[back_image]": context.license_back}
+    dom = resp_to_dom(resp)
+    selector = 'meta[name="csrf-token"]'
+    auth_token = dom.find(selector).eq(0).attr("content")
+
+    selector = 'input[id="doc_auth_document_capture_session_uuid"]'
+    dcs_uuid = dom.find(selector).eq(0).attr("value")
+
+    second_auth_token = authenticity_token(resp)
+
+    files = {"front": context.license_front,
+             "back": context.license_back,
+             }
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/doc_auth/document_capture")
