@@ -28,13 +28,13 @@ root.addHandler(handler)
 # Defaults updated based on measurements from 2021-04-13
 
 RATIOS = {
-    "SIGN_IN": 7263,
-    "SIGN_UP": 813,
-    "SIGN_IN_AND_PROOF": 0,
-    "SIGN_UP_AND_PROOF": 0,
-    "SIGN_IN_USER_NOT_FOUND": 885,
-    "SIGN_IN_INCORRECT_PASSWORD": 885,
-    "SIGN_IN_INCORRECT_SMS_OTP": 79,
+    "SIGN_IN": 5330,
+    "SIGN_UP": 1333,
+    "SIGN_IN_AND_PROOF": 2368,
+    "SIGN_UP_AND_PROOF": 592,
+    "SIGN_IN_USER_NOT_FOUND": 7,
+    "SIGN_IN_INCORRECT_PASSWORD": 185,
+    "SIGN_IN_INCORRECT_SMS_OTP": 185,
 }
 
 # For sign ins, what percentage should simulate a remembered device
