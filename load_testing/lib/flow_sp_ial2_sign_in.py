@@ -8,12 +8,14 @@ from .flow_helper import (
     querystring_value,
     random_cred,
     random_phone,
+    resp_to_dom,
     sp_signout_link,
     url_without_querystring,
 )
 from urllib.parse import urlparse
 import os
 import sys
+import time
 
 """
 *** SP IAL2 Sign In Flow ***
@@ -124,7 +126,8 @@ def ial2_sign_in(context):
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         '',
-        {"doc_auth[ial2_consent_given]": "1", "authenticity_token": auth_token, },
+        {"doc_auth[ial2_consent_given]": "1",
+            "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
@@ -139,22 +142,48 @@ def ial2_sign_in(context):
         '',
         {"authenticity_token": auth_token, },
     )
-    auth_token = authenticity_token(resp)
 
-    files = {"doc_auth[front_image]": context.license_front,
-             "doc_auth[back_image]": context.license_back}
+    dom = resp_to_dom(resp)
+    selector = 'meta[name="csrf-token"]'
+    auth_token = dom.find(selector).eq(0).attr("content")
+
+    selector = 'input[id="doc_auth_document_capture_session_uuid"]'
+    dcs_uuid = dom.find(selector).eq(0).attr("value")
+
+    second_auth_token = authenticity_token(resp)
+
+    files = {"front": context.license_front,
+             "back": context.license_back,
+             }
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/doc_auth/document_capture")
     # Post the license images
     resp = do_request(
         context,
+        "post",
+        "/api/verify/images",
+        None,
+        None,
+        {
+         "flow_path": "standard",
+         "document_capture_session_uuid": dcs_uuid},
+        files,
+        None,
+        {"X-CSRF-Token": auth_token},
+    )
+
+    resp = do_request(
+        context,
         "put",
         "/verify/doc_auth/document_capture",
         "/verify/doc_auth/ssn",
-        '',
-        {"authenticity_token": auth_token, },
-        files
+        None,
+        {
+            "_method": "patch",
+            "doc_auth[document_capture_session_uuid]": dcs_uuid,
+            "authenticity_token": second_auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -170,7 +199,7 @@ def ial2_sign_in(context):
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
     # There are three auth tokens on the response, get the second
-    auth_token = authenticity_token(resp, 1)
+    auth_token = authenticity_token(resp, 2)
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/doc_auth/verify")
@@ -179,26 +208,56 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/doc_auth/verify",
-        "/verify/phone",
+        None,
         '',
         {"authenticity_token": auth_token, },
     )
-    auth_token = authenticity_token(resp)
 
+    # Wait until
+    for i in range(12):
+        print(i)
+        if urlparse(resp.url).path == '/verify/phone':
+            # success
+            break
+        elif urlparse(resp.url).path == '/verify/doc_auth/verify_wait':
+            # keep waiting
+            time.sleep(5)
+        else:
+            raise ValueError(f'Verification received unexpected URL of {resp.url}')
+
+        resp = do_request(
+            context,
+            "get",
+            "/verify/doc_auth/verify_wait",
+        )
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/phone")
     # Enter Phone
+    auth_token = authenticity_token(resp)
     resp = do_request(
         context,
         "put",
         "/verify/phone",
-        "/verify/otp_delivery_method",
+        None,
         '',
         {"authenticity_token": auth_token,
             "idv_phone_form[phone]": random_phone(), },
     )
+    for i in range(12):
+        if urlparse(resp.url).path == '/verify/otp_delivery_method':
+            # success
+            break
+        elif urlparse(resp.url).path == '/verify/phone':
+            # keep waiting
+            time.sleep(5)
+        else:
+            raise ValueError(f'Phone verification received unexpected URL of {resp.url}')
+        resp = do_request(
+            context,
+            "get",
+            "/verify/phone",
+        )
     auth_token = authenticity_token(resp)
-
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/otp_delivery_method")
     # Select SMS Delivery
@@ -233,10 +292,12 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/review",
-        "/verify/confirmations",
+        "/verify/personal_key",
         '',
-        {"authenticity_token": auth_token,
-            "user[password]": "salty pickles", },
+        {
+            "authenticity_token": auth_token,
+            "user[password]": "salty pickles",
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -246,12 +307,12 @@ def ial2_sign_in(context):
     resp = do_request(
         context,
         "post",
-        "/verify/confirmations",
+        "/verify/personal_key",
         "/sign_up/completed",
         '',
         {
             "authenticity_token": auth_token,
-            "personal_key": personal_key(resp)
+            "acknowledgment": "1",
         },
     )
     auth_token = authenticity_token(resp)
