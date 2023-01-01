@@ -27,3 +27,4 @@ mont-back.jpeg
 # terraform cruft
 .terraform
 
+.git/
