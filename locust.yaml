@@ -85,7 +85,7 @@ spec:
           effect: "NoSchedule"
 
   # Destination cluster and namespace to deploy the application
-  destination:35
+  destination:
     namespace: locust
     server: https://kubernetes.default.svc
 
