@@ -418,7 +418,7 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
         "post",
         "/login/two_factor/sms",
         "/login/two_factor/sms",
-        'That security code is invalid',
+        'That one-time code is invalid',
         {"code": "000000", "authenticity_token": auth_token},
     )
 
