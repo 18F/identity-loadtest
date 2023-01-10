@@ -5,7 +5,7 @@
 #
 
 echo "scaling down pods"
-aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=10 --namespace=kube-system
+aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=2 --namespace=kube-system
 aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=1 --namespace=oidc-sinatra
 aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=1 --namespace=fake-server
 
