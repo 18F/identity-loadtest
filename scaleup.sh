@@ -13,11 +13,11 @@ echo "make sure the idp elasticache redis is scaled up too"
 echo "scale the nodes in the cluster up to 126 or so, and the max to 250"
 echo "change the locust-worker replicas in locust.yaml to 350, push it up there and wait until 350 are running"
 
-echo "<press return once you have done this> "
-read line
+#echo "<press return once you have done this> "
+#read line
 
 echo "scaling up pods"
-aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=384 --namespace=kube-system
-aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=1800 --namespace=oidc-sinatra
-aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=1800 --namespace=fake-server
+aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=512 --namespace=kube-system
+aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=2400 --namespace=oidc-sinatra
+aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=2400 --namespace=fake-server
 
