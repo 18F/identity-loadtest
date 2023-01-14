@@ -10,7 +10,7 @@ spec:
     kind: Deployment
     name: coredns
   minReplicas: 1
-  maxReplicas: 6144
+  maxReplicas: 1024
   metrics:
     - type: Resource
       resource:
