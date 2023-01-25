@@ -320,7 +320,7 @@ def ial2_sign_up(context):
             "idv_phone_form[phone]": random_phone(), },
     )
     for i in range(12):
-        if urlparse(resp.url).path == '/verify/otp_delivery_method':
+        if urlparse(resp.url).path == '/verify/phone_confirmation':
             # success
             break
         elif urlparse(resp.url).path == '/verify/phone':
@@ -333,19 +333,7 @@ def ial2_sign_up(context):
             "get",
             "/verify/phone",
         )
-    auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/otp_delivery_method")
-    # Select SMS Delivery
-    resp = do_request(
-        context,
-        "put",
-        "/verify/otp_delivery_method",
-        "/verify/phone_confirmation",
-        '',
-        {"authenticity_token": auth_token, "otp_delivery_preference": "sms", "commit": "Continue"},
-    )
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
