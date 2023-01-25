@@ -240,8 +240,8 @@ def ial2_sign_up(context):
         None,
         None,
         {
-         "flow_path": "standard",
-         "document_capture_session_uuid": dcs_uuid},
+            "flow_path": "standard",
+            "document_capture_session_uuid": dcs_uuid},
         files,
         None,
         {"X-CSRF-Token": auth_token},
@@ -289,7 +289,6 @@ def ial2_sign_up(context):
 
     # Wait until
     for i in range(12):
-        print(i)
         if urlparse(resp.url).path == '/verify/phone':
             # success
             break
@@ -297,14 +296,14 @@ def ial2_sign_up(context):
             # keep waiting
             time.sleep(5)
         else:
-            raise ValueError(f'Verification received unexpected URL of {resp.url}')
+            raise ValueError(
+                f'Verification received unexpected URL of {resp.url}')
 
         resp = do_request(
             context,
             "get",
             "/verify/doc_auth/verify_wait",
         )
-
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/phone")
@@ -320,32 +319,22 @@ def ial2_sign_up(context):
             "idv_phone_form[phone]": random_phone(), },
     )
     for i in range(12):
-        if urlparse(resp.url).path == '/verify/otp_delivery_method':
+        if urlparse(resp.url).path == '/verify/phone_confirmation':
             # success
             break
         elif urlparse(resp.url).path == '/verify/phone':
             # keep waiting
             time.sleep(5)
         else:
-            raise ValueError(f'Phone verification received unexpected URL of {resp.url}')
+            raise ValueError(
+                f'Phone verification received unexpected URL of {resp.url}')
+
         resp = do_request(
             context,
             "get",
             "/verify/phone",
         )
-    auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/otp_delivery_method")
-    # Select SMS Delivery
-    resp = do_request(
-        context,
-        "put",
-        "/verify/otp_delivery_method",
-        "/verify/phone_confirmation",
-        '',
-        {"authenticity_token": auth_token, "otp_delivery_preference": "sms", "commit": "Continue"},
-    )
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
