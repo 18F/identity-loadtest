@@ -28,10 +28,10 @@ root.addHandler(handler)
 # Defaults updated based on measurements from 2021-04-13
 
 RATIOS = {
-    "SIGN_IN": 5330,
-    "SIGN_UP": 1333,
-    "SIGN_IN_AND_PROOF": 2368,
-    "SIGN_UP_AND_PROOF": 592,
+    "SIGN_IN": 7217,
+    "SIGN_UP": 1666,
+    "SIGN_IN_AND_PROOF": 592,
+    "SIGN_UP_AND_PROOF": 148,
     "SIGN_IN_USER_NOT_FOUND": 7,
     "SIGN_IN_INCORRECT_PASSWORD": 185,
     "SIGN_IN_INCORRECT_SMS_OTP": 185,
@@ -85,7 +85,7 @@ class ProdSimulator(TaskSet):
         logging.debug("=== Starting Sign IN w/remembered device ===")
         flow_sp_sign_in.do_sign_in(
             self,
-            remember_device=True,
+            remember_device=False,
             visited=self.visited,
             visited_min=self.visited_min,
             remembered_target=self.remembered_target,)
