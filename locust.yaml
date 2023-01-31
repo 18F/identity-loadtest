@@ -42,7 +42,7 @@ spec:
             RATIO_SIGN_IN_USER_NOT_FOUND: 3
             RATIO_SIGN_IN_INCORRECT_PASSWORD: 75
             RATIO_SIGN_IN_INCORRECT_SMS_OTP: 75
-            RATIO_SIGN_UP: 1000
+            RATIO_SIGN_UP: 150
             RATIO_SIGN_IN_AND_PROOF: 0
             RATIO_SIGN_UP_AND_PROOF: 850
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
