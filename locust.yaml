@@ -38,13 +38,13 @@ spec:
             # RATIO_SIGN_UP_AND_PROOF: 148          # 740 -
 
             # IDV heavy load test plan
-            RATIO_SIGN_IN: 3000
-            RATIO_SIGN_IN_USER_NOT_FOUND: 3
-            RATIO_SIGN_IN_INCORRECT_PASSWORD: 75
-            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 75
-            RATIO_SIGN_UP: 150
-            RATIO_SIGN_IN_AND_PROOF: 0
-            RATIO_SIGN_UP_AND_PROOF: 850
+            RATIO_SIGN_IN: 5000
+            RATIO_SIGN_IN_USER_NOT_FOUND: 7
+            RATIO_SIGN_IN_INCORRECT_PASSWORD: 185
+            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 185
+            RATIO_SIGN_UP: 2000
+            RATIO_SIGN_IN_AND_PROOF: 1623
+            RATIO_SIGN_UP_AND_PROOF: 1000
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
           locust_host: https://idp.pt.identitysandbox.gov
           locust_locustfile_configmap: login-locustfiles
@@ -72,7 +72,7 @@ spec:
               memory: 1500Mi
         worker:
           image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.12.1
-          replicas: 1
+          replicas: 288
           args:
             - "--enable-rebalancing"
           hpa:
