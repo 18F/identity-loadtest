@@ -194,7 +194,7 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/doc_auth/ssn",
-        "/verify/doc_auth/verify",
+        "/verify/verify_info",
         '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
@@ -218,7 +218,7 @@ def ial2_sign_in(context):
         if urlparse(resp.url).path == '/verify/phone':
             # success
             break
-        elif urlparse(resp.url).path == '/verify/doc_auth/verify_info':
+        elif urlparse(resp.url).path == '/verify/verify_info':
             # keep waiting
             time.sleep(5)
         else:
