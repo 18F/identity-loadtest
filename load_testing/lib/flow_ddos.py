@@ -36,6 +36,9 @@ def do_ddos(context):
             "user[password]": "wrong pickles",
             "authenticity_token": auth_token,
         },
+        headers={
+            'X-Wargames': 'Wiseguy'
+        }
     )
 
     return resp
