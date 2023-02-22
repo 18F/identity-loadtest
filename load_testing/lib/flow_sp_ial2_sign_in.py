@@ -202,12 +202,12 @@ def ial2_sign_in(context):
     auth_token = authenticity_token(resp, 2)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/verify")
+        print("DEBUG: /verify/verify_info")
     # Verify
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/verify",
+        "/verify/verify_info",
         None,
         '',
         {"authenticity_token": auth_token, },
@@ -218,7 +218,7 @@ def ial2_sign_in(context):
         if urlparse(resp.url).path == '/verify/phone':
             # success
             break
-        elif urlparse(resp.url).path == '/verify/doc_auth/verify_wait':
+        elif urlparse(resp.url).path == '/verify/doc_auth/verify_info':
             # keep waiting
             time.sleep(5)
         else:
@@ -228,7 +228,7 @@ def ial2_sign_in(context):
         resp = do_request(
             context,
             "get",
-            "/verify/doc_auth/verify_wait",
+            "/verify/verify_info",
         )
 
     if os.getenv("DEBUG"):
