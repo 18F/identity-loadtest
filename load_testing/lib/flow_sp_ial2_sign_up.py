@@ -268,7 +268,7 @@ def ial2_sign_up(context):
         context,
         "put",
         "/verify/doc_auth/ssn",
-        "/verify/verify_info",
+        "/verify/doc_auth/verify",
         '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
