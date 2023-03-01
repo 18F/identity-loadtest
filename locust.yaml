@@ -27,7 +27,7 @@ spec:
           headless: false
           environment:
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
-            NUM_USERS: "20000000"
+            NUM_USERS: "80000000"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
             RATIO_SIGN_IN: 6565                   # goal of 2000 events/sec for sign ins
