@@ -252,8 +252,12 @@ def ial2_sign_in(context):
             # keep waiting
             time.sleep(5)
         else:
-            raise ValueError(
-                f'Phone verification received unexpected URL of {resp.url}\n\n{resp.text}')
+            if "login credentials used in another browser" in resp.text:
+                resp.failure(
+                    'Your login credentials were used in another browser.')
+            else:
+                raise ValueError(
+                    f'Phone verification received unexpected URL of {resp.url}\n\n{resp.text}')
 
         resp = do_request(
             context,
