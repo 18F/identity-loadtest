@@ -93,7 +93,6 @@ def check_fail_text(response_text):
         if msg in response_text:
             found_fail_msgs.append(msg)
     if 'found_fail_msgs' in locals():
-        x
         return found_fail_msgs
 
 
