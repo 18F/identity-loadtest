@@ -223,7 +223,7 @@ def ial2_sign_in(context):
             time.sleep(5)
         else:
             raise ValueError(
-                f'Verification received unexpected URL of {resp.url}')
+                f"Verification received unexpected URL of {resp.url}\n\n{resp.body}")
 
         resp = do_request(
             context,
