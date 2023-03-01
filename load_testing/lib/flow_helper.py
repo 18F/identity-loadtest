@@ -84,6 +84,7 @@ def check_fail_text(response_text):
         'This website is under heavy load (queue full)',
         'Need more time?',
         'Oops, something went wrong. Please try again.',
+        'We could not match this phone number to other records',
         # occurs under high load with async workers
         'The server took too long to respond. Please try again.',
     ]
