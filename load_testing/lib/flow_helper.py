@@ -62,14 +62,14 @@ def fail_response(response, expected_redirect, expected_text):
             error_msg = f'You wanted {expected_redirect}, but got '\
                         f'{response.url} for a url.'
             if check_fail_text(response.text):
-                error_msg += f' Found the following fail msg(s): ' + check_fail_text(
-                    response.text)
+                error_msg += f' Found the following fail msg(s): ' + " | ".join(check_fail_text(
+                    response.text))
             response.failure(error_msg)
         if expected_text:
             error_msg = f'"{expected_text}" is not in the response text.'
             if check_fail_text(response.text):
-                error_msg += f' Found the following fail msg(s): ' + check_fail_text(
-                    response.text)
+                error_msg += f' Found the following fail msg(s): ' + " | ".join(check_fail_text(
+                    response.text))
             response.failure(error_msg)
 
 
