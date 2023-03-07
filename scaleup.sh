@@ -19,6 +19,8 @@ echo "change the locust-worker replicas in locust.yaml to 350, push it up there 
 echo "scaling up pods"
 aws-vault exec sandbox-admin -- kubectl scale deployment argo-cd-argocd-server --replicas=5 --namespace=argocd
 aws-vault exec sandbox-admin -- kubectl scale deployment argo-cd-argocd-repo-server --replicas=5 --namespace=argocd
-aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=512 --namespace=kube-system
-aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=2400 --namespace=oidc-sinatra
-aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=3840 --namespace=fake-server
+aws-vault exec sandbox-admin -- kubectl scale deployment coredns --replicas=256 --namespace=kube-system
+aws-vault exec sandbox-admin -- kubectl scale deployment oidc-sinatra --replicas=3072 --namespace=oidc-sinatra
+aws-vault exec sandbox-admin -- kubectl scale deployment fake-server --replicas=4096 --namespace=fake-server
+aws-vault exec sandbox-admin -- kubectl scale deployment locust-worker --replicas=320 --namespace=locust
+aws-vault exec sandbox-admin -- kubectl scale deployment locust-master --replicas=1 --namespace=locust
