@@ -198,8 +198,7 @@ def ial2_sign_in(context):
         '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
-    # There are three auth tokens on the response, get the second
-    auth_token = authenticity_token(resp, 2)
+    auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/verify_info")
