@@ -177,7 +177,7 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/doc_auth/document_capture",
-        "/verify/doc_auth/ssn",
+        "/verify/ssn",
         None,
         {
             "_method": "patch",
@@ -189,11 +189,11 @@ def ial2_sign_in(context):
 
     ssn = '900-12-3456'
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/ssn")
+        print("DEBUG: /verify/ssn")
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/ssn",
+        "/verify/ssn",
         "/verify/verify_info",
         '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
