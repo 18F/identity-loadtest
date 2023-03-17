@@ -272,7 +272,7 @@ def ial2_sign_up(context):
         '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
-    auth_token = authenticity_token(resp)
+    auth_token = authenticity_token(resp, 1)
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/doc_auth/verify_info")
