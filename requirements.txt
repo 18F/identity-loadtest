@@ -1,7 +1,6 @@
-coverage==6.2
-Faker==13.11.1
-locust==2.8.6
-pyquery==1.4.3
-pytest==6.2.5
-# required to be compatible with python 3.6
-pyzmq >=22.2.1, <23.0.0
+coverage==7.2.3
+Faker==18.4.0
+locust==2.15.1
+pyquery==2.0.0
+pytest==7.3.1
+pyzmq==25.0.2
