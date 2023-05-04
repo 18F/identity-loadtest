@@ -35,7 +35,8 @@ def do_ial2_proofing(context):
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
         "",
-        {"doc_auth[ial2_consent_given]": "1", "authenticity_token": auth_token, },
+        {"doc_auth[ial2_consent_given]": "1",
+            "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
@@ -44,7 +45,7 @@ def do_ial2_proofing(context):
         context,
         "put",
         "/verify/doc_auth/upload?type=desktop",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         "",
         {"authenticity_token": auth_token, },
     )
@@ -57,7 +58,7 @@ def do_ial2_proofing(context):
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         "/verify/doc_auth/ssn",
         "",
         {"authenticity_token": auth_token, },

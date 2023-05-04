@@ -133,7 +133,7 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/doc_auth/upload?type=desktop",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         '',
         {"authenticity_token": auth_token, },
     )
@@ -152,7 +152,7 @@ def ial2_sign_in(context):
              }
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/document_capture")
+        print("DEBUG: /verify/document_capture")
     # Post the license images
     resp = do_request(
         context,
@@ -171,7 +171,7 @@ def ial2_sign_in(context):
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         "/verify/ssn",
         None,
         {

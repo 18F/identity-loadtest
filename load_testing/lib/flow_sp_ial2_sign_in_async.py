@@ -126,7 +126,7 @@ def ial2_sign_in_async(context):
         context,
         "put",
         "/verify/doc_auth/upload?type=desktop",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         '',
         {"authenticity_token": auth_token, },
     )
@@ -135,12 +135,12 @@ def ial2_sign_in_async(context):
     files = {"doc_auth[front_image]": context.license_front,
              "doc_auth[back_image]": context.license_back}
 
-    logging.debug('/verify/doc_auth/document_capture')
+    logging.debug('/verify/document_capture')
     # Post the license images
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         "/verify/doc_auth/ssn",
         '',
         {"authenticity_token": auth_token, },

@@ -58,7 +58,6 @@ def ial2_sign_up(context):
         sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # GET the new email page
     resp = do_request(context, "get", "/sign_up/enter_email",
@@ -211,7 +210,7 @@ def ial2_sign_up(context):
         context,
         "put",
         "/verify/doc_auth/upload?type=desktop",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         '',
         {"authenticity_token": auth_token, },
     )
@@ -231,7 +230,7 @@ def ial2_sign_up(context):
              }
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/document_capture")
+        print("DEBUG: /verify/document_capture")
     # Post the license images
     resp = do_request(
         context,
@@ -250,7 +249,7 @@ def ial2_sign_up(context):
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         "/verify/ssn",
         None,
         {
