@@ -221,7 +221,7 @@ def ial2_sign_up_async(context):
         context,
         "put",
         "/verify/doc_auth/upload?type=desktop",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         '',
         {"authenticity_token": auth_token, },
     )
@@ -235,7 +235,7 @@ def ial2_sign_up_async(context):
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/document_capture",
+        "/verify/document_capture",
         "/verify/doc_auth/ssn",
         '',
         {"authenticity_token": auth_token, },

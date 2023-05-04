@@ -54,7 +54,6 @@ def do_sign_up(context):
     )
 
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # GET the new email page
     resp = do_request(context, "get", "/sign_up/enter_email",
