@@ -161,7 +161,7 @@ def querystring_value(url, key):
         return parse_qs(parsed.query)[key][0]
     except KeyError as e:
         logging.error(
-            f'{LOG_NAME}: No querystring found for {key} in {response.url}')
+            f'{LOG_NAME}: No querystring found for {key} in {url}')
         logging.debug(e)
         raise locust.exception.RescheduleTask
 

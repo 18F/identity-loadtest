@@ -57,7 +57,6 @@ def ial2_sign_up_async(context):
         sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # GET the new email page
     resp = do_request(context, "get", "/sign_up/enter_email",
@@ -77,8 +76,6 @@ def ial2_sign_up_async(context):
         '',
         {
             "user[email]": new_email,
-            # this is in sign in, not needed here?
-            #  "user[request_id]": request_id,
             "authenticity_token": auth_token,
             "user[terms_accepted]": '1'},
     )

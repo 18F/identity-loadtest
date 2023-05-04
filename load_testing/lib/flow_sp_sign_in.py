@@ -68,7 +68,6 @@ def do_sign_in(
         sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # This should match the number of users that were created for the DB with
     # the rake task
@@ -116,7 +115,6 @@ def do_sign_in(
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
-            "user[request_id]": request_id,
             "authenticity_token": auth_token,
         }
     )
@@ -234,7 +232,6 @@ def do_sign_in_user_not_found(context):
         sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # This should match the number of users that were created for the DB with
     # the rake task
@@ -251,7 +248,6 @@ def do_sign_in_user_not_found(context):
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
-            "user[request_id]": request_id,
             "authenticity_token": auth_token,
         }
     )
@@ -304,7 +300,6 @@ def do_sign_in_incorrect_password(context):
         sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # This should match the number of users that were created for the DB with
     # the rake task
@@ -321,7 +316,6 @@ def do_sign_in_incorrect_password(context):
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
-            "user[request_id]": request_id,
             "authenticity_token": auth_token,
         }
     )
@@ -373,7 +367,6 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
         sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
-    request_id = querystring_value(resp.url, "request_id")
 
     # This should match the number of users that were created for the DB with
     # the rake task
@@ -390,7 +383,6 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
-            "user[request_id]": request_id,
             "authenticity_token": auth_token,
         }
     )

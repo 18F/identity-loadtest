@@ -66,12 +66,12 @@
           <input class="block col-12 field hidden" type="hidden" value="test99@test.com" name="user[email]"
             id="user_email">
           <input class="block col-12 field hidden" type="hidden" value="true" name="user[resend]" id="user_resend">
-          <input class="block col-12 field hidden" type="hidden" value="" name="user[request_id]" id="user_request_id">
           <p>Didn’t receive an email?
             <input type="submit" name="commit" value="Resend" class="btn btn-primary btn-link ml-tiny"
-              data-disable-with="Resend"></p>
+              data-disable-with="Resend">
+          </p>
 
-          <p>Or, <a href="/sign_up/enter_email?request_id=">use a different email address</a></p>
+          <p>Or, <a href="/sign_up/enter_email?">use a different email address</a></p>
           <p>You can close this window if you're done.</p>
 
           <a id="confirm-now"
@@ -92,11 +92,11 @@
     <div class="i18n-mobile-dropdown sm-hide display-none">
       <ul class="list-reset mb0 white center">
         <li class="border-bottom"><a class="block py-12p px2 text-decoration-none blue fs-13p"
-            href="/en/sign_up/verify_email?request_id=">English</a></li>
+            href="/en/sign_up/verify_email?">English</a></li>
         <li class="border-bottom"><a class="block py-12p px2 text-decoration-none blue fs-13p"
-            href="/es/sign_up/verify_email?request_id=">Español</a></li>
+            href="/es/sign_up/verify_email?">Español</a></li>
         <li class="border-bottom"><a class="block py-12p px2 text-decoration-none blue fs-13p"
-            href="/fr/sign_up/verify_email?request_id=">Français</a></li>
+            href="/fr/sign_up/verify_email?">Français</a></li>
       </ul>
     </div>
     <div class="container py1 px2 lg-px0 sm-py0">
@@ -110,11 +110,11 @@
                   aria-hidden="true" class="caret inline-block ml-tiny">▾</span></a>
               <ul class="i18n-desktop-dropdown list-reset mb0 white display-none">
                 <li class="border-bottom border-navy"><a class="block pl-24p py2 text-decoration-none white"
-                    href="/en/sign_up/verify_email?request_id=">English</a></li>
+                    href="/en/sign_up/verify_email?">English</a></li>
                 <li class="border-bottom border-navy"><a class="block pl-24p py2 text-decoration-none white"
-                    href="/es/sign_up/verify_email?request_id=">Español</a></li>
+                    href="/es/sign_up/verify_email?">Español</a></li>
                 <li class="border-bottom border-navy"><a class="block pl-24p py2 text-decoration-none white"
-                    href="/fr/sign_up/verify_email?request_id=">Français</a></li>
+                    href="/fr/sign_up/verify_email?">Français</a></li>
               </ul>
             </li>
           </ul><a class="caps h6 blue sm-white text-decoration-none mr3" target="_blank" rel="noopener noreferrer"
@@ -136,7 +136,7 @@
   <script nonce="">var sessionTimeoutIn = 900 * 1000;
 
     function refreshPage() {
-      document.location = "/sign_up/verify_email?request_id=&timeout=true";
+      document.location = "/sign_up/verify_email?&timeout=true";
     }
 
     setTimeout(refreshPage, sessionTimeoutIn);
