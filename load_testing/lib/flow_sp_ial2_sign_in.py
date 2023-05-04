@@ -58,10 +58,6 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    # TODO add debugging around this statement to further investigate
-    # https://github.com/18F/identity-loadtest/issues/25
-    request_id = querystring_value(resp.url, "request_id")
-
     # This should match the number of users that were created for the DB with
     # the rake task
     num_users = get_env("NUM_USERS")
@@ -78,7 +74,6 @@ def ial2_sign_in(context):
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
-            "user[request_id]": request_id,
             "authenticity_token": auth_token,
         }
     )
