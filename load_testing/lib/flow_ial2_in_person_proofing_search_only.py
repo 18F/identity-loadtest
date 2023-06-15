@@ -1,6 +1,7 @@
 from faker import Faker
 from .flow_helper import do_request, authenticity_token, otp_code, random_phone
 import sys
+import json
 
 """
 *** IAL2 Proofing Flow ***
@@ -33,18 +34,18 @@ def do_ial2_proofing(context):
         context,
         "put",
         "/verify/doc_auth/agreement",
-        "/verify/doc_auth/upload",
+        "/verify/hybrid_handoff",
         "",
         {"doc_auth[ial2_consent_given]": "1",
             "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
-    # Choose Desktop flow
+    # Select Desktop
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/upload?type=desktop",
+        "/verify/hybrid_handoff?type=desktop",
         "/verify/document_capture",
         "",
         {"authenticity_token": auth_token, },
@@ -71,8 +72,12 @@ def do_ial2_proofing(context):
         "post",
         "/api/addresses",
         None,
-        data={"address":"1600 Pennsylvania Avenue NW, Washington, DC 20500"}
+        data=json.dumps({
+            "address":"1600 Pennsylvania Avenue NW, Washington, DC 20500",
+        }),
+        headers = {
+            "x-csrf-token": auth_token,
+        }
     )
-    auth_token = authenticity_token(resp)
 
     return resp
