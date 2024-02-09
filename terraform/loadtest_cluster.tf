@@ -4,7 +4,7 @@ locals {
 }
 
 module "loadtest" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.11.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
 
   # EKS Cluster VPC and Subnet mandatory config
   vpc_id             = module.vpc.vpc_id
@@ -35,8 +35,8 @@ module "loadtest" {
       desired_size    = 2
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "SPOT"
-      instance_types  = ["m6a.2xlarge", "m5.2xlarge", "m4.2xlarge", "m5a.2xlarge"]    // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates  
+      instance_types  = ["m6a.2xlarge", "m5.2xlarge", "m4.2xlarge", "m5a.2xlarge"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
+      disk_size       = 100                                                        # disk_size will be ignored when using Launch Templates  
     }
     ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
@@ -53,7 +53,7 @@ module "loadtest" {
 
 # Add-ons
 module "kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.13.1"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 
   eks_cluster_id = module.loadtest.eks_cluster_id
 
