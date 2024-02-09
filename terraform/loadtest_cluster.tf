@@ -97,7 +97,7 @@ module "kubernetes_addons" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   name = var.cluster_name
   cidr = local.vpc_cidr
