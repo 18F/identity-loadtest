@@ -104,6 +104,7 @@ def do_sign_up(context):
         '',
         {
             "password_form[password]": default_password,
+            "password_form[password_confirmation]": default_password,
             "authenticity_token": auth_token,
             "confirmation_token": token,
         },
