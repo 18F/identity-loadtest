@@ -90,7 +90,7 @@ def ial2_sign_in(context):
         context,
         "post",
         "/login/two_factor/sms",
-        "/verify/doc_auth/welcome",
+        "",
         '',
         {
             "code": code,
@@ -99,40 +99,44 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
+    if urlparse(resp.url).path == '/second_mfa_reminder':
+        print("DEBUG: second MFA reminder block")
+
+
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/welcome")
+        print("DEBUG: /verify/welcome")
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/welcome",
-        "/verify/doc_auth/agreement",
+        "/verify/welcome",
+        "/verify/agreement",
         '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/agreement")
+        print("DEBUG: /verify/agreement")
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/agreement",
-        "/verify/doc_auth/upload",
+        "/verify/agreement",
+        "/verify/hybrid_handoff",
         '',
-        {"doc_auth[ial2_consent_given]": "1",
+        {"doc_auth[idv_consent_given]": "1",
             "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/upload?type=desktop")
+        print("DEBUG: /verify/upload?type=desktop")
     # Choose Desktop flow
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/upload?type=desktop",
+        "/verify/hybrid_handoff",
         "/verify/document_capture",
         '',
         {"authenticity_token": auth_token, },
@@ -213,9 +217,23 @@ def ial2_sign_in(context):
         if urlparse(resp.url).path == '/verify/phone':
             # success
             break
+        if urlparse(resp.url).path == '/backup_code_reminder':
+            # verify backup codes
+            if os.getenv("DEBUG"):
+               print("DEBUG: /backup_code_reminder")
+            auth_token = authenticity_token(resp)
+            resp = do_request(
+                context,
+                "get",
+                "/account?",
+                None,
+                '',
+                {"authenticity_token": auth_token, },
+            )
+            break
         elif urlparse(resp.url).path == '/verify/verify_info':
             # keep waiting
-            time.sleep(5)
+            time.sleep(2)
         else:
             raise ValueError(
                 f"Verification received unexpected URL of {resp.url}\n\n{resp.text}")
