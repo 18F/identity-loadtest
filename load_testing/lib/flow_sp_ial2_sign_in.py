@@ -97,14 +97,26 @@ def ial2_sign_in(context):
             "authenticity_token": auth_token,
         },
     )
-    auth_token = authenticity_token(resp)
 
     if urlparse(resp.url).path == '/second_mfa_reminder':
+        auth_token = authenticity_token(resp)
+        resp = do_request(
+            context,
+            "post",
+            "/second_mfa_reminder",
+            "",
+            '',
+            {
+                "authenticity_token": auth_token,
+            },
+        )
         print("DEBUG: second MFA reminder block")
 
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/welcome")
+
+    auth_token = authenticity_token(resp)
     # Post consent to Welcome
     resp = do_request(
         context,
@@ -198,7 +210,7 @@ def ial2_sign_in(context):
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
     # There are three auth tokens on the response, get the second
-    auth_token = authenticity_token(resp, 1)
+    auth_token = authenticity_token(resp, 0)
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/verify_info")
@@ -236,7 +248,7 @@ def ial2_sign_in(context):
             time.sleep(2)
         else:
             raise ValueError(
-                f"Verification received unexpected URL of {resp.url}\n\n{resp.text}")
+                f"Verification expected /verify/phone but received unexpected URL of {resp.url}")
 
         resp = do_request(
             context,
@@ -270,7 +282,7 @@ def ial2_sign_in(context):
                     'Your login credentials were used in another browser.')
             else:
                 raise ValueError(
-                    f'Phone verification received unexpected URL of {resp.url}\n\n{resp.text}')
+                    f"Verification expected /verify/phone_confirmation but received unexpected URL of {resp.url}")
 
         resp = do_request(
             context,
@@ -288,7 +300,7 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/phone_confirmation",
-        "/verify/review",
+        "/verify/enter_password",
         '',
         {"authenticity_token": auth_token, "code": code, },
     )
@@ -300,7 +312,7 @@ def ial2_sign_in(context):
     resp = do_request(
         context,
         "put",
-        "/verify/review",
+        "/verify/enter_password",
         "/verify/personal_key",
         '',
         {
