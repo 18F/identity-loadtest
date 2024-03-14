@@ -198,7 +198,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    ssn = '900-12-3456'
+    ssn = f'900-12-{r.randint(0,9999):04}'
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/ssn")
     resp = do_request(
