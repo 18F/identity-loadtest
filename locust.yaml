@@ -26,7 +26,7 @@ spec:
           name: login-sign-up-sign-in
           headless: false
           environment:
-            SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
+            SP_HOST: https://oidc-sinatra.agnesloadtest.identitysandbox.gov
             NUM_USERS: "24999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
@@ -54,7 +54,7 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.pt.identitysandbox.gov
+          locust_host: https://idp.agnes.identitysandbox.gov
           locust_locustfile_configmap: login-locustfiles
           locust_lib_configmap: login-loadtest-lib
           locust_locustfile: sp_sign_up.locustfile.py

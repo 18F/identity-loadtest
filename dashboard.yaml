@@ -36,7 +36,7 @@ spec:
   source:
     path: dashboard
     repoURL: https://github.com/18F/identity-loadtest.git
-    targetRevision: main
+    targetRevision: stages/agnes
   destination:
     namespace: kubernetes-dashboard
     server: https://kubernetes.default.svc
