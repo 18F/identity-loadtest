@@ -1,11 +1,11 @@
 #
 # This will create a deployment of the oidc-sinatra app
-# that will live on https://oidc-sinatra.loadtest.identitysandbox.gov.
+# that will live on https://oidc-sinatra.agnesloadtest.identitysandbox.gov.
 # This needs a few things set up by hand:
-#  * The loadtest.identitysandbox.gov dns zone needed to be created
+#  * The agnesloadtest.identitysandbox.gov dns zone needed to be created
 #    and delegated from identitysandbox.gov in the account this is going
 #    to be created in.  This is already done.
-#  * An SSL cert for *.loadtest.identitysandbox.gov
+#  * An SSL cert for *.agnesloadtest.identitysandbox.gov
 #    needs to be created and have it's magic auth stuff put in the loadtest
 #    subdomain. This is already done.
 #  * You will also need to create the sp-private-key secret with the demo_sp.key
@@ -38,13 +38,11 @@ spec:
           image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/logindotgov/oidc-sinatra:1.4
           env:
             - name: idp_url
-              value: "https://idp.pt.identitysandbox.gov/"
-            - name: redirect_uri
-              value: "https://oidc-sinatra.loadtest.identitysandbox.gov/"
-            - name: NEW_RELIC_APP_NAME
-              value: oidc-sinatra.loadtest.identitysandbox.gov
+              value: "https://idp.agnes.identitysandbox.gov/"
             - name: acr_values
               value: "http://idmanagement.gov/ns/assurance/loa/1"
+            - name: redirect_uri
+              value: "https://oidc-sinatra.agnesloadtest.identitysandbox.gov/"
             - name: client_id
               value: "urn:gov:gsa:openidconnect:sp:sinatra"
             - name: sp_private_key
@@ -123,12 +121,12 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
     alb.ingress.kubernetes.io/target-type: ip
-    external-dns.alpha.kubernetes.io/hostname: oidc-sinatra.loadtest.identitysandbox.gov
+    external-dns.alpha.kubernetes.io/hostname: oidc-sinatra.agnesloadtest.identitysandbox.gov
 spec:
   ingressClassName: alb
   tls:
     - hosts:
-        - oidc-sinatra.loadtest.identitysandbox.gov
+        - oidc-sinatra.agnesloadtest.identitysandbox.gov
   rules:
     - http:
         paths:
