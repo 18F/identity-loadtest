@@ -13,5 +13,5 @@ variable "cluster_name" {
 variable "dnszone" {
   description = "zone that we create certs and lb names in"
   type        = string
-  default     = "loadtest.identitysandbox.gov"
+  default     = "agnesloadtest.identitysandbox.gov"
 }

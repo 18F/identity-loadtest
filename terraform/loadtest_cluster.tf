@@ -176,3 +176,19 @@ data "aws_route53_zone" "primary" {
   name         = var.dnszone
   private_zone = false
 }
+
+module "acm-cert-fake-server" {
+  source = "github.com/18F/identity-terraform//acm_certificate?ref=6cdd1037f2d1b14315cc8c59b889f4be557b9c17"
+  #source = "../../../identity-terraform/acm_certificate"
+  domain_name               = "fake-server.${var.dnszone}"
+  subject_alternative_names = []
+  validation_zone_id        = data.aws_route53_zone.primary.id
+}
+
+module "acm-cert-oidc-sinatra" {
+  source = "github.com/18F/identity-terraform//acm_certificate?ref=6cdd1037f2d1b14315cc8c59b889f4be557b9c17"
+  #source = "../../../identity-terraform/acm_certificate"
+  domain_name               = "oidc-sinatra.${var.dnszone}"
+  subject_alternative_names = []
+  validation_zone_id        = data.aws_route53_zone.primary.id
+}
