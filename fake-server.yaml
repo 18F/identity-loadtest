@@ -19,7 +19,7 @@ spec:
   source:
     path: .
     repoURL: https://github.com/18F/identity-fake-server.git
-    targetRevision: main
+    targetRevision: stages/agnes
   destination:
     namespace: fake-server
     server: https://kubernetes.default.svc
