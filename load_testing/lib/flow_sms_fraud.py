@@ -109,7 +109,7 @@ def do_sign_up(context):
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
-    for i in range(300):
+    for i in range(30):
       resp =  do_request(
           context,
           "get",
@@ -117,6 +117,6 @@ def do_sign_up(context):
           "/login/two_factor/sms",
           "",
       )
-      time.sleep(1)
+      time.sleep(10)
 
     return resp
