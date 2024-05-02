@@ -99,7 +99,7 @@ def do_sign_up(context):
         "",
         {
             "new_phone_form[international_code]": "US",
-            "new_phone_form[phone]": random_phone(),
+            "new_phone_form[phone]": "2025551234",
             "new_phone_form[otp_delivery_preference]": "sms",
             "new_phone_form[recaptcha_token]": "",
             "authenticity_token": auth_token,
