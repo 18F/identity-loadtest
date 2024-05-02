@@ -30,7 +30,7 @@ class SignUpLoad(TaskSet):
         flow_helper.do_request(self, "get", "/account", "/account", "")
         flow_helper.do_request(self, "get", "/logout", "/logout", "")
 
-    @task(4)
+    @task(1)
     def sms_fraud_load_test(self):
         flow_helper.do_request(self, "get", "/", "/", "")
         flow_sms_fraud.do_sign_up(self)
