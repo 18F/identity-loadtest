@@ -4,3 +4,4 @@ locust==2.15.1
 pyquery==2.0.0
 pytest==7.3.1
 pyzmq==25.0.2
+Werkzeug==2.2.2
