@@ -3,6 +3,10 @@ locals {
   vpc_cidr = "10.0.0.0/16"
 }
 
+data "aws_route53_zone" "loadtest" {
+  name = var.dnszone
+}
+
 module "loadtest" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1"
 
@@ -25,7 +29,7 @@ module "loadtest" {
     #   subnet_ids      = module.vpc.private_subnets
     #   capacity_type   = "SPOT"
     #   instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"]    // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-    #   disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates  
+    #   disk_size       = 100                                                                # disk_size will be ignored when using Launch Templates
     #   k8s_taints      = [{key= "spot", value="true", effect="NO_SCHEDULE"}]
     # }
     bigspot = {
@@ -36,7 +40,7 @@ module "loadtest" {
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "SPOT"
       instance_types  = ["m6a.2xlarge", "m5.2xlarge", "m4.2xlarge", "m5a.2xlarge"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                        # disk_size will be ignored when using Launch Templates  
+      disk_size       = 100                                                        # disk_size will be ignored when using Launch Templates
     }
     ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
@@ -46,52 +50,86 @@ module "loadtest" {
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "ON_DEMAND"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                             # disk_size will be ignored when using Launch Templates  
+      disk_size       = 100                                                             # disk_size will be ignored when using Launch Templates
     }
   }
 }
 
 # Add-ons
-module "kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "~> 1.16.2"
 
-  eks_cluster_id = module.loadtest.eks_cluster_id
+  cluster_name      = module.loadtest.eks_cluster_id
+  cluster_endpoint  = module.loadtest.eks_cluster_endpoint
+  cluster_version   = module.loadtest.eks_cluster_version
+  oidc_provider_arn = module.loadtest.eks_oidc_provider_arn
 
-  # EKS Add-ons
-  enable_amazon_eks_vpc_cni                      = true
-  enable_amazon_eks_coredns                      = true
-  enable_coredns_cluster_proportional_autoscaler = false
-  enable_amazon_eks_kube_proxy                   = true
-  enable_argocd                                  = true
-  argocd_manage_add_ons                          = true
-  enable_aws_for_fluentbit                       = true
-  enable_aws_load_balancer_controller            = true
-  enable_cluster_autoscaler                      = true
-  enable_external_dns                            = true
-  eks_cluster_domain                             = var.dnszone
-  enable_amazon_eks_aws_ebs_csi_driver           = true
-
-
-  argocd_applications = {
-    loadtest-apps = {
-      path            = "."
-      repo_url        = "https://github.com/18F/identity-loadtest.git"
-      type            = "kustomize"
-      target_revision = "main"
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.cluster_name}-ebs-csi-controller"
     }
+    coredns = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+  }
 
+  # EKS Blueprints Addons
+  enable_cluster_autoscaler           = true
+  enable_external_dns                 = true
+  enable_aws_load_balancer_controller = true
+  enable_cert_manager                 = true
+  external_dns_route53_zone_arns      = [data.aws_route53_zone.loadtest.arn]
+  enable_metrics_server               = true
+}
+
+module "gitops_bridge" {
+  depends_on = [module.loadtest]
+  source     = "github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform?ref=v2.0.0"
+  cluster = {
+    name        = var.cluster_name
+    metadata    = module.eks_blueprints_addons.gitops_metadata
+    environment = var.cluster_name
+  }
+
+  argocd = {
+    create_namespace = true
+    chart_version    = "5.55.0"
+    values = [templatefile("${path.module}/templates/argocd-values.yaml.tpl", {
+    })]
+  }
+
+  apps = {
+    loadtest-apps = templatefile("${path.module}/templates/application-kustomize.yaml.tpl", {
+      name           = "loadtest-apps"
+      path           = "."
+      repoURL        = "https://github.com/18F/identity-loadtest.git"
+      targetRevision = "main"
+    })
     # Below are all magic add-ons that you can see how to configure here:
     # https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons
-    addons = {
-      path               = "chart"
-      repo_url           = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
-      add_on_application = true # Indicates the root add-on application.
-      values = {
-        metricsServer = {
-          enable = true
-        }
-      }
-    }
+    addons = templatefile("${path.module}/templates/application.yaml.tpl", {
+      name           = "addons"
+      targetRevision = "main"
+      path           = "chart"
+      repoURL        = "https://github.com/aws-samples/eks-blueprints-add-ons.git"
+      helmValues = templatefile("${path.module}/helm-values/addons.yaml.tpl", {
+        region          = var.region,
+        clusterName     = var.cluster_name,
+        repoUrl         = "https://github.com/aws-samples/eks-blueprints-add-ons.git",
+        targetRevision  = "main",
+        zoneName        = var.dnszone,
+        gitops_metadata = module.eks_blueprints_addons.gitops_metadata # All our roles, service account names we setup with eks_addons
+      })
+      valueFiles = []
+    })
   }
 }
 
