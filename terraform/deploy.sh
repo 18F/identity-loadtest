@@ -22,6 +22,11 @@ RUN_BASE=$(pwd)
 
 # set it up with the s3 backend
 cd "$RUN_BASE/$SCRIPT_BASE"
+
+if [ -f ./.terraform/terraform.tfstate ] ; then
+    rm -f ./.terraform/terraform.tfstate
+fi
+
 terraform init -backend-config="bucket=$BUCKET" \
       -backend-config="key=terraform-loadtest/terraform-${TF_VAR_cluster_name}.tfstate" \
       -backend-config="dynamodb_table=terraform_locks" \
