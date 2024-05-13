@@ -14,6 +14,7 @@ from .flow_helper import (
 )
 from urllib.parse import urlparse
 import os
+import random
 import sys
 import time
 
@@ -198,7 +199,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    ssn = f'900-12-{r.randint(0,9999):04}'
+    ssn = f'900-12-{random.randint(0,9999):04}'
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/ssn")
     resp = do_request(
