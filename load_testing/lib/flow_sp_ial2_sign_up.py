@@ -15,6 +15,7 @@ from .flow_helper import (
 )
 from urllib.parse import urlparse
 import os
+import random
 import sys
 import time
 
@@ -108,6 +109,7 @@ def ial2_sign_up(context):
         '',
         {
             "password_form[password]": default_password,
+            "password_form[password_confirmation]": default_password,
             "authenticity_token": auth_token,
             "confirmation_token": token,
         },
@@ -168,48 +170,47 @@ def ial2_sign_up(context):
         context,
         "post",
         "/auth_method_confirmation/skip",
-        "/verify/doc_auth/welcome",
+        "/verify/welcome",
         "",
         {"authenticity_token": auth_token},
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/welcome")
+        print("DEBUG: /verify/welcome")
+    auth_token = authenticity_token(resp)
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/welcome",
-        "/verify/doc_auth/agreement",
+        "/verify/welcome",
+        "/verify/agreement",
         '',
         {"authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/agreement")
+        print("DEBUG: /verify/agreement")
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/agreement",
-        "/verify/doc_auth/upload",
+        "/verify/agreement",
+        "/verify/hybrid_handoff",
         '',
-        {
-            "doc_auth[ial2_consent_given]": "1",
-            "authenticity_token": auth_token,
-        },
+        {"doc_auth[idv_consent_given]": "1",
+            "authenticity_token": auth_token, },
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/upload?type=desktop")
+        print("DEBUG: /verify/hybrid_handoff")
     # Choose Desktop flow
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/upload?type=desktop",
+        "/verify/hybrid_handoff",
         "/verify/document_capture",
         '',
         {"authenticity_token": auth_token, },
@@ -230,7 +231,7 @@ def ial2_sign_up(context):
              }
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/document_capture")
+        print("DEBUG: /api/verify/images")
     # Post the license images
     resp = do_request(
         context,
@@ -246,6 +247,8 @@ def ial2_sign_up(context):
         {"X-CSRF-Token": auth_token},
     )
 
+    if os.getenv("DEBUG"):
+        print("DEBUG: /verify/document_capture")
     resp = do_request(
         context,
         "put",
@@ -260,7 +263,7 @@ def ial2_sign_up(context):
     )
     auth_token = authenticity_token(resp)
 
-    ssn = f'900-12-{r.randint(0,9999):04}'
+    ssn = f'900-12-{random.randint(0,9999):04}'
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/ssn")
@@ -275,7 +278,7 @@ def ial2_sign_up(context):
     auth_token = authenticity_token(resp, 1)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/verify_info")
+        print("DEBUG: /verify/verify_info")
     # Verify
     resp = do_request(
         context,
@@ -367,7 +370,7 @@ def ial2_sign_up(context):
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/review")
+        print("DEBUG: /verify/personal_key")
     # Re-enter password
     resp = do_request(
         context,

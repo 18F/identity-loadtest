@@ -75,6 +75,9 @@ def do_sign_in(
         },
     )
 
+    # rescue from /backup_code_reminder
+    # TODO
+
     if "/account" in resp.url:
         if not remembered:
             logging.error(f"You're already logged in. Quitting sign-in for "
@@ -90,11 +93,12 @@ def do_sign_in(
     code = otp_code(resp)
 
     # Post to unauthenticated redirect
+    logging.debug(f"/login/two_factor/sms")
     resp = do_request(
         context,
         "post",
         "/login/two_factor/sms",
-        "/account",
+        "",
         "",
         {
             "code": code,
@@ -103,6 +107,25 @@ def do_sign_in(
         },
     )
 
+    # also need to rescue from /backup_code_reminder
+    logging.debug(f"/backup_code_reminder conditional")
+    if "/backup_code_reminder" in resp.url:
+        logging.debug(f"/backup_code_reminder")
+        resp = do_request(
+            context,
+            "get",
+            "/account",
+            "/account",
+        )
+    else:
+      logging.debug(f"No backup code reminder, normal login")
+      if "/account" in resp.url:
+          logging.debug(f"Successful login")
+      else:
+          logging.debug(f"Failed login. Not at /account as expected")
+          resp.failure("Not at account page")
+
+    logging.debug(f"Export Cookies")
     # Mark user as visited and save remembered device cookies
     visited[usernum] = export_cookies(
         urlparse(resp.url).netloc, context.client.cookies)
@@ -149,6 +172,9 @@ def do_sign_in_incorrect_password(context):
     num_users = get_env("NUM_USERS")
     credentials = random_cred(num_users, None)
 
+    if get_env("DEBUG"):
+        f"incorrect password CREDENTIALS: {credentials}"
+
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
 
@@ -176,6 +202,9 @@ def do_sign_in_incorrect_password(context):
 def do_sign_in_incorrect_sms_otp(context):
     num_users = get_env("NUM_USERS")
     credentials = random_cred(num_users, None)
+
+    if get_env("DEBUG"):
+        f"incorrect OTP CREDENTIALS: {credentials}"
 
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)

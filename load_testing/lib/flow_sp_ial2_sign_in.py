@@ -144,7 +144,7 @@ def ial2_sign_in(context):
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/upload?type=desktop")
+        print("DEBUG: /verify/hybrid_handoff")
     # Choose Desktop flow
     resp = do_request(
         context,
@@ -169,7 +169,7 @@ def ial2_sign_in(context):
              }
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/document_capture")
+        print("DEBUG: /api/verify/images")
     # Post the license images
     resp = do_request(
         context,
@@ -185,6 +185,8 @@ def ial2_sign_in(context):
         {"X-CSRF-Token": auth_token},
     )
 
+    if os.getenv("DEBUG"):
+        print("DEBUG: /verify/document_capture")
     resp = do_request(
         context,
         "put",
