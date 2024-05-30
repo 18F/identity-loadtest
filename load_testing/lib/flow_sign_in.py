@@ -37,8 +37,10 @@ def do_sign_in(
     if remember_device and use_previous_visitor(
         len(visited), visited_min, remembered_target
     ):
+        logging.debug(f"remember_device and use_previous_visitor")
         # Choose a specific previous user
         credentials = choose_cred(visited.keys())
+        logging.debug(f"CREDENTIALS: {credentials}")
         # Restore remembered device cookies to client jar
         import_cookies(context.client, visited[credentials["number"]])
         remembered = True
@@ -66,7 +68,7 @@ def do_sign_in(
         context,
         "post",
         "/",
-        expected_path,
+        "",
         "",
         {
             "user[email]": credentials["email"],
@@ -75,6 +77,8 @@ def do_sign_in(
         },
     )
 
+    if "/backup_code_reminder" in resp.url:
+        logging.debug(f"WHAT IS BACKUP CODE REMINDER DOING THIS EARLY IN THE FLOW???")
     # rescue from /backup_code_reminder
     # TODO
 
@@ -107,7 +111,7 @@ def do_sign_in(
         },
     )
 
-    # also need to rescue from /backup_code_reminder
+    # also need to rescue from /backup_code_reminder and /second_mfa_reminder
     logging.debug(f"/backup_code_reminder conditional")
     if "/backup_code_reminder" in resp.url:
         logging.debug(f"/backup_code_reminder")
@@ -117,8 +121,21 @@ def do_sign_in(
             "/account",
             "/account",
         )
+    elif "/second_mfa_reminder" in resp.url:
+        logging.debug(f"/second_mfa_reminder")
+        auth_token = authenticity_token(resp)
+        resp = do_request(
+            context,
+            "post",
+            "/second_mfa_reminder",
+            "",
+            '',
+            {
+                "authenticity_token": auth_token,
+            },
+        )
     else:
-      logging.debug(f"No backup code reminder, normal login")
+      logging.debug(f"No backup code reminder or second MFA reminder, normal login so far")
       if "/account" in resp.url:
           logging.debug(f"Successful login")
       else:
@@ -128,7 +145,7 @@ def do_sign_in(
     logging.debug(f"Export Cookies")
     # Mark user as visited and save remembered device cookies
     visited[usernum] = export_cookies(
-        urlparse(resp.url).netloc, context.client.cookies)
+urlparse(resp.url).netloc, context.client.cookies)
 
     return resp
 
