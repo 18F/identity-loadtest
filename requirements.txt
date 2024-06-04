@@ -1,6 +1,6 @@
-coverage==7.2.3
-Faker==18.4.0
-locust==2.15.1
+coverage==7.5.3
+Faker==25.4.0
+locust==2.28.0
 pyquery==2.0.0
-pytest==7.3.1
-pyzmq==25.0.2
+pytest==8.2.1
+pyzmq==26.0.3
