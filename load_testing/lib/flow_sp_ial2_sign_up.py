@@ -275,7 +275,7 @@ def ial2_sign_up(context):
         '',
         {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
     )
-    auth_token = authenticity_token(resp, 1)
+    auth_token = authenticity_token(resp, 0)
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/verify_info")
@@ -294,12 +294,26 @@ def ial2_sign_up(context):
         if urlparse(resp.url).path == '/verify/phone':
             # success
             break
+        if urlparse(resp.url).path == '/backup_code_reminder':
+            # verify backup codes
+            if os.getenv("DEBUG"):
+               print("DEBUG: /backup_code_reminder")
+            auth_token = authenticity_token(resp)
+            resp = do_request(
+                context,
+                "get",
+                "/account?",
+                None,
+                '',
+                {"authenticity_token": auth_token, },
+            )
+            break
         elif urlparse(resp.url).path == '/verify/verify_info':
             # keep waiting
-            time.sleep(5)
+            time.sleep(2)
         else:
             raise ValueError(
-                f'Verification received unexpected URL of {resp.url}')
+                f"Verification expected /verify/phone but received unexpected URL of {resp.url}")
 
         resp = do_request(
             context,
@@ -347,7 +361,7 @@ def ial2_sign_up(context):
         context,
         "put",
         "/verify/phone_confirmation",
-        "/verify/review",
+        "/verify/enter_password",
         '',
         {"authenticity_token": auth_token, "code": code, },
     )
@@ -359,7 +373,7 @@ def ial2_sign_up(context):
     resp = do_request(
         context,
         "put",
-        "/verify/review",
+        "/verify/enter_password",
         "/verify/personal_key",
         '',
         {

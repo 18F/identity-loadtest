@@ -220,8 +220,7 @@ def do_sign_in_incorrect_sms_otp(context):
     num_users = get_env("NUM_USERS")
     credentials = random_cred(num_users, None)
 
-    if get_env("DEBUG"):
-        f"incorrect OTP CREDENTIALS: {credentials}"
+    logging.debug(f"incorrect OTP CREDENTIALS: {credentials}")
 
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)

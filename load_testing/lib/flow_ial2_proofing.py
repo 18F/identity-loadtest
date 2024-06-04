@@ -234,20 +234,12 @@ def do_ial2_proofing(context):
         "post",
         "/verify/personal_key",
         "/account",
-        '',
+        'Verified Account',
         {
             "authenticity_token": auth_token,
             "acknowledgment": "1",
         },
     )
     auth_token = authenticity_token(resp)
-
-    ial2_sig = "ACR: http://idmanagement.gov/ns/assurance/ial/2"
-    # Does it include the IAL2 text signature?
-    if resp.text.find(ial2_sig) == -1:
-        print("ERROR: this does not appear to be an IAL2 auth")
-
-    # Re-Check verification activated
-    do_request(context, "get", "/verify", "/verify/activated", "")
 
     return resp
