@@ -1,4 +1,5 @@
 version: 2.1
+
 jobs:
   build:
     docker:
@@ -19,7 +20,6 @@ jobs:
       - run: coverage report
 
 workflows:
-  version: 2.1
   build:
     jobs:
       - build
