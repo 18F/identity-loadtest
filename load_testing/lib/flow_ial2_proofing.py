@@ -1,5 +1,11 @@
 from faker import Faker
-from .flow_helper import do_request, authenticity_token, otp_code, random_phone, resp_to_dom
+from .flow_helper import (
+    do_request,
+    authenticity_token,
+    otp_code,
+    random_phone,
+    resp_to_dom,
+)
 import os
 import random
 import sys
@@ -27,7 +33,9 @@ def do_ial2_proofing(context):
         "/verify/welcome",
         "/verify/agreement",
         "",
-        {"authenticity_token": auth_token, },
+        {
+            "authenticity_token": auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -39,9 +47,11 @@ def do_ial2_proofing(context):
         "put",
         "/verify/agreement",
         "/verify/hybrid_handoff",
-        '',
-        {"doc_auth[idv_consent_given]": "1",
-            "authenticity_token": auth_token, },
+        "",
+        {
+            "doc_auth[idv_consent_given]": "1",
+            "authenticity_token": auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -52,7 +62,9 @@ def do_ial2_proofing(context):
         "/verify/hybrid_handoff",
         "/verify/document_capture",
         "",
-        {"authenticity_token": auth_token, },
+        {
+            "authenticity_token": auth_token,
+        },
     )
     dom = resp_to_dom(resp)
     selector = 'meta[name="csrf-token"]'
@@ -63,9 +75,10 @@ def do_ial2_proofing(context):
 
     second_auth_token = authenticity_token(resp)
 
-    files = {"front": context.license_front,
-             "back": context.license_back,
-             }
+    files = {
+        "front": context.license_front,
+        "back": context.license_back,
+    }
 
     if os.getenv("DEBUG"):
         print("DEBUG: /api/verify/images")
@@ -76,9 +89,7 @@ def do_ial2_proofing(context):
         "/api/verify/images",
         None,
         None,
-        {
-            "flow_path": "standard",
-            "document_capture_session_uuid": dcs_uuid},
+        {"flow_path": "standard", "document_capture_session_uuid": dcs_uuid},
         files,
         None,
         {"X-CSRF-Token": auth_token},
@@ -100,7 +111,7 @@ def do_ial2_proofing(context):
     )
     auth_token = authenticity_token(resp)
 
-    ssn = f'900-12-{random.randint(0,9999):04}'
+    ssn = f"900-12-{random.randint(0,9999):04}"
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/ssn")
     resp = do_request(
@@ -108,13 +119,14 @@ def do_ial2_proofing(context):
         "put",
         "/verify/ssn",
         "/verify/verify_info",
-        '',
-        {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "doc_auth[ssn]": ssn,
+        },
     )
     # There are three auth tokens on the response, get the second
     auth_token = authenticity_token(resp, 0)
-
-
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/verify_info")
@@ -124,35 +136,40 @@ def do_ial2_proofing(context):
         "put",
         "/verify/verify_info",
         None,
-        '',
-        {"authenticity_token": auth_token, },
+        "",
+        {
+            "authenticity_token": auth_token,
+        },
     )
 
     # Wait until
     for i in range(12):
-        if urlparse(resp.url).path == '/verify/phone':
+        if urlparse(resp.url).path == "/verify/phone":
             # success
             break
-        if urlparse(resp.url).path == '/backup_code_reminder':
+        if urlparse(resp.url).path == "/backup_code_reminder":
             # verify backup codes
             if os.getenv("DEBUG"):
-               print("DEBUG: /backup_code_reminder")
+                print("DEBUG: /backup_code_reminder")
             auth_token = authenticity_token(resp)
             resp = do_request(
                 context,
                 "get",
                 "/account?",
                 None,
-                '',
-                {"authenticity_token": auth_token, },
+                "",
+                {
+                    "authenticity_token": auth_token,
+                },
             )
             break
-        elif urlparse(resp.url).path == '/verify/verify_info':
+        elif urlparse(resp.url).path == "/verify/verify_info":
             # keep waiting
             time.sleep(2)
         else:
             raise ValueError(
-                f"Verification expected /verify/phone but received unexpected URL of {resp.url}")
+                f"Verification expected /verify/phone but received unexpected URL of {resp.url}"
+            )
 
         resp = do_request(
             context,
@@ -169,24 +186,26 @@ def do_ial2_proofing(context):
         "put",
         "/verify/phone",
         None,
-        '',
-        {"authenticity_token": auth_token,
-            "idv_phone_form[phone]": random_phone(), },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "idv_phone_form[phone]": random_phone(),
+        },
     )
     for i in range(12):
-        if urlparse(resp.url).path == '/verify/phone_confirmation':
+        if urlparse(resp.url).path == "/verify/phone_confirmation":
             # success
             break
-        elif urlparse(resp.url).path == '/verify/phone':
+        elif urlparse(resp.url).path == "/verify/phone":
             # keep waiting
             time.sleep(5)
         else:
             if "login credentials used in another browser" in resp.text:
-                resp.failure(
-                    'Your login credentials were used in another browser.')
+                resp.failure("Your login credentials were used in another browser.")
             else:
                 raise ValueError(
-                    f"Verification expected /verify/phone_confirmation but received unexpected URL of {resp.url}")
+                    f"Verification expected /verify/phone_confirmation but received unexpected URL of {resp.url}"
+                )
 
         resp = do_request(
             context,
@@ -205,8 +224,11 @@ def do_ial2_proofing(context):
         "put",
         "/verify/phone_confirmation",
         "/verify/enter_password",
-        '',
-        {"authenticity_token": auth_token, "code": code, },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "code": code,
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -218,7 +240,7 @@ def do_ial2_proofing(context):
         "put",
         "/verify/enter_password",
         "/verify/personal_key",
-        '',
+        "",
         {
             "authenticity_token": auth_token,
             "user[password]": "salty pickles",
@@ -234,7 +256,7 @@ def do_ial2_proofing(context):
         "post",
         "/verify/personal_key",
         "/account",
-        'Verified Account',
+        "Verified Account",
         {
             "authenticity_token": auth_token,
             "acknowledgment": "1",

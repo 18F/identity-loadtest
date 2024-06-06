@@ -167,6 +167,7 @@ def test_sp_signout_link():
     with pytest.raises(Exception):
         sp_signout_link("A response without a sign-out link")
 
+
 def test_export_import_cookies():
     # Late load requests to avoid monkeypatch warning:
     #  https://github.com/gevent/gevent/issues/1016

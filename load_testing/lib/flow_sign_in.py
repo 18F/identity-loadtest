@@ -48,13 +48,12 @@ def do_sign_in(
         # remove the first 6% of visited users if more than 66% of the users
         # have signed in. Note: this was picked arbitrarily and seems to work.
         # We may want to better tune this per NUM_USERS.
-        if float(len(visited))/float(num_users) > 0.66:
-            logging.info(
-                'You have used more than two thirds of the userspace.')
+        if float(len(visited)) / float(num_users) > 0.66:
+            logging.info("You have used more than two thirds of the userspace.")
             removal_range = int(0.06 * float(num_users))
             count = 0
             for key in list(visited):
-                logging.debug(f'removing user #{key}')
+                logging.debug(f"removing user #{key}")
                 if count < removal_range:
                     visited.pop(key)
         # grab an random and unused credential
@@ -84,13 +83,13 @@ def do_sign_in(
 
     if "/account" in resp.url:
         if not remembered:
-            logging.error(f"You're already logged in. Quitting sign-in for "
-                          f"{usernum}")
+            logging.error(
+                f"You're already logged in. Quitting sign-in for " f"{usernum}"
+            )
         return resp
 
     if remembered and "/login/two_factor/sms" in resp.url:
-        logging.error(
-            f"Unexpected SMS prompt for remembered user {usernum}")
+        logging.error(f"Unexpected SMS prompt for remembered user {usernum}")
         return resp
 
     auth_token = authenticity_token(resp)
@@ -129,23 +128,24 @@ def do_sign_in(
             "post",
             "/second_mfa_reminder",
             "",
-            '',
+            "",
             {
                 "authenticity_token": auth_token,
             },
         )
     else:
-      logging.debug(f"No backup code reminder or second MFA reminder, normal login so far")
-      if "/account" in resp.url:
-          logging.debug(f"Successful login")
-      else:
-          logging.debug(f"Failed login. Not at /account as expected")
-          resp.failure("Not at account page")
+        logging.debug(
+            f"No backup code reminder or second MFA reminder, normal login so far"
+        )
+        if "/account" in resp.url:
+            logging.debug(f"Successful login")
+        else:
+            logging.debug(f"Failed login. Not at /account as expected")
+            resp.failure("Not at account page")
 
     logging.debug(f"Export Cookies")
     # Mark user as visited and save remembered device cookies
-    visited[usernum] = export_cookies(
-urlparse(resp.url).netloc, context.client.cookies)
+    visited[usernum] = export_cookies(urlparse(resp.url).netloc, context.client.cookies)
 
     return resp
 

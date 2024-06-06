@@ -44,28 +44,12 @@ def do_sign_in(
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=1"
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '/',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "/", "", {}, {}, sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
 
@@ -87,13 +71,12 @@ def do_sign_in(
         # remove the first 6% of visited users if more than 66% of the users
         # have signed in. Note: this was picked arbitrarily and seems to work.
         # We may want to better tune this per NUM_USERS.
-        if float(len(visited))/float(num_users) > 0.66:
-            logging.info(
-                'You have used more than two thirds of the userspace.')
+        if float(len(visited)) / float(num_users) > 0.66:
+            logging.info("You have used more than two thirds of the userspace.")
             removal_range = int(0.06 * float(num_users))
             count = 0
             for key in list(visited):
-                logging.debug(f'removing user #{key}')
+                logging.debug(f"removing user #{key}")
                 if count < removal_range:
                     visited.pop(key)
         # grab an random and unused credential
@@ -111,17 +94,17 @@ def do_sign_in(
         "post",
         "/",
         expected_path,
-        '',
+        "",
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
-        }
+        },
     )
 
     if remembered and "/login/two_factor/sms" in resp.url:
-        logging.error(f'Unexpected SMS prompt for remembered user {usernum}')
-        logging.error(f'resp.url = {resp.url}')
+        logging.error(f"Unexpected SMS prompt for remembered user {usernum}")
+        logging.error(f"resp.url = {resp.url}")
 
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
@@ -133,7 +116,7 @@ def do_sign_in(
         "post",
         "/login/two_factor/sms",
         None,
-        '',
+        "",
         {
             "code": code,
             "authenticity_token": auth_token,
@@ -149,8 +132,10 @@ def do_sign_in(
             "post",
             "/sign_up/completed",
             sp_root_url,
-            'You are logged in',
-            {"authenticity_token": auth_token, },
+            "You are logged in",
+            {
+                "authenticity_token": auth_token,
+            },
         )
 
     sp_domain = urlparse(resp.url).netloc
@@ -162,37 +147,38 @@ def do_sign_in(
         context,
         "get",
         logout_link,
-        '',
-        'Do you want to sign out of',
+        "",
+        "Do you want to sign out of",
         {},
         {},
-        '/openid_connect/logout?client_id=...'
+        "/openid_connect/logout?client_id=...",
     )
 
     auth_token = authenticity_token(resp)
-    state = querystring_value(resp.url, 'state')
+    state = querystring_value(resp.url, "state")
     # Confirm the logout request on the IdP
     resp = do_request(
         context,
         "post",
         "/openid_connect/logout",
         sp_root_url,
-        'You have been logged out',
+        "You have been logged out",
         {
             "authenticity_token": auth_token,
             "_method": "delete",
             "client_id": "urn:gov:gsa:openidconnect:sp:sinatra",
             "post_logout_redirect_uri": f"{sp_root_url}/logout",
-            "state": state
-        }
+            "state": state,
+        },
     )
     # Does it include the you have been logged out text?
-    if resp.text.find('You have been logged out') == -1:
-        logging.error('The user has not been logged out')
-        logging.error(f'resp.url = {resp.url}')
+    if resp.text.find("You have been logged out") == -1:
+        logging.error("The user has not been logged out")
+        logging.error(f"resp.url = {resp.url}")
     # Mark user as visited and save remembered device cookies
     visited[usernum] = export_cookies(
-        idp_domain, context.client.cookies, None, sp_domain)
+        idp_domain, context.client.cookies, None, sp_domain
+    )
 
 
 def remember_device_value(value):
@@ -208,28 +194,12 @@ def do_sign_in_user_not_found(context):
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=1"
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "", "", {}, {}, sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
 
@@ -244,12 +214,12 @@ def do_sign_in_user_not_found(context):
         "post",
         "/",
         "/",
-        '',
+        "",
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
-        }
+        },
     )
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
@@ -260,9 +230,9 @@ def do_sign_in_user_not_found(context):
         "post",
         "/",
         "/",
-        'The email or password you’ve entered is wrong',
+        "The email or password you’ve entered is wrong",
         {
-            "user[email]":  "actually-not-" + credentials["email"],
+            "user[email]": "actually-not-" + credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
         },
@@ -276,28 +246,12 @@ def do_sign_in_incorrect_password(context):
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=1"
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "", "", {}, {}, sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
 
@@ -312,12 +266,12 @@ def do_sign_in_incorrect_password(context):
         "post",
         "/",
         "/",
-        '',
+        "",
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
-        }
+        },
     )
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
@@ -328,7 +282,7 @@ def do_sign_in_incorrect_password(context):
         "post",
         "/",
         "/",
-        'The email or password you’ve entered is wrong',
+        "The email or password you’ve entered is wrong",
         {
             "user[email]": credentials["email"],
             "user[password]": "bland pickles",
@@ -343,28 +297,12 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=1"
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "", "", {}, {}, sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
 
@@ -379,12 +317,12 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
         "post",
         "/",
         "/",
-        '',
+        "",
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
-        }
+        },
     )
     resp = do_request(context, "get", "/", "/")
     auth_token = authenticity_token(resp)
@@ -395,7 +333,7 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
         "post",
         "/",
         "/login/two_factor/sms",
-        '',
+        "",
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
@@ -410,30 +348,37 @@ def do_sign_in_incorrect_sms_otp(context, visited={}):
         "post",
         "/login/two_factor/sms",
         "/login/two_factor/sms",
-        'That one-time code is invalid',
+        "That one-time code is invalid",
         {"code": "000000", "authenticity_token": auth_token},
     )
 
     # Validate that we got the expected response and were not redirect back for
     # some other reason.
-    if resp.text.find('That security code is invalid.') == -1:
+    if resp.text.find("That security code is invalid.") == -1:
 
         # handle case when account is locked
-        account_locked_string = 'For your security, your account is '\
-            'temporarily locked because you have entered the one-time '\
-            'security code incorrectly too many times.'
+        account_locked_string = (
+            "For your security, your account is "
+            "temporarily locked because you have entered the one-time "
+            "security code incorrectly too many times."
+        )
         if resp.text.find(account_locked_string):
-            error = 'sign in with incorrect sms otp failed because the '\
+            error = (
+                "sign in with incorrect sms otp failed because the "
                 f'account for testuser{credentials["number"]} has been locked.'
+            )
             logging.error(error)
             resp.failure(error)
         # handle other errors states yet to be discovered
         else:
-            error = f'The expected response for incorrect OTP is not '\
-                'present. resp.url: {resp.url}'
+            error = (
+                f"The expected response for incorrect OTP is not "
+                "present. resp.url: {resp.url}"
+            )
             logging.error(error)
             resp.failure(error)
 
     # Mark user as visited and save remembered device cookies
     visited[credentials["number"]] = export_cookies(
-        urlparse(resp.url).netloc, context.client.cookies, None, None)
+        urlparse(resp.url).netloc, context.client.cookies, None, None
+    )

@@ -33,34 +33,17 @@ def ial2_sign_up_async(context):
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=2'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=2"
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "", "", {}, {}, sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
 
     # GET the new email page
-    resp = do_request(context, "get", "/sign_up/enter_email",
-                      "/sign_up/enter_email")
+    resp = do_request(context, "get", "/sign_up/enter_email", "/sign_up/enter_email")
     auth_token = authenticity_token(resp)
 
     # Post fake email and get confirmation link (link shows up in "load test mode")
@@ -73,11 +56,12 @@ def ial2_sign_up_async(context):
         "post",
         "/sign_up/enter_email",
         "/sign_up/verify_email",
-        '',
+        "",
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
-            "user[terms_accepted]": '1'},
+            "user[terms_accepted]": "1",
+        },
     )
 
     conf_url = confirm_link(resp)
@@ -88,7 +72,7 @@ def ial2_sign_up_async(context):
         "get",
         conf_url,
         "/sign_up/enter_password?confirmation_token=",
-        '',
+        "",
         {},
         {},
         "/sign_up/email/confirm?confirmation_token=",
@@ -103,7 +87,7 @@ def ial2_sign_up_async(context):
         "post",
         "/sign_up/create_password",
         "/authentication_methods_setup",
-        '',
+        "",
         {
             "password_form[password]": default_password,
             "authenticity_token": auth_token,
@@ -154,7 +138,7 @@ def ial2_sign_up_async(context):
         "post",
         "/phone_setup",
         "/login/two_factor/sms",
-        '',
+        "",
         {
             "_method": "patch",
             "new_phone_form[international_code]": "US",
@@ -167,14 +151,14 @@ def ial2_sign_up_async(context):
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
-    logging.debug('/login/two_factor/sms')
+    logging.debug("/login/two_factor/sms")
     # Visit security code page and submit pre-filled OTP
     resp = do_request(
         context,
         "post",
         "/login/two_factor/sms",
         "/auth_method_confirmation",
-        '',
+        "",
         {"code": code, "authenticity_token": auth_token},
     )
 
@@ -190,98 +174,111 @@ def ial2_sign_up_async(context):
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/doc_auth/welcome')
+    logging.debug("/verify/doc_auth/welcome")
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/welcome",
         "/verify/doc_auth/agreement",
-        '',
-        {"authenticity_token": auth_token, },
+        "",
+        {
+            "authenticity_token": auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/doc_auth/agreement')
+    logging.debug("/verify/doc_auth/agreement")
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/agreement",
         "/verify/doc_auth/upload",
-        '',
-        {"doc_auth[ial2_consent_given]": "1",
-            "authenticity_token": auth_token, },
+        "",
+        {
+            "doc_auth[ial2_consent_given]": "1",
+            "authenticity_token": auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/doc_auth/upload?type=desktop')
+    logging.debug("/verify/doc_auth/upload?type=desktop")
     # Choose Desktop flow
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/upload?type=desktop",
         "/verify/document_capture",
-        '',
-        {"authenticity_token": auth_token, },
+        "",
+        {
+            "authenticity_token": auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
-    files = {"doc_auth[front_image]": context.license_front,
-             "doc_auth[back_image]": context.license_back}
+    files = {
+        "doc_auth[front_image]": context.license_front,
+        "doc_auth[back_image]": context.license_back,
+    }
 
-    logging.debug('verify/doc_auth/document_capture')
+    logging.debug("verify/doc_auth/document_capture")
     # Post the license images
     resp = do_request(
         context,
         "put",
         "/verify/document_capture",
         "/verify/doc_auth/ssn",
-        '',
-        {"authenticity_token": auth_token, },
-        files
+        "",
+        {
+            "authenticity_token": auth_token,
+        },
+        files,
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/doc_auth/ssn')
-    ssn = '900-12-3456'
+    logging.debug("/verify/doc_auth/ssn")
+    ssn = "900-12-3456"
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/ssn",
         "/verify/doc_auth/verify",
-        '',
-        {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "doc_auth[ssn]": ssn,
+        },
     )
     # There are three auth tokens on the response, get the second
     auth_token = authenticity_token(resp, 1)
 
-    logging.debug('/verify/doc_auth/verify')
+    logging.debug("/verify/doc_auth/verify")
     # Verify
-    expected_text = 'This might take up to a minute'
+    expected_text = "This might take up to a minute"
     resp = do_request(
         context,
         "put",
         "/verify/doc_auth/verify",
         "/verify/doc_auth/verify_wait",
         expected_text,
-        {"authenticity_token": auth_token, },
+        {
+            "authenticity_token": auth_token,
+        },
     )
-    while resp.url == 'https://idp.pt.identitysandbox.gov/verify/doc_auth/verify_wait':
+    while resp.url == "https://idp.pt.identitysandbox.gov/verify/doc_auth/verify_wait":
         time.sleep(3)
-        logging.debug(
-            f"SLEEPING IN /verify_wait WHILE LOOP with {new_email}")
+        logging.debug(f"SLEEPING IN /verify_wait WHILE LOOP with {new_email}")
         resp = do_request(
             context,
             "get",
             "/verify/doc_auth/verify_wait",
-            '',
-            '',
+            "",
+            "",
             {},
         )
-        if resp.url == 'https://idp.pt.identitysandbox.gov/verify/doc_auth/verify_wait':
-            logging.debug(
-                f"STILL IN /verify_wait WHILE LOOP with {new_email}")
+        if resp.url == "https://idp.pt.identitysandbox.gov/verify/doc_auth/verify_wait":
+            logging.debug(f"STILL IN /verify_wait WHILE LOOP with {new_email}")
         else:
             auth_token = authenticity_token(resp)
 
@@ -292,64 +289,72 @@ def ial2_sign_up_async(context):
         "put",
         "/verify/phone",
         "/verify/phone",
-        'This might take up to a minute',
-        {"authenticity_token": auth_token,
-            "idv_phone_form[phone]": random_phone(), },
+        "This might take up to a minute",
+        {
+            "authenticity_token": auth_token,
+            "idv_phone_form[phone]": random_phone(),
+        },
     )
 
-    wait_text = 'This might take up to a minute. We’ll load the next step '\
-        'automatically when it’s done.'
+    wait_text = (
+        "This might take up to a minute. We’ll load the next step "
+        "automatically when it’s done."
+    )
     while wait_text in resp.text:
         time.sleep(3)
-        logging.debug(
-            f"SLEEPING IN /verify/phone WHILE LOOP with {new_email}")
+        logging.debug(f"SLEEPING IN /verify/phone WHILE LOOP with {new_email}")
         resp = do_request(
             context,
             "get",
             "/verify/phone",
-            '',
-            '',
+            "",
+            "",
             {},
         )
-        if resp.url == 'https://idp.pt.identitysandbox.gov/verify/phone':
-            logging.debug(
-                f"STILL IN /verify/phone WHILE LOOP with {new_email}")
+        if resp.url == "https://idp.pt.identitysandbox.gov/verify/phone":
+            logging.debug(f"STILL IN /verify/phone WHILE LOOP with {new_email}")
         else:
             auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/otp_delivery_method')
+    logging.debug("/verify/otp_delivery_method")
     # Select SMS Delivery
     resp = do_request(
         context,
         "put",
         "/verify/otp_delivery_method",
         "/verify/phone_confirmation",
-        '',
-        {"authenticity_token": auth_token, "otp_delivery_preference": "sms", },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "otp_delivery_preference": "sms",
+        },
     )
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
-    logging.debug('/verify/phone_confirmation')
+    logging.debug("/verify/phone_confirmation")
     # Verify SMS Delivery
     resp = do_request(
         context,
         "put",
         "/verify/phone_confirmation",
         "/verify/review",
-        '',
-        {"authenticity_token": auth_token, "code": code, },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "code": code,
+        },
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/review')
+    logging.debug("/verify/review")
     # Re-enter password
     resp = do_request(
         context,
         "put",
         "/verify/review",
         "/verify/personal_key",
-        '',
+        "",
         {
             "authenticity_token": auth_token,
             "user[password]": "salty pickles",
@@ -357,33 +362,27 @@ def ial2_sign_up_async(context):
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/verify/confirmations')
+    logging.debug("/verify/confirmations")
     # Confirmations
     resp = do_request(
         context,
         "post",
         "/verify/personal_key",
         "/sign_up/completed",
-        '',
-        {
-            "authenticity_token": auth_token,
-            "personal_key": personal_key(resp)
-        },
+        "",
+        {"authenticity_token": auth_token, "personal_key": personal_key(resp)},
     )
     auth_token = authenticity_token(resp)
 
-    logging.debug('/sign_up/completed')
+    logging.debug("/sign_up/completed")
     # Sign Up Completed
     resp = do_request(
         context,
         "post",
         "/sign_up/completed",
         None,
-        '',
-        {
-            "authenticity_token": auth_token,
-            "commit": "Agree and continue"
-        },
+        "",
+        {"authenticity_token": auth_token, "commit": "Agree and continue"},
     )
 
     ial2_sig = "ACR: http://idmanagement.gov/ns/assurance/ial/2"
@@ -393,17 +392,17 @@ def ial2_sign_up_async(context):
 
     logout_link = sp_signout_link(resp)
 
-    logging.debug('/sign_up/completed')
+    logging.debug("/sign_up/completed")
     resp = do_request(
         context,
         "get",
         logout_link,
         sp_root_url,
-        '',
+        "",
         {},
         {},
         url_without_querystring(logout_link),
     )
     # Does it include the logged out text signature?
-    if resp.text.find('You have been logged out') == -1:
+    if resp.text.find("You have been logged out") == -1:
         print("ERROR: user has not been logged out")

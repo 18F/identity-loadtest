@@ -2,6 +2,7 @@ from locust import HttpUser, TaskSet, task, between
 from lib import flow_ial2_proofing, flow_sign_in, flow_helper
 import logging
 
+
 class IAL2SignInLoad(TaskSet):
     # Preload drivers license data
     license_front = flow_helper.load_fixture("mock-front.jpeg")

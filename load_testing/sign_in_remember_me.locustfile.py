@@ -12,7 +12,8 @@ class SignInRememberMeLoad(TaskSet):
         num_users = int(flow_helper.get_env("NUM_USERS"))
 
         logging.info(
-            f"*** Starting Sign-In Remember Me load tests with {num_users} users ***")
+            f"*** Starting Sign-In Remember Me load tests with {num_users} users ***"
+        )
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies

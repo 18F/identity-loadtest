@@ -16,8 +16,7 @@ root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 root.addHandler(handler)
 
@@ -57,8 +56,7 @@ class ProdSimulator(TaskSet):
 
     def on_start(self):
         num_users = int(flow_helper.get_env("NUM_USERS"))
-        logging.debug(
-            f"*** Production-like workload with {num_users} users ***")
+        logging.debug(f"*** Production-like workload with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -88,7 +86,8 @@ class ProdSimulator(TaskSet):
             remember_device=False,
             visited=self.visited,
             visited_min=self.visited_min,
-            remembered_target=self.remembered_target,)
+            remembered_target=self.remembered_target,
+        )
 
     @task(RATIOS["SIGN_UP"])
     def sign_up_load_test(self):
@@ -113,8 +112,7 @@ class ProdSimulator(TaskSet):
 
     @task(RATIOS["SIGN_IN_INCORRECT_SMS_OTP"])
     def sign_in_load_test_incorrect_sms_otp(self):
-        flow_sp_sign_in.do_sign_in_incorrect_sms_otp(
-            self, visited=self.visited)
+        flow_sp_sign_in.do_sign_in_incorrect_sms_otp(self, visited=self.visited)
 
 
 class WebsiteUser(HttpUser):
