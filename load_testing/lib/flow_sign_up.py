@@ -6,7 +6,7 @@ from .flow_helper import (
     do_request,
     confirm_link,
     otp_code,
-    random_phone
+    random_phone,
 )
 
 """
@@ -21,8 +21,7 @@ def do_sign_up(context):
     default_password = "salty pickles"
 
     # GET the new email page
-    resp = do_request(context, "get", "/sign_up/enter_email",
-                      "/sign_up/enter_email")
+    resp = do_request(context, "get", "/sign_up/enter_email", "/sign_up/enter_email")
     auth_token = authenticity_token(resp)
 
     # Post fake email and get confirmation link (link shows up in "load test mode")
@@ -35,7 +34,7 @@ def do_sign_up(context):
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
-            "user[terms_accepted]": '1'
+            "user[terms_accepted]": "1",
         },
     )
 
@@ -65,6 +64,7 @@ def do_sign_up(context):
         "",
         {
             "password_form[password]": default_password,
+            "password_form[password_confirmation]": default_password,
             "authenticity_token": auth_token,
             "confirmation_token": token,
         },
@@ -95,10 +95,10 @@ def do_sign_up(context):
         "/login/two_factor/sms",
         "",
         {
-            "_method": "patch",
             "new_phone_form[international_code]": "US",
             "new_phone_form[phone]": random_phone(),
             "new_phone_form[otp_delivery_preference]": "sms",
+            "new_phone_form[recaptcha_token]": "",
             "authenticity_token": auth_token,
             "commit": "Send security code",
         },

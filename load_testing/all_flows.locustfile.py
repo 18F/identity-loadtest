@@ -1,9 +1,10 @@
 from locust import HttpUser, TaskSet, task, between
 from lib import (
     flow_ial2_proofing,
+    flow_sign_in,
+    flow_sign_up,
     flow_sp_ial2_sign_in,
     flow_sp_ial2_sign_up,
-    flow_sign_in,
     flow_sp_sign_in,
     flow_sp_sign_up,
     flow_helper,
@@ -24,16 +25,18 @@ root.addHandler(handler)
 # These can be overridden by setting the corresponding environment
 # variable.  Example:  RATIO_SIGN_UP will override RATIOS["SIGN_UP"]
 
-# Defaults updated based on measurements from 2021-04-13
-
 RATIOS = {
-    "SIGN_IN": 7217,
-    "SIGN_UP": 1666,
-    "SIGN_IN_AND_PROOF": 592,
-    "SIGN_UP_AND_PROOF": 148,
-    "SIGN_IN_USER_NOT_FOUND": 7,
-    "SIGN_IN_INCORRECT_PASSWORD": 185,
-    "SIGN_IN_INCORRECT_SMS_OTP": 185,
+    "SIGN_IN": 909,
+    "SIGN_UP": 909,
+    "SIGN_IN_AND_PROOF": 909,
+    "SIGN_UP_AND_PROOF": 909,
+    "SP_SIGN_IN_USER_NOT_FOUND": 909,
+    "SP_SIGN_IN_INCORRECT_PASSWORD": 0,
+    "SP_SIGN_IN_INCORRECT_SMS_OTP": 909,
+    "SP_SIGN_IN": 909,
+    "SP_SIGN_UP": 909,
+    "SP_SIGN_IN_AND_PROOF": 909,
+    "SP_SIGN_UP_AND_PROOF": 909,
 }
 
 # For sign ins, what percentage should simulate a remembered device
@@ -49,14 +52,14 @@ for k in RATIOS.keys():
 VISITED = {}
 
 
-class ProdSimulator(TaskSet):
+class AllFlows(TaskSet):
     # Preload drivers license data
     license_front = flow_helper.load_fixture("mock-front.jpeg")
     license_back = flow_helper.load_fixture("mock-back.jpeg")
 
     def on_start(self):
         num_users = int(flow_helper.get_env("NUM_USERS"))
-        logging.debug(f"*** Production-like workload with {num_users} users ***")
+        logging.debug(f"*** Testing all flows with {num_users} users ***")
 
         # Create a tracking dictionary to allow selection of previously logged
         # in users and restoration on specific cookies
@@ -81,7 +84,7 @@ class ProdSimulator(TaskSet):
     @task(RATIOS["SIGN_IN"])
     def sign_in_remembered_load_test(self):
         logging.debug("=== Starting Sign IN w/remembered device ===")
-        flow_sp_sign_in.do_sign_in(
+        flow_sign_in.do_sign_in(
             self,
             remember_device=False,
             visited=self.visited,
@@ -92,29 +95,57 @@ class ProdSimulator(TaskSet):
     @task(RATIOS["SIGN_UP"])
     def sign_up_load_test(self):
         logging.debug("=== Starting Sign UP ===")
-        flow_sp_sign_up.do_sign_up(self)
+        flow_sign_up.do_sign_up(self)
 
     @task(RATIOS["SIGN_IN_AND_PROOF"])
     def sign_in_and_proof_load_test(self):
-        flow_sp_ial2_sign_in.ial2_sign_in(self)
+        flow_sign_in.do_sign_in(self)
+        flow_ial2_proofing.do_ial2_proofing(self)
+        flow_helper.do_request(self, "get", "/logout", "/", "")
 
     @task(RATIOS["SIGN_UP_AND_PROOF"])
     def sign_up_and_proof_load_test(self):
-        flow_sp_ial2_sign_up.ial2_sign_up(self)
+        flow_sign_up.do_sign_up(self)
+        flow_ial2_proofing.do_ial2_proofing(self)
+        flow_helper.do_request(self, "get", "/logout", "/", "")
 
-    @task(RATIOS["SIGN_IN_USER_NOT_FOUND"])
+    @task(RATIOS["SP_SIGN_IN_USER_NOT_FOUND"])
     def sign_in_load_test_user_not_found(self):
-        flow_sp_sign_in.do_sign_in_user_not_found(self)
+        flow_sign_in.do_sign_in_user_not_found(self)
 
-    @task(RATIOS["SIGN_IN_INCORRECT_PASSWORD"])
+    @task(RATIOS["SP_SIGN_IN_INCORRECT_PASSWORD"])
     def sign_in_load_test_incorrect_password(self):
-        flow_sp_sign_in.do_sign_in_incorrect_password(self)
+        flow_sign_in.do_sign_in_incorrect_password(self)
 
-    @task(RATIOS["SIGN_IN_INCORRECT_SMS_OTP"])
+    @task(RATIOS["SP_SIGN_IN_INCORRECT_SMS_OTP"])
     def sign_in_load_test_incorrect_sms_otp(self):
-        flow_sp_sign_in.do_sign_in_incorrect_sms_otp(self, visited=self.visited)
+        flow_sign_in.do_sign_in_incorrect_sms_otp(self)
+
+    @task(RATIOS["SP_SIGN_IN"])
+    def sign_in_remembered_load_test(self):
+        logging.debug("=== Starting Sign IN w/remembered device ===")
+        flow_sp_sign_in.do_sign_in(
+            self,
+            remember_device=False,
+            visited=self.visited,
+            visited_min=self.visited_min,
+            remembered_target=self.remembered_target,
+        )
+
+    @task(RATIOS["SP_SIGN_UP"])
+    def sign_up_load_test(self):
+        logging.debug("=== Starting Sign UP ===")
+        flow_sp_sign_up.do_sign_up(self)
+
+    @task(RATIOS["SP_SIGN_IN_AND_PROOF"])
+    def sign_in_and_proof_load_test(self):
+        flow_sp_ial2_sign_in.ial2_sign_in(self)
+
+    @task(RATIOS["SP_SIGN_UP_AND_PROOF"])
+    def sign_up_and_proof_load_test(self):
+        flow_sp_ial2_sign_up.ial2_sign_up(self)
 
 
 class WebsiteUser(HttpUser):
-    tasks = [ProdSimulator]
+    tasks = [AllFlows]
     wait_time = between(5, 9)

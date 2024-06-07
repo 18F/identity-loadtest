@@ -4,9 +4,8 @@ import logging
 
 
 class SignUpSignInLoad(TaskSet):
-
-    """ @task(<weight>) : value=3 executes 3x as often as value=1
-        Things inside task are synchronous. Tasks are async """
+    """@task(<weight>) : value=3 executes 3x as often as value=1
+    Things inside task are synchronous. Tasks are async"""
 
     @task(8)
     def sign_in_load_test(self):

@@ -14,6 +14,7 @@ from .flow_helper import (
 )
 from urllib.parse import urlparse
 import os
+import random
 import sys
 import time
 
@@ -33,28 +34,12 @@ def ial2_sign_in(context):
 
     # GET the SP root, which should contain a login link, give it a friendly
     # name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=2'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=2"
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "", "", {}, {}, sp_signin_endpoint
     )
     auth_token = authenticity_token(resp)
 
@@ -70,12 +55,12 @@ def ial2_sign_in(context):
         "post",
         "/",
         "/login/two_factor/sms",
-        '',
+        "",
         {
             "user[email]": credentials["email"],
             "user[password]": credentials["password"],
             "authenticity_token": auth_token,
-        }
+        },
     )
 
     auth_token = authenticity_token(resp)
@@ -90,52 +75,73 @@ def ial2_sign_in(context):
         context,
         "post",
         "/login/two_factor/sms",
-        "/verify/doc_auth/welcome",
-        '',
+        "",
+        "",
         {
             "code": code,
+            "authenticity_token": auth_token,
+        },
+    )
+
+    if urlparse(resp.url).path == "/second_mfa_reminder":
+        auth_token = authenticity_token(resp)
+        resp = do_request(
+            context,
+            "post",
+            "/second_mfa_reminder",
+            "",
+            "",
+            {
+                "authenticity_token": auth_token,
+            },
+        )
+        print("DEBUG: second MFA reminder block")
+
+    if os.getenv("DEBUG"):
+        print("DEBUG: /verify/welcome")
+
+    auth_token = authenticity_token(resp)
+    # Post consent to Welcome
+    resp = do_request(
+        context,
+        "put",
+        "/verify/welcome",
+        "/verify/agreement",
+        "",
+        {
             "authenticity_token": auth_token,
         },
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/welcome")
+        print("DEBUG: /verify/agreement")
     # Post consent to Welcome
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/welcome",
-        "/verify/doc_auth/agreement",
-        '',
-        {"authenticity_token": auth_token, },
+        "/verify/agreement",
+        "/verify/hybrid_handoff",
+        "",
+        {
+            "doc_auth[idv_consent_given]": "1",
+            "authenticity_token": auth_token,
+        },
     )
     auth_token = authenticity_token(resp)
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/agreement")
-    # Post consent to Welcome
-    resp = do_request(
-        context,
-        "put",
-        "/verify/doc_auth/agreement",
-        "/verify/doc_auth/upload",
-        '',
-        {"doc_auth[ial2_consent_given]": "1",
-            "authenticity_token": auth_token, },
-    )
-    auth_token = authenticity_token(resp)
-
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/doc_auth/upload?type=desktop")
+        print("DEBUG: /verify/hybrid_handoff")
     # Choose Desktop flow
     resp = do_request(
         context,
         "put",
-        "/verify/doc_auth/upload?type=desktop",
+        "/verify/hybrid_handoff",
         "/verify/document_capture",
-        '',
-        {"authenticity_token": auth_token, },
+        "",
+        {
+            "authenticity_token": auth_token,
+        },
     )
 
     dom = resp_to_dom(resp)
@@ -147,12 +153,13 @@ def ial2_sign_in(context):
 
     second_auth_token = authenticity_token(resp)
 
-    files = {"front": context.license_front,
-             "back": context.license_back,
-             }
+    files = {
+        "front": context.license_front,
+        "back": context.license_back,
+    }
 
     if os.getenv("DEBUG"):
-        print("DEBUG: /verify/document_capture")
+        print("DEBUG: /api/verify/images")
     # Post the license images
     resp = do_request(
         context,
@@ -160,14 +167,14 @@ def ial2_sign_in(context):
         "/api/verify/images",
         None,
         None,
-        {
-            "flow_path": "standard",
-            "document_capture_session_uuid": dcs_uuid},
+        {"flow_path": "standard", "document_capture_session_uuid": dcs_uuid},
         files,
         None,
         {"X-CSRF-Token": auth_token},
     )
 
+    if os.getenv("DEBUG"):
+        print("DEBUG: /verify/document_capture")
     resp = do_request(
         context,
         "put",
@@ -182,7 +189,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    ssn = '900-12-3456'
+    ssn = f"900-12-{random.randint(0,9999):04}"
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/ssn")
     resp = do_request(
@@ -190,11 +197,14 @@ def ial2_sign_in(context):
         "put",
         "/verify/ssn",
         "/verify/verify_info",
-        '',
-        {"authenticity_token": auth_token, "doc_auth[ssn]": ssn, },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "doc_auth[ssn]": ssn,
+        },
     )
     # There are three auth tokens on the response, get the second
-    auth_token = authenticity_token(resp, 1)
+    auth_token = authenticity_token(resp, 0)
 
     if os.getenv("DEBUG"):
         print("DEBUG: /verify/verify_info")
@@ -204,21 +214,40 @@ def ial2_sign_in(context):
         "put",
         "/verify/verify_info",
         None,
-        '',
-        {"authenticity_token": auth_token, },
+        "",
+        {
+            "authenticity_token": auth_token,
+        },
     )
 
     # Wait until
     for i in range(12):
-        if urlparse(resp.url).path == '/verify/phone':
+        if urlparse(resp.url).path == "/verify/phone":
             # success
             break
-        elif urlparse(resp.url).path == '/verify/verify_info':
+        if urlparse(resp.url).path == "/backup_code_reminder":
+            # verify backup codes
+            if os.getenv("DEBUG"):
+                print("DEBUG: /backup_code_reminder")
+            auth_token = authenticity_token(resp)
+            resp = do_request(
+                context,
+                "get",
+                "/account?",
+                None,
+                "",
+                {
+                    "authenticity_token": auth_token,
+                },
+            )
+            break
+        elif urlparse(resp.url).path == "/verify/verify_info":
             # keep waiting
-            time.sleep(5)
+            time.sleep(2)
         else:
             raise ValueError(
-                f"Verification received unexpected URL of {resp.url}\n\n{resp.text}")
+                f"Verification expected /verify/phone but received unexpected URL of {resp.url}"
+            )
 
         resp = do_request(
             context,
@@ -235,24 +264,26 @@ def ial2_sign_in(context):
         "put",
         "/verify/phone",
         None,
-        '',
-        {"authenticity_token": auth_token,
-            "idv_phone_form[phone]": random_phone(), },
+        "",
+        {
+            "authenticity_token": auth_token,
+            "idv_phone_form[phone]": random_phone(),
+        },
     )
     for i in range(12):
-        if urlparse(resp.url).path == '/verify/phone_confirmation':
+        if urlparse(resp.url).path == "/verify/phone_confirmation":
             # success
             break
-        elif urlparse(resp.url).path == '/verify/phone':
+        elif urlparse(resp.url).path == "/verify/phone":
             # keep waiting
             time.sleep(5)
         else:
             if "login credentials used in another browser" in resp.text:
-                resp.failure(
-                    'Your login credentials were used in another browser.')
+                resp.failure("Your login credentials were used in another browser.")
             else:
                 raise ValueError(
-                    f'Phone verification received unexpected URL of {resp.url}\n\n{resp.text}')
+                    f"Verification expected /verify/phone_confirmation but received unexpected URL of {resp.url}"
+                )
 
         resp = do_request(
             context,
@@ -270,9 +301,12 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/phone_confirmation",
-        "/verify/review",
-        '',
-        {"authenticity_token": auth_token, "code": code, },
+        "/verify/enter_password",
+        "",
+        {
+            "authenticity_token": auth_token,
+            "code": code,
+        },
     )
     auth_token = authenticity_token(resp)
 
@@ -282,9 +316,9 @@ def ial2_sign_in(context):
     resp = do_request(
         context,
         "put",
-        "/verify/review",
+        "/verify/enter_password",
         "/verify/personal_key",
-        '',
+        "",
         {
             "authenticity_token": auth_token,
             "user[password]": "salty pickles",
@@ -300,7 +334,7 @@ def ial2_sign_in(context):
         "post",
         "/verify/personal_key",
         "/sign_up/completed",
-        '',
+        "",
         {
             "authenticity_token": auth_token,
             "acknowledgment": "1",
@@ -316,9 +350,8 @@ def ial2_sign_in(context):
         "post",
         "/sign_up/completed",
         None,
-        '',
-        {"authenticity_token": auth_token,
-         "commit": "Agree and continue"},
+        "",
+        {"authenticity_token": auth_token, "commit": "Agree and continue"},
     )
 
     ial2_sig = "ACR: http://idmanagement.gov/ns/assurance/ial/2"
@@ -334,30 +367,30 @@ def ial2_sign_in(context):
         context,
         "get",
         logout_link,
-        '',
-        'Do you want to sign out of',
+        "",
+        "Do you want to sign out of",
         {},
         {},
-        '/openid_connect/logout?client_id=...'
+        "/openid_connect/logout?client_id=...",
     )
 
     auth_token = authenticity_token(resp)
-    state = querystring_value(resp.url, 'state')
+    state = querystring_value(resp.url, "state")
     # Confirm the logout request on the IdP
     resp = do_request(
         context,
         "post",
         "/openid_connect/logout",
         sp_root_url,
-        'You have been logged out',
+        "You have been logged out",
         {
             "authenticity_token": auth_token,
             "_method": "delete",
             "client_id": "urn:gov:gsa:openidconnect:sp:sinatra",
             "post_logout_redirect_uri": f"{sp_root_url}/logout",
-            "state": state
-        }
+            "state": state,
+        },
     )
     # Does it include the logged out text signature?
-    if resp.text.find('You have been logged out') == -1:
+    if resp.text.find("You have been logged out") == -1:
         print("ERROR: user has not been logged out")

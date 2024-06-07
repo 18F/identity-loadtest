@@ -7,11 +7,8 @@ import os
 import pyquery
 
 # Utility functions that are helpful in various locust contexts
-DEFAULT_COOKIE_SAVELIST = [
-    "user_opted_remember_device_preference",
-    "remember_device"
-]
-LOG_NAME = __file__.split('/')[-1].split('.')[0]
+DEFAULT_COOKIE_SAVELIST = ["user_opted_remember_device_preference", "remember_device"]
+LOG_NAME = __file__.split("/")[-1].split(".")[0]
 
 
 def do_request(
@@ -23,7 +20,7 @@ def do_request(
     data={},
     files={},
     name=None,
-    headers={}
+    headers={},
 ):
 
     with getattr(context.client, method)(
@@ -59,40 +56,43 @@ def fail_response(response, expected_redirect, expected_text):
         response.failure(message)
     else:
         if expected_redirect:
-            error_msg = f'You wanted {expected_redirect}, but got '\
-                        f'{response.url} for a url.'
+            error_msg = (
+                f"You wanted {expected_redirect}, but got " f"{response.url} for a url."
+            )
             if check_fail_text(response.text):
-                error_msg += f' Found the following fail msg(s): ' + " | ".join(check_fail_text(
-                    response.text))
+                error_msg += f" Found the following fail msg(s): " + " | ".join(
+                    check_fail_text(response.text)
+                )
             response.failure(error_msg)
         if expected_text:
             error_msg = f'"{expected_text}" is not in the response text.'
             if check_fail_text(response.text):
-                error_msg += f' Found the following fail msg(s): ' + " | ".join(check_fail_text(
-                    response.text))
+                error_msg += f" Found the following fail msg(s): " + " | ".join(
+                    check_fail_text(response.text)
+                )
             response.failure(error_msg)
 
 
 def check_fail_text(response_text):
     known_failure_messages = [
-        'For your security, your account is temporarily locked because you '
-        'have entered the one-time security code incorrectly too many times.',
-        'This is not a real email address. Make sure it includes an @ and a '
-        'domain name',
-        'Your login credentials were used in another browser. Please sign in '
-        'again to continue in this browser',
-        'This website is under heavy load (queue full)',
-        'Need more time?',
-        'Oops, something went wrong. Please try again.',
-        'We could not match this phone number to other records',
+        "For your security, your account is temporarily locked because you "
+        "have entered the one-time security code incorrectly too many times.",
+        "This is not a real email address. Make sure it includes an @ and a "
+        "domain name",
+        "Your login credentials were used in another browser. Please sign in "
+        "again to continue in this browser",
+        "This website is under heavy load (queue full)",
+        "Need more time?",
+        "Oops, something went wrong. Please try again.",
+        "We could not match this phone number to other records",
         # occurs under high load with async workers
-        'The server took too long to respond. Please try again.',
+        "The server took too long to respond. Please try again.",
     ]
     found_fail_msgs = []
     for msg in known_failure_messages:
         if msg in response_text:
             found_fail_msgs.append(msg)
-    if 'found_fail_msgs' in locals():
+    if "found_fail_msgs" in locals():
         return found_fail_msgs
 
 
@@ -119,8 +119,7 @@ def authenticity_token(response, index=0):
             response.failure(message)
         else:
             response.failure(error)
-            logging.error(
-                f'Failed to find authenticity token in {response.url}')
+            logging.error(f"Failed to find authenticity token in {response.url}")
         raise locust.exception.RescheduleTask
 
     return token
@@ -160,8 +159,7 @@ def querystring_value(url, key):
     try:
         return parse_qs(parsed.query)[key][0]
     except KeyError as e:
-        logging.error(
-            f'{LOG_NAME}: No querystring found for {key} in {url}')
+        logging.error(f"{LOG_NAME}: No querystring found for {key} in {url}")
         logging.debug(e)
         raise locust.exception.RescheduleTask
 
@@ -235,7 +233,8 @@ def sp_signout_link(response):
     failtext = "Your login credentials were used in another browser"
     if len(link) == 0 and failtext in response.text:
         logging.error(
-            f'{LOG_NAME}: failed to find SP logout link. Redirected to IdP: "{failtext}"')
+            f'{LOG_NAME}: failed to find SP logout link. Redirected to IdP: "{failtext}"'
+        )
         response.failure(f"Redirected to IdP: {failtext}")
         raise locust.exception.RescheduleTask
     else:
@@ -246,10 +245,10 @@ def sp_signout_link(response):
                 raise locust.exception.RescheduleTask
             return href
         except TypeError as e:
-            logging.debug(f'{LOG_NAME}: {e}')
-            logging.debug(f'{LOG_NAME}: href = {href}')
-            logging.error(f'{LOG_NAME}: status code = {response.status_code}')
-            logging.error(f'{LOG_NAME}: url = {response.url}')
+            logging.debug(f"{LOG_NAME}: {e}")
+            logging.debug(f"{LOG_NAME}: href = {href}")
+            logging.error(f"{LOG_NAME}: status code = {response.status_code}")
+            logging.error(f"{LOG_NAME}: url = {response.url}")
 
             raise locust.exception.RescheduleTask
 
@@ -260,12 +259,12 @@ def personal_key(response):
     if not found
     """
     dom = resp_to_dom(response)
-    personal_key = ''
+    personal_key = ""
     try:
         for x in range(4):
             personal_key += dom.find("code.monospace")[x].text
     except IndexError as e:
-        logging.error(f'{LOG_NAME}: No personal key found in {response.url}')
+        logging.error(f"{LOG_NAME}: No personal key found in {response.url}")
         logging.debug(e)
         raise locust.exception.RescheduleTask
     return personal_key
@@ -297,11 +296,11 @@ def random_cred(num_users, used_nums):
     if used_nums != None:
         while user_num in used_nums:
             logging.debug(
-                f'{LOG_NAME}: User #{user_num} has already been used. Retrying.')
+                f"{LOG_NAME}: User #{user_num} has already been used. Retrying."
+            )
             user_num = randint(0, int(num_users) - 1)
         else:
-            logging.debug(
-                f'{LOG_NAME}: User #{user_num} ready for service.')
+            logging.debug(f"{LOG_NAME}: User #{user_num} ready for service.")
 
     credential = {
         "number": user_num,
@@ -363,7 +362,7 @@ def desktop_agent_headers():
     """
     return {
         "accept-language": "en-US,en;q=0.9",
-        "user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1"
+        "user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1",
     }
 
 
@@ -395,7 +394,10 @@ def load_fixture(filename, path="./load_testing"):
             fixture = infile.read()
     except FileNotFoundError:
         try:
-            url = 'https://github.com/18F/identity-loadtest/raw/main/load_testing/' + filename
+            url = (
+                "https://github.com/18F/identity-loadtest/raw/main/load_testing/"
+                + filename
+            )
             r = requests.get(url)
             fixture = r.content
         except requests.exceptions.RequestException:
@@ -423,10 +425,10 @@ def export_cookies(domain, cookies, savelist=None, sp_domain=None):
 
     # Pulling directly from internal data structure as there is
     # no get_cookies method.
-    cookies_dict = cookies._cookies.get(domain, {}).get('/', None)
+    cookies_dict = cookies._cookies.get(domain, {}).get("/", None)
     # if they exist, add sp cookies to idp cookies
-    if 'sp_domain' in locals() and sp_domain is not None:
-        cookies_dict.update(cookies._cookies.get(sp_domain, {}).get('/', None))
+    if "sp_domain" in locals() and sp_domain is not None:
+        cookies_dict.update(cookies._cookies.get(sp_domain, {}).get("/", None))
 
     if cookies_dict is None:
         return []

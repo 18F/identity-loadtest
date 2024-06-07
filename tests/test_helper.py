@@ -4,8 +4,8 @@ import os
 
 FIXDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "fixtures"))
 
-def mock_response(fixture_name):
 
+def mock_response(fixture_name):
     """
     Accepts the name of a file in the fixtures directory
     Returns a mocked response object

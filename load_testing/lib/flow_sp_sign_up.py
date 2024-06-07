@@ -14,7 +14,8 @@ from .flow_helper import (
     url_without_querystring,
 )
 import logging
-LOG_NAME = __file__.split('/')[-1].split('.')[0]
+
+LOG_NAME = __file__.split("/")[-1].split(".")[0]
 
 """
 *** Service Provider Sign Up Flow ***
@@ -28,36 +29,19 @@ def do_sign_up(context):
     context.client.cookies.clear()
 
     # GET the SP root, which should contain a login link, give it a friendly name for output
-    resp = do_request(
-        context,
-        "get",
-        sp_root_url,
-        sp_root_url,
-        '',
-        {},
-        {},
-        sp_root_url
-    )
+    resp = do_request(context, "get", sp_root_url, sp_root_url, "", {}, {}, sp_root_url)
 
-    sp_signin_endpoint = sp_root_url + '/auth/request?aal=&ial=1'
+    sp_signin_endpoint = sp_root_url + "/auth/request?aal=&ial=1"
 
     # submit signin form
     resp = do_request(
-        context,
-        "get",
-        sp_signin_endpoint,
-        '',
-        '',
-        {},
-        {},
-        sp_signin_endpoint
+        context, "get", sp_signin_endpoint, "", "", {}, {}, sp_signin_endpoint
     )
 
     auth_token = authenticity_token(resp)
 
     # GET the new email page
-    resp = do_request(context, "get", "/sign_up/enter_email",
-                      "/sign_up/enter_email")
+    resp = do_request(context, "get", "/sign_up/enter_email", "/sign_up/enter_email")
     auth_token = authenticity_token(resp)
 
     # Post fake email and get confirmation link (link shows up in "load test mode")
@@ -70,11 +54,11 @@ def do_sign_up(context):
         "post",
         "/sign_up/enter_email",
         "/sign_up/verify_email",
-        '',
+        "",
         {
             "user[email]": new_email,
             "authenticity_token": auth_token,
-            "user[terms_accepted]": '1'
+            "user[terms_accepted]": "1",
         },
     )
 
@@ -86,7 +70,7 @@ def do_sign_up(context):
         "get",
         conf_url,
         "/sign_up/enter_password?confirmation_token=",
-        '',
+        "",
         {},
         {},
         "/sign_up/email/confirm?confirmation_token=",
@@ -101,9 +85,10 @@ def do_sign_up(context):
         "post",
         "/sign_up/create_password",
         "/authentication_methods_setup",
-        '',
+        "",
         {
             "password_form[password]": default_password,
+            "password_form[password_confirmation]": default_password,
             "authenticity_token": auth_token,
             "confirmation_token": token,
         },
@@ -132,7 +117,7 @@ def do_sign_up(context):
         "post",
         "/phone_setup",
         "/login/two_factor/sms",
-        '',
+        "",
         {
             "new_phone_form[international_code]": "US",
             "new_phone_form[phone]": random_phone(),
@@ -151,7 +136,7 @@ def do_sign_up(context):
         "post",
         "/login/two_factor/sms",
         "/auth_method_confirmation",
-        '',
+        "",
         {"code": code, "authenticity_token": auth_token},
     )
 
@@ -175,7 +160,7 @@ def do_sign_up(context):
         "post",
         "/sign_up/completed",
         sp_root_url,
-        '',
+        "",
         {"authenticity_token": auth_token},
     )
 
@@ -186,31 +171,31 @@ def do_sign_up(context):
         context,
         "get",
         logout_link,
-        '',
-        'Do you want to sign out of',
+        "",
+        "Do you want to sign out of",
         {},
         {},
-        '/openid_connect/logout?client_id=...'
+        "/openid_connect/logout?client_id=...",
     )
 
     auth_token = authenticity_token(resp)
-    state = querystring_value(resp.url, 'state')
+    state = querystring_value(resp.url, "state")
     # Confirm the logout request on the IdP
     resp = do_request(
         context,
         "post",
         "/openid_connect/logout",
         sp_root_url,
-        'You have been logged out',
+        "You have been logged out",
         {
             "authenticity_token": auth_token,
             "_method": "delete",
             "client_id": "urn:gov:gsa:openidconnect:sp:sinatra",
             "post_logout_redirect_uri": f"{sp_root_url}/logout",
-            "state": state
-        }
+            "state": state,
+        },
     )
     # Does it include the you have been logged out text?
-    if resp.text.find('You have been logged out') == -1:
-        logging.error('The user has not been logged out')
-        logging.error(f'resp.url = {resp.url}')
+    if resp.text.find("You have been logged out") == -1:
+        logging.error("The user has not been logged out")
+        logging.error(f"resp.url = {resp.url}")

@@ -23,9 +23,6 @@ class IAL2SignUpLoad(TaskSet):
         #  Sign up flow
         flow_sign_up.do_sign_up(self)
 
-        #  Get /account page
-        flow_helper.do_request(self, "get", "/account", "/account", "")
-
         # IAL2 Proofing flow
         flow_ial2_proofing.do_ial2_proofing(self)
 
