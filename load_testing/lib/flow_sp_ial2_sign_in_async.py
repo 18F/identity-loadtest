@@ -292,4 +292,4 @@ def ial2_sign_in_async(context):
     )
     # Does it include the logged out text signature?
     if resp.text.find("You have been logged out") == -1:
-        print("ERROR: user has not been logged out")
+        logging.error("user has not been logged out")
