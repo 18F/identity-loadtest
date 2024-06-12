@@ -388,7 +388,7 @@ def ial2_sign_up_async(context):
     ial2_sig = "ACR: http://idmanagement.gov/ns/assurance/ial/2"
     # Does it include the IAL2 text signature?
     if resp.text.find(ial2_sig) == -1:
-        print("ERROR: this does not appear to be an IAL2 auth")
+        logging.error("this does not appear to be an IAL2 auth")
 
     logout_link = sp_signout_link(resp)
 
@@ -405,4 +405,4 @@ def ial2_sign_up_async(context):
     )
     # Does it include the logged out text signature?
     if resp.text.find("You have been logged out") == -1:
-        print("ERROR: user has not been logged out")
+        logging.error("user has not been logged out")

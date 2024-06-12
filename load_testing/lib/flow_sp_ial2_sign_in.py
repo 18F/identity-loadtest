@@ -13,6 +13,7 @@ from .flow_helper import (
     url_without_querystring,
 )
 from urllib.parse import urlparse
+import logging
 import os
 import random
 import sys
@@ -67,9 +68,7 @@ def ial2_sign_in(context):
     code = otp_code(resp)
     idp_domain = urlparse(resp.url).netloc
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /login/two_factor/sms")
-
+    logging.debug("/login/two_factor/sms")
     # Post to unauthenticated redirect
     resp = do_request(
         context,
@@ -95,10 +94,9 @@ def ial2_sign_in(context):
                 "authenticity_token": auth_token,
             },
         )
-        print("DEBUG: second MFA reminder block")
+        logging.debug("second MFA reminder block")
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/welcome")
+    logging.debug("/verify/welcome")
 
     auth_token = authenticity_token(resp)
     # Post consent to Welcome
@@ -114,8 +112,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/agreement")
+    logging.debug("/verify/agreement")
     # Post consent to Welcome
     resp = do_request(
         context,
@@ -130,8 +127,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/hybrid_handoff")
+    logging.debug("/verify/hybrid_handoff")
     # Choose Desktop flow
     resp = do_request(
         context,
@@ -158,8 +154,7 @@ def ial2_sign_in(context):
         "back": context.license_back,
     }
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /api/verify/images")
+    logging.debug("/api/verify/images")
     # Post the license images
     resp = do_request(
         context,
@@ -173,8 +168,7 @@ def ial2_sign_in(context):
         {"X-CSRF-Token": auth_token},
     )
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/document_capture")
+    logging.debug("/verify/document_capture")
     resp = do_request(
         context,
         "put",
@@ -190,8 +184,7 @@ def ial2_sign_in(context):
     auth_token = authenticity_token(resp)
 
     ssn = f"900-12-{random.randint(0,9999):04}"
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/ssn")
+    logging.debug("/verify/ssn")
     resp = do_request(
         context,
         "put",
@@ -206,8 +199,7 @@ def ial2_sign_in(context):
     # There are three auth tokens on the response, get the second
     auth_token = authenticity_token(resp, 0)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/verify_info")
+    logging.debug("/verify/verify_info")
     # Verify
     resp = do_request(
         context,
@@ -227,8 +219,7 @@ def ial2_sign_in(context):
             break
         if urlparse(resp.url).path == "/backup_code_reminder":
             # verify backup codes
-            if os.getenv("DEBUG"):
-                print("DEBUG: /backup_code_reminder")
+            logging.debug("/backup_code_reminder")
             auth_token = authenticity_token(resp)
             resp = do_request(
                 context,
@@ -255,8 +246,7 @@ def ial2_sign_in(context):
             "/verify/verify_info",
         )
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/phone")
+    logging.debug("/verify/phone")
     # Enter Phone
     auth_token = authenticity_token(resp)
     resp = do_request(
@@ -294,8 +284,7 @@ def ial2_sign_in(context):
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/phone_confirmation")
+    logging.debug("/verify/phone_confirmation")
     # Verify SMS Delivery
     resp = do_request(
         context,
@@ -310,8 +299,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/review")
+    logging.debug("/verify/review")
     # Re-enter password
     resp = do_request(
         context,
@@ -326,8 +314,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/confirmations")
+    logging.debug("/verify/confirmations")
     # Confirmations
     resp = do_request(
         context,
@@ -342,8 +329,7 @@ def ial2_sign_in(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /sign_up/completed")
+    logging.debug("/sign_up/completed")
     # Sign Up Completed
     resp = do_request(
         context,
@@ -357,12 +343,11 @@ def ial2_sign_in(context):
     ial2_sig = "ACR: http://idmanagement.gov/ns/assurance/ial/2"
     # Does it include the IAL2 text signature?
     if resp.text.find(ial2_sig) == -1:
-        print("ERROR: this does not appear to be an IAL2 auth")
+        logging.error("this does not appear to be an IAL2 auth")
 
     logout_link = sp_signout_link(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /sign_up/completed")
+    logging.debug("/sign_up/completed")
     resp = do_request(
         context,
         "get",
@@ -393,4 +378,4 @@ def ial2_sign_in(context):
     )
     # Does it include the logged out text signature?
     if resp.text.find("You have been logged out") == -1:
-        print("ERROR: user has not been logged out")
+        logging.error("user has not been logged out")

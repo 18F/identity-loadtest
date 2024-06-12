@@ -6,6 +6,7 @@ from .flow_helper import (
     random_phone,
     resp_to_dom,
 )
+import logging
 import os
 import random
 import sys
@@ -39,8 +40,7 @@ def do_ial2_proofing(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/agreement")
+    logging.debug("/verify/agreement")
     # Post consent to Welcome
     resp = do_request(
         context,
@@ -69,19 +69,15 @@ def do_ial2_proofing(context):
     dom = resp_to_dom(resp)
     selector = 'meta[name="csrf-token"]'
     auth_token = dom.find(selector).eq(0).attr("content")
-
     selector = 'input[id="doc_auth_document_capture_session_uuid"]'
     dcs_uuid = dom.find(selector).eq(0).attr("value")
-
     second_auth_token = authenticity_token(resp)
-
     files = {
         "front": context.license_front,
         "back": context.license_back,
     }
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /api/verify/images")
+    logging.debug("/api/verify/images")
     # Post the license images
     resp = do_request(
         context,
@@ -95,8 +91,7 @@ def do_ial2_proofing(context):
         {"X-CSRF-Token": auth_token},
     )
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/document_capture")
+    logging.debug("/verify/document_capture")
     resp = do_request(
         context,
         "put",
@@ -110,10 +105,9 @@ def do_ial2_proofing(context):
         },
     )
     auth_token = authenticity_token(resp)
-
     ssn = f"900-12-{random.randint(0,9999):04}"
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/ssn")
+
+    logging.debug("/verify/ssn")
     resp = do_request(
         context,
         "put",
@@ -128,8 +122,7 @@ def do_ial2_proofing(context):
     # There are three auth tokens on the response, get the second
     auth_token = authenticity_token(resp, 0)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/verify_info")
+    logging.debug("/verify/verify_info")
     # Verify
     resp = do_request(
         context,
@@ -150,7 +143,7 @@ def do_ial2_proofing(context):
         if urlparse(resp.url).path == "/backup_code_reminder":
             # verify backup codes
             if os.getenv("DEBUG"):
-                print("DEBUG: /backup_code_reminder")
+                print("/backup_code_reminder")
             auth_token = authenticity_token(resp)
             resp = do_request(
                 context,
@@ -177,8 +170,7 @@ def do_ial2_proofing(context):
             "/verify/verify_info",
         )
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/phone")
+    logging.debug("/verify/phone")
     # Enter Phone
     auth_token = authenticity_token(resp)
     resp = do_request(
@@ -216,8 +208,7 @@ def do_ial2_proofing(context):
     auth_token = authenticity_token(resp)
     code = otp_code(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/phone_confirmation")
+    logging.debug("/verify/phone_confirmation")
     # Verify SMS Delivery
     resp = do_request(
         context,
@@ -232,8 +223,7 @@ def do_ial2_proofing(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/review")
+    logging.debug("/verify/review")
     # Re-enter password
     resp = do_request(
         context,
@@ -248,8 +238,7 @@ def do_ial2_proofing(context):
     )
     auth_token = authenticity_token(resp)
 
-    if os.getenv("DEBUG"):
-        print("DEBUG: /verify/confirmations")
+    logging.debug("/verify/confirmations")
     # Confirmations
     resp = do_request(
         context,
