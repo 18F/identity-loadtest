@@ -37,7 +37,6 @@ def do_sign_up(context):
             "user[terms_accepted]": "1",
         },
     )
-
     conf_url = confirm_link(resp)
 
     # Get confirmation token
@@ -69,7 +68,6 @@ def do_sign_up(context):
             "confirmation_token": token,
         },
     )
-
     auth_token = authenticity_token(resp)
 
     resp = do_request(
@@ -84,10 +82,9 @@ def do_sign_up(context):
             "authenticity_token": auth_token,
         },
     )
-
-    # After password creation set up SMS 2nd factor
     auth_token = authenticity_token(resp)
 
+    # After password creation set up SMS 2nd factor
     resp = do_request(
         context,
         "post",
@@ -115,7 +112,6 @@ def do_sign_up(context):
         "",
         {"code": code, "authenticity_token": auth_token},
     )
-
     auth_token = authenticity_token(resp)
 
     resp = do_request(
