@@ -28,7 +28,4 @@ build:
     paths:
       - venv/
       - .cache/pip/
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 1 week
+  
