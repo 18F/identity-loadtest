@@ -1,0 +1,31 @@
+stages:
+  - build
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  VENV_PATH: "$CI_PROJECT_DIR/venv"
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .cache/pip/
+    - venv/
+
+build:
+  stage: build
+  image: cimg/python:3.12.3
+  before_script:
+    - python -V
+    - pip install --upgrade pip
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+  script:
+    - pip install -r requirements.txt
+    - coverage run -m pytest
+    - coverage report
+  cache:
+    paths:
+      - venv/
+      - .cache/pip/
+  
