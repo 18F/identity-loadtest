@@ -55,6 +55,7 @@ kubectl port-forward service/locust 8089:8089 -n locust
 ```
 And then point your browser at http://localhost:8089/.
 
+
 ## Kubernetes Dashboard
 
 To access the kubernetes dashboard to see pods and cpu/memory usage stuff:
@@ -64,6 +65,14 @@ aws-vault exec sandbox-admin -- kubectl port-forward service/kubernetes-dashboar
 ```
 Then open up https://localhost:4443/ and use the token you just got to log in.
 
+## Updating locust container images in ECR from the locustio/locust source
+
+```
+docker pull locustio/locust:2.29.1
+aws-vault exec sandbox-admin -- aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 894947205914.dkr.ecr.us-west-2.amazonaws.com
+docker tag locustio/locust:2.29.1 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.29.1
+docker push 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.29.1
+```
 
 Have fun!!
 
