@@ -111,7 +111,7 @@ module "gitops_bridge" {
       name           = "loadtest-apps"
       path           = "."
       repoURL        = "https://github.com/18F/identity-loadtest.git"
-      targetRevision = "main"
+      targetRevision = "stages/agnes"
     })
     # Below are all magic add-ons that you can see how to configure here:
     # https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/add-ons

@@ -7,7 +7,7 @@ variable "region" {
 variable "cluster_name" {
   description = "name of cluster"
   type        = string
-  default     = "loadtest"
+  default     = "agnesloadtest"
 }
 
 variable "dnszone" {
