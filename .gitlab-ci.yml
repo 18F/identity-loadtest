@@ -1,5 +1,6 @@
 stages:
   - build
+  - loadtest
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -28,4 +29,12 @@ build:
     paths:
       - venv/
       - .cache/pip/
-  
+
+loadtest:
+  stage: loadtest
+  image:
+    name: dtzar/helm-kubectl:latest
+  script:
+    - kubectl config get-contexts
+    - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
+    - kubectl config use-context "$CONTEXT"
