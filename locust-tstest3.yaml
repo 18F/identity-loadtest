@@ -19,7 +19,7 @@ spec:
   source:
     chart: locust
     repoURL: https://charts.deliveryhero.io
-    targetRevision: 0.31.6
+    targetRevision: 0.31.9
     helm:
       values: |
         loadtest:
