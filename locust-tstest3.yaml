@@ -2,18 +2,18 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: "locust-fakeprod"
+  name: "locust-tstest3"
   labels:
-    name: "locust-fakeprod"
+    name: "locust-tstest3"
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: locust-fakeprod
+  name: locust-tstest3
   namespace: argocd
   labels:
-    name: locust-fakeprod
+    name: locust-tstest3
 spec:
   project: default
   source:
@@ -54,7 +54,7 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.fakeprod.identitysandbox.gov
+          locust_host: https://idp.tstest3.identitysandbox.gov
           locust_locustfile_configmap: login-locustfiles
           locust_lib_configmap: login-loadtest-lib
           locust_locustfile: sp_sign_up.locustfile.py
@@ -104,7 +104,7 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: locust-fakeprod
+    namespace: locust-tstest3
     server: https://kubernetes.default.svc
 
   # keep in sync
