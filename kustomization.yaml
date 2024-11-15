@@ -41,5 +41,38 @@ configMapGenerator:
   - load_testing/lib/flow_sp_ial2_sign_up_async.py
   - load_testing/lib/flow_sp_sign_in.py
   - load_testing/lib/flow_sp_sign_up.py
+
+- name: tstest3-locustfiles
+  namespace: locust-tstest3
+  files:
+  - load_testing/ial2_sign_in.locustfile.py
+  - load_testing/ial2_sign_up.locustfile.py
+  - load_testing/prod_simulator.locustfile.py
+  - load_testing/sign_in.locustfile.py
+  - load_testing/sign_in_failure.locustfile.py
+  - load_testing/sign_in_remember_me.locustfile.py
+  - load_testing/sign_up.locustfile.py
+  - load_testing/sign_up_sign_in.locustfile.py
+  - load_testing/sp_ial2_sign_in.locustfile.py
+  - load_testing/sp_ial2_sign_in_async.locustfile.py
+  - load_testing/sp_ial2_sign_up.locustfile.py
+  - load_testing/sp_ial2_sign_up_async.locustfile.py
+  - load_testing/sp_sign_in.locustfile.py
+  - load_testing/sp_sign_up.locustfile.py
+
+- name: tstest3-loadtest-lib
+  namespace: locust-tstest3
+  files:
+  - load_testing/lib/flow_helper.py
+  - load_testing/lib/flow_ial2_proofing.py
+  - load_testing/lib/flow_sign_in.py
+  - load_testing/lib/flow_sign_up.py
+  - load_testing/lib/flow_sp_ial2_sign_in.py
+  - load_testing/lib/flow_sp_ial2_sign_in_async.py
+  - load_testing/lib/flow_sp_ial2_sign_up.py
+  - load_testing/lib/flow_sp_ial2_sign_up_async.py
+  - load_testing/lib/flow_sp_sign_in.py
+  - load_testing/lib/flow_sp_sign_up.py
+
 generatorOptions:
  disableNameSuffixHash: true

@@ -55,8 +55,8 @@ spec:
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
           locust_host: https://idp.tstest3.identitysandbox.gov
-          locust_locustfile_configmap: login-locustfiles
-          locust_lib_configmap: login-loadtest-lib
+          locust_locustfile_configmap: tstest3-locustfiles
+          locust_lib_configmap: tstest3-loadtest-lib
           locust_locustfile: sp_sign_up.locustfile.py
           pip_packages:
             - coverage==7.5.3
