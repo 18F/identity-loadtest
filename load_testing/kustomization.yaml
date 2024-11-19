@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: login-locustfiles
+  namespace: locust
+  files:
+  - ial2_sign_in.locustfile.py
+  - ial2_sign_up.locustfile.py
+  - prod_simulator.locustfile.py
+  - sign_in.locustfile.py
+  - sign_in_failure.locustfile.py
+  - sign_in_remember_me.locustfile.py
+  - sign_up.locustfile.py
+  - sign_up_sign_in.locustfile.py
+  - sp_ial2_sign_in.locustfile.py
+  - sp_ial2_sign_in_async.locustfile.py
+  - sp_ial2_sign_up.locustfile.py
+  - sp_ial2_sign_up_async.locustfile.py
+  - sp_sign_in.locustfile.py
+  - sp_sign_up.locustfile.py
+
+- name: login-loadtest-lib
+  namespace: locust
+  files:
+  - lib/flow_helper.py
+  - lib/flow_ial2_proofing.py
+  - lib/flow_sign_in.py
+  - lib/flow_sign_up.py
+  - lib/flow_sp_ial2_sign_in.py
+  - lib/flow_sp_ial2_sign_in_async.py
+  - lib/flow_sp_ial2_sign_up.py
+  - lib/flow_sp_ial2_sign_up_async.py
+  - lib/flow_sp_sign_in.py
+  - lib/flow_sp_sign_up.py
+
+generatorOptions:
+ disableNameSuffixHash: true
