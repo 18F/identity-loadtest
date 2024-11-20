@@ -1,12 +1,4 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: "locust"
-  labels:
-    name: "locust"
-
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -104,7 +96,7 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: locust
+    namespace: pt
     server: https://kubernetes.default.svc
 
   # keep in sync
