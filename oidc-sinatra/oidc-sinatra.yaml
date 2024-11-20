@@ -10,7 +10,9 @@
 #    subdomain.
 #  * You will also need to create the sp-private-key secret with the demo_sp.key
 #    in it. Like
-#      kubectl create secret generic sp-private-key --from-file=demo_sp.key -n oidc-sinatra
+#      kubectl create secret generic sp-private-key --from-file=demo_sp.key -n pt
+#  * You will need to create the newrelic license secret:
+#      kubectl create secret generic newrelic-license --from-file=newrelic-license -n pt
 #
 # Everything else is done automagically.  Logs should be going into cloudwatch.
 #
