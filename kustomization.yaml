@@ -2,20 +2,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- locust.yaml
+- pt.yaml
 - tstest3.yaml
 - fake-server.yaml
-- oidc-sinatra.yaml
 # - prometheus-adapter.yaml
 # - dashboard.yaml
 - coredns.yaml
-- load_testing
 
-transformers:
-  - |-
-    apiVersion: builtin
-    kind: NamespaceTransformer
-    metadata:
-      name: notImportantHere
-      namespace: locust
-    unsetOnly: true
