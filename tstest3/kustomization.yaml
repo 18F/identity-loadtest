@@ -8,3 +8,12 @@ resources:
   - ../load_testing
 patches:
   - path: patch-oidc-ingress.yaml
+
+transformers:
+  - |-
+    apiVersion: builtin
+    kind: NamespaceTransformer
+    metadata:
+      name: notImportantHere
+      namespace: tstest3
+    unsetOnly: true

@@ -10,3 +10,12 @@ resources:
 # - dashboard.yaml
 - coredns.yaml
 - load_testing
+
+transformers:
+  - |-
+    apiVersion: builtin
+    kind: NamespaceTransformer
+    metadata:
+      name: notImportantHere
+      namespace: locust
+    unsetOnly: true

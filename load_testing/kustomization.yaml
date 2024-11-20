@@ -3,7 +3,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 configMapGenerator:
 - name: login-locustfiles
-  namespace: locust
   files:
   - ial2_sign_in.locustfile.py
   - ial2_sign_up.locustfile.py
@@ -21,7 +20,6 @@ configMapGenerator:
   - sp_sign_up.locustfile.py
 
 - name: login-loadtest-lib
-  namespace: locust
   files:
   - lib/flow_helper.py
   - lib/flow_ial2_proofing.py
