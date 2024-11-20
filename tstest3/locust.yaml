@@ -1,19 +1,11 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: "locust-tstest3"
-  labels:
-    name: "locust-tstest3"
-
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: locust-tstest3
+  name: locust
   namespace: argocd
   labels:
-    name: locust-tstest3
+    name: locust
 spec:
   project: default
   source:
@@ -55,8 +47,8 @@ spec:
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
           locust_host: https://idp.tstest3.identitysandbox.gov
-          locust_locustfile_configmap: tstest3-locustfiles
-          locust_lib_configmap: tstest3-loadtest-lib
+          locust_locustfile_configmap: locustfiles
+          locust_lib_configmap: loadtest-lib
           locust_locustfile: sp_sign_up.locustfile.py
           pip_packages:
             - coverage==7.5.3
@@ -104,7 +96,7 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: locust-tstest3
+    namespace: tstest3
     server: https://kubernetes.default.svc
 
   # keep in sync
