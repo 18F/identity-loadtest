@@ -4,11 +4,12 @@ kind: Kustomization
 namePrefix: tstest3-
 
 resources:
-  - locust.yaml
+  - ../locust
   - ../oidc-sinatra
   - ../load_testing
 
 patches:
+  - path: patch-locust.yaml
   - path: patch-oidc-ingress.yaml
   - path: patch-oidc-deployment.yaml
     target:
