@@ -7,19 +7,15 @@ metadata:
   labels:
     name: locust
 spec:
-  project: default
   source:
-    chart: locust
-    repoURL: https://charts.deliveryhero.io
-    targetRevision: 0.31.6
     helm:
       values: |
         loadtest:
           name: login-sign-up-sign-in
           headless: false
           environment:
-            SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
-            NUM_USERS: "24999999"
+            SP_HOST: https://tstest3-oidc-sinatra.loadtest.identitysandbox.gov
+            NUM_USERS: "999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
             # RATIO_SIGN_IN: 6565                   # goal of 2000 events/sec for sign ins
@@ -46,9 +42,9 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.pt.identitysandbox.gov
-          locust_locustfile_configmap: login-locustfiles
-          locust_lib_configmap: login-loadtest-lib
+          locust_host: https://idp.tstest3.identitysandbox.gov
+          locust_locustfile_configmap: tstest3-login-locustfiles
+          locust_lib_configmap: tstest3-login-loadtest-lib
           locust_locustfile: sp_sign_up.locustfile.py
           pip_packages:
             - coverage==7.5.3
@@ -96,11 +92,4 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: pt
-    server: https://kubernetes.default.svc
-
-  # keep in sync
-  syncPolicy:
-    automated:
-      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
-      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+    namespace: tstest3
