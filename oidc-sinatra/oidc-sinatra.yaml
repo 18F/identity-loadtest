@@ -5,9 +5,9 @@
 #  * The loadtest.identitysandbox.gov dns zone needed to be created
 #    and delegated from identitysandbox.gov in the account this is going
 #    to be created in.  This is already done.
-#  * An SSL cert for oidc-sinatra.loadtest.identitysandbox.gov
+#  * An SSL cert for *.loadtest.identitysandbox.gov
 #    needs to be created and have it's magic auth stuff put in the loadtest
-#    subdomain.
+#    subdomain. This is already done.
 #  * You will also need to create the sp-private-key secret with the demo_sp.key
 #    in it. Like
 #      kubectl create secret generic sp-private-key --from-file=demo_sp.key -n pt
@@ -39,10 +39,12 @@ spec:
           env:
             - name: idp_url
               value: "https://idp.pt.identitysandbox.gov/"
-            - name: acr_values
-              value: "http://idmanagement.gov/ns/assurance/loa/1"
             - name: redirect_uri
               value: "https://oidc-sinatra.loadtest.identitysandbox.gov/"
+            - name: NEW_RELIC_APP_NAME
+              value: oidc-sinatra.loadtest.identitysandbox.gov
+            - name: acr_values
+              value: "http://idmanagement.gov/ns/assurance/loa/1"
             - name: client_id
               value: "urn:gov:gsa:openidconnect:sp:sinatra"
             - name: sp_private_key
@@ -57,8 +59,6 @@ spec:
                   name: newrelic-license
                   key: newrelic-license
                   optional: false
-            - name: NEW_RELIC_APP_NAME
-              value: oidc-sinatra.loadtest.identitysandbox.gov
             - name: NEW_RELIC_HOST
               value: gov-collector.newrelic.com
             - name: RACK_ENV
