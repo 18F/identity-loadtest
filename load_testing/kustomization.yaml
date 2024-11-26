@@ -4,6 +4,7 @@ kind: Kustomization
 configMapGenerator:
 - name: login-locustfiles
   files:
+  - all_flows.locustfile.py
   - ial2_sign_in.locustfile.py
   - ial2_sign_up.locustfile.py
   - prod_simulator.locustfile.py
