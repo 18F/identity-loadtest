@@ -14,7 +14,7 @@ spec:
           name: login-sign-up-sign-in
           headless: false
           environment:
-            SP_HOST: https://pt-oidc-sinatra.loadtest.identitysandbox.gov
+            SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
             NUM_USERS: "24999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
