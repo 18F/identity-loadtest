@@ -15,7 +15,7 @@ spec:
     helm:
       values: |
         loadtest:
-          name: login-sign-up-sign-in
+          name: production-simulator
           headless: false
           environment:
             SP_HOST: https://envname-oidc-sinatra.loadtest.identitysandbox.gov
@@ -49,7 +49,7 @@ spec:
           locust_host: https://idp.envname.identitysandbox.gov
           locust_locustfile_configmap: envname-login-locustfiles
           locust_lib_configmap: envname-login-loadtest-lib
-          locust_locustfile: sp_sign_up.locustfile.py
+          locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==7.5.3
             - Faker==25.4.0
