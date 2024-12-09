@@ -70,7 +70,6 @@ spec:
               cpu: "100m"
               memory: "160Mi"
             limits:
-              cpu: "500m"
               memory: "512Mi"
           ports:
             - containerPort: 9292
@@ -105,14 +104,14 @@ spec:
     kind: Deployment
     name: oidc-sinatra
   minReplicas: 1
-  maxReplicas: 4
+  maxReplicas: 1000
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 1
+          averageUtilization: 10
 
 ---
 apiVersion: networking.k8s.io/v1

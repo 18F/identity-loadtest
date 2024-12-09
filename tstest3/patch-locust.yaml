@@ -11,11 +11,11 @@ spec:
     helm:
       values: |
         loadtest:
-          name: login-sign-up-sign-in
+          name: all-tests
           headless: false
           environment:
             SP_HOST: https://tstest3-oidc-sinatra.loadtest.identitysandbox.gov
-            NUM_USERS: "999999"
+            NUM_USERS: "49999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
             # RATIO_SIGN_IN: 6565                   # goal of 2000 events/sec for sign ins
@@ -45,7 +45,7 @@ spec:
           locust_host: https://idp.tstest3.identitysandbox.gov
           locust_locustfile_configmap: tstest3-login-locustfiles
           locust_lib_configmap: tstest3-login-loadtest-lib
-          locust_locustfile: sp_sign_up.locustfile.py
+          locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==7.5.3
             - Faker==25.4.0
