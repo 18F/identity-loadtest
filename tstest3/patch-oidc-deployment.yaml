@@ -8,7 +8,7 @@
   path: /spec/template/spec/containers/0/env/1
   value:
     name: redirect_uri
-    value: "ttps://tstest3-oidc-sinatra.loadtest.identitysandbox.gov/"
+    value: "https://tstest3-oidc-sinatra.loadtest.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/2
   value:

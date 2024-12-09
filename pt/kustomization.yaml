@@ -8,6 +8,7 @@ resources:
 
 patches:
   - path: patch-locust.yaml
+  - path: patch-oidc-ingress.yaml
 
 transformers:
   - |-
