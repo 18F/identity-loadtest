@@ -53,7 +53,7 @@ spec:
             - pytest==8.2.1
             - pyzmq==26.0.3
         master:
-          image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.28.0
+          image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.32.4
           nodeSelector:
             eks.amazonaws.com/capacityType: "ON_DEMAND"
           args:
@@ -68,8 +68,8 @@ spec:
               cpu: 1500m
               memory: 1500Mi
         worker:
-          image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.12.1
-          replicas: 20
+          image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.32.4
+          replicas: 8
           args:
             - "--enable-rebalancing"
           hpa:
