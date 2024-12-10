@@ -14,7 +14,7 @@ spec:
           name: production-simulator
           headless: false
           environment:
-            SP_HOST: https://tstest3-oidc-sinatra.loadtest.identitysandbox.gov
+            SP_HOST: https://loadtest-oidc-sinatra.loadtest.identitysandbox.gov
             NUM_USERS: "49999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
@@ -42,9 +42,9 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.tstest3.identitysandbox.gov
-          locust_locustfile_configmap: tstest3-login-locustfiles
-          locust_lib_configmap: tstest3-login-loadtest-lib
+          locust_host: https://idp.loadtest.tooling.identitysandbox.gov
+          locust_locustfile_configmap: loadtest-login-locustfiles
+          locust_lib_configmap: loadtest-login-loadtest-lib
           locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==7.5.3
@@ -92,4 +92,4 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: tstest3
+    namespace: loadtest

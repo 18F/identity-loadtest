@@ -5,10 +5,10 @@ https://gitlab.login.gov/lg-public/identity-eks-control/-/merge_requests/120 and
 edit your environment to create all the users you need and to set up `application.yml`
 to have the proper things in it.
 
-Then, `cp -rp tstest3 yourenv` and edit all the files in there and edit all the files
+Then, `cp -rp loadtest yourenv` and edit all the files in there and edit all the files
 so that they have the proper env in it either by hand, or with a command like
 ```
-find yourenv -type f -exec sed -i '' 's/tstest3/yourenv/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/loadtest/yourenv/g' '{}' \;
 ```
 
 Then edit all the files to set up the particular tests and # of users and so on that

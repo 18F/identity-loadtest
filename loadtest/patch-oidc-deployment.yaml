@@ -3,14 +3,14 @@
   path: /spec/template/spec/containers/0/env/0
   value:
     name: idp_url
-    value: "https://idp.tstest3.identitysandbox.gov/"
+    value: "https://idp.loadtest.tooling.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/1
   value:
     name: redirect_uri
-    value: "https://tstest3-oidc-sinatra.loadtest.identitysandbox.gov/"
+    value: "https://loadtest-oidc-sinatra.loadtest.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/2
   value:
     name: NEW_RELIC_APP_NAME
-    value: tstest3-oidc-sinatra.loadtest.identitysandbox.gov
+    value: loadtest-oidc-sinatra.loadtest.identitysandbox.gov
