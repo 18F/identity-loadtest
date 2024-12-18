@@ -11,7 +11,7 @@ spec:
     helm:
       values: |
         loadtest:
-          name: all-tests
+          name: production_simulator
           headless: false
           environment:
             SP_HOST: https://loadtest-oidc-sinatra.loadtest.identitysandbox.gov
