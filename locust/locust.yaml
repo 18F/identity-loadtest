@@ -11,11 +11,11 @@ spec:
   source:
     chart: locust
     repoURL: https://charts.deliveryhero.io
-    targetRevision: 0.32.2
+    targetRevision: 0.31.6
     helm:
       values: |
         loadtest:
-          name: production-simulator
+          name: production_simulator
           headless: false
           environment:
             SP_HOST: https://envname-oidc-sinatra.loadtest.identitysandbox.gov
