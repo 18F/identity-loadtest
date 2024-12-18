@@ -2,26 +2,26 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: "tstest3"
+  name: "loadtest"
   labels:
-    name: "tstest3"
+    name: "loadtest"
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tstest3
+  name: loadtest
   namespace: argocd
   labels:
-    name: tstest3
+    name: loadtest
 spec:
   project: default
   source:
     repoURL: https://github.com/18F/identity-loadtest.git
-    path: tstest3
-    targetRevision: stages/tstest3
+    path: loadtest
+    targetRevision: stages/loadtest
   destination:
-    namespace: tstest3
+    namespace: loadtest
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
