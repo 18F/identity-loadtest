@@ -63,6 +63,8 @@ spec:
               value: gov-collector.newrelic.com
             - name: NEW_RELIC_LOG
               value: stdout
+            - name: NEW_RELIC_HIGH_SECURITY
+              value: "true"
             - name: RACK_ENV
               value: production
             - name: cache_oidc_config
