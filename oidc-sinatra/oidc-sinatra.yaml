@@ -53,12 +53,12 @@ spec:
                   name: sp-private-key
                   key: demo_sp.key
                   optional: false
-            - name: NEW_RELIC_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: newrelic-license
-                  key: newrelic-license
-                  optional: false
+            # - name: NEW_RELIC_LICENSE_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: newrelic-license
+            #       key: newrelic-license
+            #       optional: false
             - name: NEW_RELIC_HOST
               value: gov-collector.newrelic.com
             - name: NEW_RELIC_LOG
