@@ -43,6 +43,8 @@ spec:
               value: "https://oidc-sinatra.loadtest.identitysandbox.gov/"
             - name: NEW_RELIC_APP_NAME
               value: oidc-sinatra.loadtest.identitysandbox.gov
+            - name: ENABLE_LOGGING
+              value: "false"
             - name: acr_values
               value: "http://idmanagement.gov/ns/assurance/loa/1"
             - name: client_id
