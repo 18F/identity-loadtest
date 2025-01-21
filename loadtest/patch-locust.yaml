@@ -32,7 +32,7 @@ spec:
             RATIO_SIGN_IN_INCORRECT_PASSWORD: 185 # 200
             RATIO_SIGN_IN_INCORRECT_SMS_OTP: 185  # 200
             RATIO_SIGN_UP: 1666                   # goal of 500 events/sec for new user registrations
-            # RATIO_SIGN_IN_AND_PROOF: 492          # 200 events/sec for identity proofings
+            RATIO_SIGN_IN_AND_PROOF: 492          # 200 events/sec for identity proofings
             RATIO_SIGN_UP_AND_PROOF: 592          # 740 -
 
             # IDV heavy load test plan
