@@ -20,7 +20,7 @@
 #    name: ENABLE_LOGGING
 #    value: "true"
 - op: replace
- path: /spec/template/spec/containers/0/env/4
- value:
-   name: DEBUG
-   value: "true"
+  path: /spec/template/spec/containers/0/env/4
+  value:
+    name: DEBUG
+    value: "true"
