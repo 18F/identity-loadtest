@@ -14,13 +14,13 @@
   value:
     name: NEW_RELIC_APP_NAME
     value: loadtest-oidc-sinatra.loadtest.identitysandbox.gov
-- op: replace
-  path: /spec/template/spec/containers/0/env/3
-  value:
-    name: ENABLE_LOGGING
-    value: "false"
-- op: replace
-  path: /spec/template/spec/containers/0/env/4
-  value:
-    name: DEBUG
-    value: "true"
+# - op: replace
+#   path: /spec/template/spec/containers/0/env/3
+#   value:
+#     name: ENABLE_LOGGING
+#     value: "true"
+# - op: replace
+#   path: /spec/template/spec/containers/0/env/4
+#   value:
+#     name: DEBUG
+#     value: "true"
