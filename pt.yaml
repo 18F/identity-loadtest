@@ -19,7 +19,7 @@ spec:
   source:
     repoURL: https://github.com/18F/identity-loadtest.git
     path: pt
-    targetRevision: main
+    targetRevision: stages/pt
   destination:
     namespace: pt
     server: https://kubernetes.default.svc
