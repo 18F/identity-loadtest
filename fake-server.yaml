@@ -23,6 +23,8 @@ spec:
   destination:
     namespace: fake-server
     server: https://kubernetes.default.svc
+  minReplicas: 1
+  maxReplicas: 256
   syncPolicy:
     automated:
       prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
