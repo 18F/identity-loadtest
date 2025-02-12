@@ -10,11 +10,11 @@ spec:
     kind: Deployment
     name: coredns
   minReplicas: 1
-  maxReplicas: 4
+  maxReplicas: 256
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 3
+          averageUtilization: 5
