@@ -55,10 +55,10 @@ spec:
                   name: newrelic-license
                   key: newrelic-license
                   optional: false
-            - name: NEW_RELIC_APP_NAME
-              value: oidc-sinatra.agnesloadtest.identitysandbox.gov
-            - name: NEW_RELIC_HOST
-              value: gov-collector.newrelic.com
+            # - name: NEW_RELIC_APP_NAME
+            #   value: oidc-sinatra.agnesloadtest.identitysandbox.gov
+            # - name: NEW_RELIC_HOST
+            #   value: gov-collector.newrelic.com
             - name: RACK_ENV
               value: production
             - name: cache_oidc_config
