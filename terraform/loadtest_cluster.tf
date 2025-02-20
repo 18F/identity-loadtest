@@ -15,7 +15,7 @@ module "loadtest" {
   private_subnet_ids = module.vpc.private_subnets
 
   # EKS CLUSTER VERSION
-  cluster_version = "1.30"
+  cluster_version = "1.31"
 
   cluster_name = var.cluster_name
 
