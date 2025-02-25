@@ -69,13 +69,13 @@ spec:
               memory: 1500Mi
         worker:
           image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.32.4
-          replicas: 48
+          replicas: 128
           args:
             - "--enable-rebalancing"
           hpa:
             enabled: false
             minReplicas: 1
-            maxReplicas: 128
+            maxReplicas: 256
             targetCPUUtilizationPercentage: 95
           resources:
             requests:
