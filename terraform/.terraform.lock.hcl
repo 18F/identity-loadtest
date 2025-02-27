@@ -186,6 +186,7 @@ provider "registry.terraform.io/integrations/github" {
   version = "6.2.3"
   hashes = [
     "h1:igRdbZ2jqI6oKAr78+8smF3xw/97xKrbhdITKubKQQM=",
+    "h1:qBH3fN/NItflQkBoIVdQa7n8WvBOuu7Ao20oeoAubKM=",
     "zh:05874671652a260b12d784cc46b0eea156f493a5f12e00368d1f6cb319156257",
     "zh:0c7a3cae5a66e5c5efc3b25ba646a0d46bfe1fd3edba1f5a75f51aede85a9d1b",
     "zh:174310010d08f13e36e53ff18e44a21dd040c89884ef190a192c6ce27926a912",
@@ -208,6 +209,7 @@ provider "registry.terraform.io/newrelic/newrelic" {
   version = "3.40.1"
   hashes = [
     "h1:3wNZ+s96Mv4ftfIKPAdvfA5kxbqHTiXslyTD1vfVzLo=",
+    "h1:osSnd0Gk1ytbQzvJhzyy4Bwzpv3uvsbi9L4D3oTZp/c=",
     "zh:12224cf9ba6f43e2465be737c132ef830170e59ef696e0d9a2fef3c9fa4be5f8",
     "zh:192c6a24dee80c8240732fc3b14aa679c1d85a21c661e355757f306a1ea12cda",
     "zh:1ec97ba469490d6caf24916b6d80604bf9b296ba65672ff1db918a5fd1e43fc4",
