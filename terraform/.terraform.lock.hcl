@@ -23,6 +23,7 @@ provider "registry.terraform.io/hashicorp/archive" {
   version = "2.5.0"
   hashes = [
     "h1:GyV//bFbFWEll/6XafMvSUCmJL+r7wDDz222dMEmV3c=",
+    "h1:OTk41JfiDc1TVFTcRZ//4+jwPBIcWHXOwN29mjdOyug=",
     "zh:3b5774d20e87058d6d67d9ad4ce3fc4a5f7ea7748d345fa6721e24a0cbb0a3d4",
     "zh:3b94e706ac0f5151880ccc9e63d33c4113361f27e64224a942caa04a5a19cd44",
     "zh:78d5eefdd9e494defcb3c68d282b8f96630502cac21d1ea161f53cfe9bb483b3",
@@ -43,6 +44,7 @@ provider "registry.terraform.io/hashicorp/aws" {
   constraints = ">= 3.72.0, >= 4.36.0, >= 4.47.0, >= 5.0.0, >= 5.46.0"
   hashes = [
     "h1:QkFd6NehzBDH2q2QRNW4RoE3bqK2SxVBuZ09IP9CnlQ=",
+    "h1:qYXhPfMOxgOYuSjfe7+P2wdqx4oMkPYgH4XUN3fJb54=",
     "zh:1a0a150b6adaeacc8f56763182e76c6219ac67de1217b269d24b770067b7bab0",
     "zh:1d9c3a8ac3934a147569254d6e2e6ea5293974d0595c02c9e1aa31499a8f0042",
     "zh:1f4d1d5e2e02fd5cccafa28dade8735a3059ed1ca3284fb40116cdb67d0e7ee4",
@@ -66,6 +68,7 @@ provider "registry.terraform.io/hashicorp/cloudinit" {
   constraints = ">= 2.0.0"
   hashes = [
     "h1:/Ty/HXg0Bti5T+Zk6XvhwEHyKGiOV5LzCrbLiekjuLU=",
+    "h1:S3j8poSaLbaftlKq2STBkQEkZH253ZLaHhBHBifdpBQ=",
     "zh:09f1f1e1d232da96fbf9513b0fb5263bc2fe9bee85697aa15d40bb93835efbeb",
     "zh:381e74b90d7a038c3a8dcdcc2ce8c72d6b86da9f208a27f4b98cabe1a1032773",
     "zh:398eb321949e28c4c5f7c52e9b1f922a10d0b2b073b7db04cb69318d24ffc5a9",
@@ -85,6 +88,7 @@ provider "registry.terraform.io/hashicorp/external" {
   version = "2.3.3"
   hashes = [
     "h1:Qi72kOSrEYgEt5itloFhDfmiFZ7wnRy3+F74XsRuUOw=",
+    "h1:gShzO1rJtADK9tDZMvMgjciVAzsBh39LNjtThCwX1Hg=",
     "zh:03d81462f9578ec91ce8e26f887e34151eda0e100f57e9772dbea86363588239",
     "zh:37ec2a20f6a3ec3a0fd95d3f3de26da6cb9534b30488bc45723e118a0911c0d8",
     "zh:4eb5b119179539f2749ce9de0e1b9629d025990f062f4f4dddc161562bb89d37",
@@ -104,6 +108,7 @@ provider "registry.terraform.io/hashicorp/helm" {
   version     = "2.14.0"
   constraints = ">= 2.4.1, >= 2.9.0, >= 2.10.1"
   hashes = [
+    "h1:8Vt9264v3UE6mHLRG8yiteVl5h8ZSTkJXf1xdVLa7GA=",
     "h1:K8aRZTK4Eq2RacrcCviWaxDlHmeUi+M4vmBFoKAk/O0=",
     "zh:087a475fda3649e4b6b9aeb5f21704972f5d85c10d0bf334289b0a1b8c1a5575",
     "zh:1877991d976491d4e2a653a89491bd3b92123a00f442f15aa62caea8902677c7",
@@ -125,6 +130,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
   constraints = ">= 2.10.0, >= 2.20.0, >= 2.22.0"
   hashes = [
     "h1:G8S89g+vfZOgJGbOpSKIQXrp+jIvTwapc89pMVsUo3s=",
+    "h1:ZlKkkHJrjF4AiMueI2yA+abBc1c37cfwjyxURdLKhEw=",
     "zh:0d16b861edb2c021b3e9d759b8911ce4cf6d531320e5dc9457e2ea64d8c54ecd",
     "zh:1bad69ed535a5f32dec70561eb481c432273b81045d788eb8b37f2e4a322cc40",
     "zh:43c58e3912fcd5bb346b5cb89f31061508a9be3ca7dd4cd8169c066203bcdfb3",
@@ -144,6 +150,7 @@ provider "registry.terraform.io/hashicorp/local" {
   version     = "2.5.1"
   constraints = ">= 2.1.0"
   hashes = [
+    "h1:/GAVA/xheGQcbOZEq0qxANOg+KVLCA7Wv8qluxhTjhU=",
     "h1:tjcGlQAFA0kmQ4vKkIPPUC4it1UYxLbg4YvHOWRAJHA=",
     "zh:0af29ce2b7b5712319bf6424cb58d13b852bf9a777011a545fac99c7fdcdf561",
     "zh:126063ea0d79dad1f68fa4e4d556793c0108ce278034f101d1dbbb2463924561",
@@ -185,6 +192,7 @@ provider "registry.terraform.io/hashicorp/time" {
   version     = "0.12.0"
   constraints = ">= 0.9.0"
   hashes = [
+    "h1:Os2Ok7txtlUJHh6Hg7o+74Ql85SnRb/fGmah22yXpLw=",
     "h1:fOq+lGsffrWiwyVgGa7lnU4KlsUQ0T/bglCB9z9kQvs=",
     "zh:019a4c09af254ef80b72cf0d843dfe72d99483e227138cf5b514a1b9977ab4c3",
     "zh:0ae310ec740ebc6f275529507d60bb747d0bf39e72fc5a2fa90d74486006132c",
@@ -226,6 +234,7 @@ provider "registry.terraform.io/integrations/github" {
   version = "6.2.3"
   hashes = [
     "h1:igRdbZ2jqI6oKAr78+8smF3xw/97xKrbhdITKubKQQM=",
+    "h1:qBH3fN/NItflQkBoIVdQa7n8WvBOuu7Ao20oeoAubKM=",
     "zh:05874671652a260b12d784cc46b0eea156f493a5f12e00368d1f6cb319156257",
     "zh:0c7a3cae5a66e5c5efc3b25ba646a0d46bfe1fd3edba1f5a75f51aede85a9d1b",
     "zh:174310010d08f13e36e53ff18e44a21dd040c89884ef190a192c6ce27926a912",
@@ -248,6 +257,7 @@ provider "registry.terraform.io/newrelic/newrelic" {
   version = "3.40.1"
   hashes = [
     "h1:3wNZ+s96Mv4ftfIKPAdvfA5kxbqHTiXslyTD1vfVzLo=",
+    "h1:osSnd0Gk1ytbQzvJhzyy4Bwzpv3uvsbi9L4D3oTZp/c=",
     "zh:12224cf9ba6f43e2465be737c132ef830170e59ef696e0d9a2fef3c9fa4be5f8",
     "zh:192c6a24dee80c8240732fc3b14aa679c1d85a21c661e355757f306a1ea12cda",
     "zh:1ec97ba469490d6caf24916b6d80604bf9b296ba65672ff1db918a5fd1e43fc4",
