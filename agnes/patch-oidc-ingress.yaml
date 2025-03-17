@@ -4,8 +4,8 @@ kind: Ingress
 metadata:
   name: oidc-sinatra
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: agnes-oidc-sinatra.agnes.identitysandbox.gov
+    external-dns.alpha.kubernetes.io/hostname: agnes-oidc-sinatra.agnesloadtest.identitysandbox.gov
 spec:
   tls:
     - hosts:
-        - agnes-oidc-sinatra.agnes.identitysandbox.gov
+        - agnes-oidc-sinatra.agnesloadtest.identitysandbox.gov

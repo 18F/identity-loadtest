@@ -3,14 +3,14 @@
   path: /spec/template/spec/containers/0/env/0
   value:
     name: idp_url
-    value: "https://idp.agnes.tooling.identitysandbox.gov/"
+    value: "https://idp.agnes.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/1
   value:
     name: redirect_uri
-    value: "https://agnes-oidc-sinatra.agnes.identitysandbox.gov/"
+    value: "https://agnes-oidc-sinatra.agnesloadtest.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/2
   value:
     name: NEW_RELIC_APP_NAME
-    value: agnes-oidc-sinatra.agnes.identitysandbox.gov
+    value: agnes-oidc-sinatra.agnesloadtest.identitysandbox.gov
