@@ -1,6 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 namePrefix: agnes-
+
 resources:
   - ../locust
   - ../oidc-sinatra
@@ -9,6 +11,12 @@ resources:
 patches:
   - path: patch-locust.yaml
   - path: patch-oidc-ingress.yaml
+  - path: patch-oidc-deployment.yaml
+    target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: oidc-sinatra
 
 transformers:
   - |-
@@ -18,4 +26,3 @@ transformers:
       name: notImportantHere
       namespace: agnes
     unsetOnly: true
-
