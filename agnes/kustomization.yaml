@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namePrefix: pt-
+namePrefix: agnes-
 resources:
   - ../locust
   - ../oidc-sinatra
@@ -16,6 +16,6 @@ transformers:
     kind: NamespaceTransformer
     metadata:
       name: notImportantHere
-      namespace: pt
+      namespace: agnes
     unsetOnly: true
 

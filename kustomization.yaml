@@ -2,7 +2,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- pt.yaml
+- agnes.yaml
 - loadtest.yaml
 - fake-server.yaml
 # - prometheus-adapter.yaml

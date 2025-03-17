@@ -14,8 +14,8 @@ spec:
           name: production_simulator
           headless: false
           environment:
-            SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
-            NUM_USERS: "24999999"
+            SP_HOST: https://oidc-sinatra.agnesloadtest.identitysandbox.gov
+            NUM_USERS: "1999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
             # RATIO_SIGN_IN: 6565                   # goal of 2000 events/sec for sign ins
@@ -42,9 +42,9 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.pt.identitysandbox.gov
-          locust_locustfile_configmap: pt-login-locustfiles
-          locust_lib_configmap: pt-login-loadtest-lib
+          locust_host: https://idp.agnes.identitysandbox.gov
+          locust_locustfile_configmap: agnes-login-locustfiles
+          locust_lib_configmap: agnes-login-loadtest-lib
           locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==7.5.3
@@ -92,4 +92,4 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: pt
+    namespace: agnes
