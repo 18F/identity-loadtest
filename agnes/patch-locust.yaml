@@ -10,7 +10,7 @@ spec:
   source:
     helm:
       values: |
-        agnes:
+        loadtest:
           name: production_simulator
           headless: false
           environment:
