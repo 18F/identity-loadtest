@@ -44,7 +44,7 @@ spec:
             # RATIO_SIGN_UP_AND_PROOF: 1500
           locust_host: https://idp.agnes.identitysandbox.gov
           locust_locustfile_configmap: agnes-login-locustfiles
-          locust_lib_configmap: agnes-login-agnes-lib
+          locust_lib_configmap: agnes-login-loadtest-lib
           locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==7.5.3
