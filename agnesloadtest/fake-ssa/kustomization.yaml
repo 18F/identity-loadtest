@@ -4,9 +4,9 @@ kind: Kustomization
 namePrefix: fake-ssa-
 
 resources:
-  - ../locust
-  - ../oidc-sinatra
-  - ../load_testing
+  - ../../locust
+  - ../../oidc-sinatra
+  - ../../load_testing
 
 patches:
   - path: patch-locust.yaml

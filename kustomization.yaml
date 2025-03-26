@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
 - agnesloadtest/agnes.yaml
 - agnesloadtest/fake-ssa.yaml
-# - loadtest.yaml
 - fake-server.yaml
 # - prometheus-adapter.yaml
 # - dashboard.yaml
