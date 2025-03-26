@@ -42,7 +42,7 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.fake-ssa.identitysandbox.gov
+          locust_host: https://idp.agnes.identitysandbox.gov
           locust_locustfile_configmap: fake-ssa-login-locustfiles
           locust_lib_configmap: fake-ssa-login-loadtest-lib
           locust_locustfile: prod_simulator.locustfile.py

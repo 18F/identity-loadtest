@@ -3,7 +3,7 @@
   path: /spec/template/spec/containers/0/env/0
   value:
     name: idp_url
-    value: "https://idp.fake-ssa.identitysandbox.gov/"
+    value: "https://idp.agnes.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/1
   value:
