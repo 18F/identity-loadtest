@@ -1,0 +1,21 @@
+
+- op: replace
+  path: /spec/template/spec/containers/0/env/0
+  value:
+    name: idp_url
+    value: "https://idp.ENV.identitysandbox.gov/"
+- op: replace
+  path: /spec/template/spec/containers/0/env/1
+  value:
+    name: redirect_uri
+    value: "https://SP-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov/"
+- op: replace
+  path: /spec/template/spec/containers/0/env/2
+  value:
+    name: NEW_RELIC_APP_NAME
+    value: SP-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
+- op: replace
+  path: /spec/template/spec/containers/0/env/3
+  value:
+    name: client_id
+    value: URN
