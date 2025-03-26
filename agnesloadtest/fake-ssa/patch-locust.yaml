@@ -14,7 +14,7 @@ spec:
           name: production_simulator
           headless: false
           environment:
-            fake-ssa_HOST: https://fake-ssa-oidc-sinatra.agnesloadtest.identitysandbox.gov
+            SP_HOST: https://fake-ssa-oidc-sinatra.agnesloadtest.identitysandbox.gov
             NUM_USERS: "1999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
