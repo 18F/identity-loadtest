@@ -4,9 +4,9 @@ kind: Kustomization
 namePrefix: lt-vassoerp-
 
 resources:
-  - ../locust
-  - ../oidc-sinatra
-  - ../load_testing
+  - ../../locust
+  - ../../oidc-sinatra
+  - ../../load_testing
 
 patches:
   - path: patch-locust.yaml
