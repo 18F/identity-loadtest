@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "lt-vassoerp"
+  labels:
+    name: "lt-vassoerp"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lt-vassoerp
+  namespace: argocd
+  labels:
+    name: lt-vassoerp
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/18F/identity-loadtest.git
+    path: agnesloadtest/lt-vassoerp
+    targetRevision: stages/agnes
+  destination:
+    namespace: lt-vassoerp
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+

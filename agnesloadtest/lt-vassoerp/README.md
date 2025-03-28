@@ -1,17 +1,17 @@
 # Loadtest Environments
 
-To set up a ENV environment, you should be able to look at the changes in
+To set up a agnes environment, you should be able to look at the changes in
 https://gitlab.login.gov/lg-public/identity-eks-control/-/merge_requests/120 and
 edit your environment to create all the users you need and to set up `application.yml`
 to have the proper things in it.
 
-Then, `cp -rp ENV yoursp` and edit all the files in there and edit all the files
+Then, `cp -rp agnes yoursp` and edit all the files in there and edit all the files
 so that they have the proper env in it either by hand, or with a command like
 ```
-find yourenv -type f -exec sed -i '' 's/CLUSTER_NAME/your_loadtest_cluster_name/g' '{}' \;
-find yourenv -type f -exec sed -i '' 's/ENV/yourenv/g' '{}' \;
-find yourenv -type f -exec sed -i '' 's/SERVICE_PROVIDER/yoursp/g' '{}' \;
-find yourenv -type f -exec sed -i '' 's/URN/yoururn/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/agnesloadtest/your_loadtest_cluster_name/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/agnes/yourenv/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/lt-vassoerp/yoursp/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/urn:gov:gsa:openidconnect.profiles:sp:sso:va:lt-vassoerp/yoururn/g' '{}' \;
 ```
 
 Then edit all the files to set up the particular tests and # of users and so on that
@@ -19,7 +19,7 @@ you want by editing the `patch-locust.yaml` file.
 
 Create an MR with this, and once it is merged in, the `yourenv` resources should
 launch and once AWS does it's thing, you should be able to see your
-`yourenv-oidc-sinatra.ENV.identitysandbox.gov` host in dns, and things should
+`yourenv-oidc-sinatra.agnes.identitysandbox.gov` host in dns, and things should
 be ready for you.
 
 ## Locust Access

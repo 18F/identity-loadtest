@@ -14,7 +14,7 @@ spec:
           name: production_simulator
           headless: false
           environment:
-            SP_HOST: https://SERVICE_PROVIDER-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
+            SP_HOST: https://lt-vassoerp-oidc-sinatra.agnesloadtest.identitysandbox.gov
             NUM_USERS: "1999999"
                                                   # Ratio numbers are calcualated in proportion
                                                   # to the events/sec requested in the 100x load test plan
@@ -42,9 +42,9 @@ spec:
             # RATIO_SIGN_UP: 1900
             # RATIO_SIGN_IN_AND_PROOF: 1823
             # RATIO_SIGN_UP_AND_PROOF: 1500
-          locust_host: https://idp.ENV.identitysandbox.gov
-          locust_locustfile_configmap: SERVICE_PROVIDER-login-locustfiles
-          locust_lib_configmap: SERVICE_PROVIDER-login-loadtest-lib
+          locust_host: https://idp.agnes.identitysandbox.gov
+          locust_locustfile_configmap: lt-vassoerp-login-locustfiles
+          locust_lib_configmap: lt-vassoerp-login-loadtest-lib
           locust_locustfile: prod_simulator.locustfile.py
           pip_packages:
             - coverage==7.5.3
@@ -92,4 +92,4 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: SP
+    namespace: lt-vassoerp
