@@ -8,9 +8,14 @@
   path: /spec/template/spec/containers/0/env/1
   value:
     name: redirect_uri
-    value: "https://fake-ssa-oidc-sinatra.agnesloadtest.identitysandbox.gov/"
+    value: "https://lt-myssasp-oidc-sinatra.agnesloadtest.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/2
   value:
     name: NEW_RELIC_APP_NAME
-    value: fake-ssa-oidc-sinatra.agnesloadtest.identitysandbox.gov
+    value: lt-myssasp-oidc-sinatra.agnesloadtest.identitysandbox.gov
+- op: replace
+  path: /spec/template/spec/containers/0/env/3
+  value:
+    name: client_id
+    value: "urn:gov:gsa:openidconnect.profiles:sp:sso:ssa:lt-myssasp"

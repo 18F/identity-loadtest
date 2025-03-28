@@ -1,16 +1,16 @@
 # Loadtest Environments
 
-To set up a fake-ssa environment, you should be able to look at the changes in
+To set up a lt-myssasp environment, you should be able to look at the changes in
 https://gitlab.login.gov/lg-public/identity-eks-control/-/merge_requests/120 and
 edit your environment to create all the users you need and to set up `application.yml`
 to have the proper things in it.
 
-Then, `cp -rp fake-ssa yoursp` and edit all the files in there and edit all the files
+Then, `cp -rp lt-myssasp yoursp` and edit all the files in there and edit all the files
 so that they have the proper env in it either by hand, or with a command like
 ```
 find yourenv -type f -exec sed -i '' 's/agnesloadtest/your_loadtest_cluster_name_/g' '{}' \;
-find yourenv -type f -exec sed -i '' 's/fake-ssa/yourenv/g' '{}' \;
-find yourenv -type f -exec sed -i '' 's/fake-ssa/yoursp/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/lt-myssasp/yourenv/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/lt-myssasp/yoursp/g' '{}' \;
 ```
 
 Then edit all the files to set up the particular tests and # of users and so on that
@@ -18,7 +18,7 @@ you want by editing the `patch-locust.yaml` file.
 
 Create an MR with this, and once it is merged in, the `yourenv` resources should
 launch and once AWS does it's thing, you should be able to see your
-`yourenv-oidc-sinatra.fake-ssa.identitysandbox.gov` host in dns, and things should
+`yourenv-oidc-sinatra.lt-myssasp.identitysandbox.gov` host in dns, and things should
 be ready for you.
 
 ## Locust Access
