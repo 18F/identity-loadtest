@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namePrefix: SP-
+namePrefix: SERVICE_PROVIDER-
 
 resources:
   - ../locust
@@ -24,5 +24,5 @@ transformers:
     kind: NamespaceTransformer
     metadata:
       name: notImportantHere
-      namespace: SP
+      namespace: SERVICE_PROVIDER
     unsetOnly: true

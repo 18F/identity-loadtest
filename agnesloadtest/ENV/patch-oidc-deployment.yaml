@@ -8,12 +8,12 @@
   path: /spec/template/spec/containers/0/env/1
   value:
     name: redirect_uri
-    value: "https://SP-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov/"
+    value: "https://SERVICE_PROVIDER-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov/"
 - op: replace
   path: /spec/template/spec/containers/0/env/2
   value:
     name: NEW_RELIC_APP_NAME
-    value: SP-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
+    value: SERVICE_PROVIDER-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
 - op: replace
   path: /spec/template/spec/containers/0/env/3
   value:

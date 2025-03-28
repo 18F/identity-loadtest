@@ -4,8 +4,8 @@ kind: Ingress
 metadata:
   name: oidc-sinatra
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: SP-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
+    external-dns.alpha.kubernetes.io/hostname: SERVICE_PROVIDER-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
 spec:
   tls:
     - hosts:
-        - SP-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov
+        - SERVICE_PROVIDER-oidc-sinatra.CLUSTER_NAME.identitysandbox.gov

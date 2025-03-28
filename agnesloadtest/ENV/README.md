@@ -10,7 +10,7 @@ so that they have the proper env in it either by hand, or with a command like
 ```
 find yourenv -type f -exec sed -i '' 's/CLUSTER_NAME/your_loadtest_cluster_name_/g' '{}' \;
 find yourenv -type f -exec sed -i '' 's/ENV/yourenv/g' '{}' \;
-find yourenv -type f -exec sed -i '' 's/SP/yoursp/g' '{}' \;
+find yourenv -type f -exec sed -i '' 's/SERVICE_PROVIDER/yoursp/g' '{}' \;
 find yourenv -type f -exec sed -i '' 's/URN/yoururn/g' '{}' \;
 ```
 
