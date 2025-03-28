@@ -2,26 +2,26 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: "fake-ssa"
+  name: "lt-myssasp"
   labels:
-    name: "fake-ssa"
+    name: "lt-myssasp"
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: fake-ssa
+  name: lt-myssasp
   namespace: argocd
   labels:
-    name: fake-ssa
+    name: lt-myssasp
 spec:
   project: default
   source:
     repoURL: https://github.com/18F/identity-loadtest.git
-    path: agnesloadtest/fake-ssa
+    path: agnesloadtest/lt-myssasp
     targetRevision: stages/agnes
   destination:
-    namespace: fake-ssa
+    namespace: lt-myssasp
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
