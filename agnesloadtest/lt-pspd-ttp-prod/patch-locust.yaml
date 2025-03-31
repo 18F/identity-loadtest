@@ -92,4 +92,4 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    namespace: SP
+    namespace: lt-pspd-ttp-prod
