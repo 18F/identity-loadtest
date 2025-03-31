@@ -18,4 +18,4 @@
   path: /spec/template/spec/containers/0/env/3
   value:
     name: client_id
-    value: urn:gov:gsa:openidconnect.profiles:sp:sso:va:lt-vassoerp
+    value: "urn:gov:gsa:openidconnect.profiles:sp:sso:va:lt-vassoerp"
