@@ -5,6 +5,7 @@ resources:
 - agnesloadtest/agnes.yaml
 - agnesloadtest/lt-myssasp.yaml
 - agnesloadtest/lt-vassoerp.yaml
+- agnesloadtest/lt-pspd-ttp-prod.yaml
 - fake-server.yaml
 # - prometheus-adapter.yaml
 # - dashboard.yaml
