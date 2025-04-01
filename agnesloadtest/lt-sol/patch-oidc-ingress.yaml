@@ -1,0 +1,11 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oidc-sinatra
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: lt-sol-oidc-sinatra.agnesloadtest.identitysandbox.gov
+spec:
+  tls:
+    - hosts:
+        - lt-sol-oidc-sinatra.agnesloadtest.identitysandbox.gov

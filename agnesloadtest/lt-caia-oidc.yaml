@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "lt-caia-oidc"
+  labels:
+    name: "lt-caia-oidc"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lt-caia-oidc
+  namespace: argocd
+  labels:
+    name: lt-caia-oidc
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/18F/identity-loadtest.git
+    path: agnesloadtest/lt-caia-oidc
+    targetRevision: stages/agnes
+  destination:
+    namespace: lt-caia-oidc
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+

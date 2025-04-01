@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "lt-beta_sam_prod"
+  labels:
+    name: "lt-beta_sam_prod"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lt-beta_sam_prod
+  namespace: argocd
+  labels:
+    name: lt-beta_sam_prod
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/18F/identity-loadtest.git
+    path: agnesloadtest/lt-beta_sam_prod
+    targetRevision: stages/agnes
+  destination:
+    namespace: lt-beta_sam_prod
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+

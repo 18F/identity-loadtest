@@ -1,0 +1,21 @@
+
+- op: replace
+  path: /spec/template/spec/containers/0/env/0
+  value:
+    name: idp_url
+    value: "https://idp.agnes.identitysandbox.gov/"
+- op: replace
+  path: /spec/template/spec/containers/0/env/1
+  value:
+    name: redirect_uri
+    value: "https://lt-eauth-oidc-sinatra.agnesloadtest.identitysandbox.gov/"
+- op: replace
+  path: /spec/template/spec/containers/0/env/2
+  value:
+    name: NEW_RELIC_APP_NAME
+    value: lt-eauth-oidc-sinatra.agnesloadtest.identitysandbox.gov
+- op: replace
+  path: /spec/template/spec/containers/0/env/3
+  value:
+    name: client_id
+    value: urn:gov:gsa:openidconnect.profiles:sp:sso:usda:lt-eauth

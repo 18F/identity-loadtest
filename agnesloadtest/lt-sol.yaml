@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "lt-sol"
+  labels:
+    name: "lt-sol"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lt-sol
+  namespace: argocd
+  labels:
+    name: lt-sol
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/18F/identity-loadtest.git
+    path: agnesloadtest/lt-sol
+    targetRevision: stages/agnes
+  destination:
+    namespace: lt-sol
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+
