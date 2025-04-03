@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "mww59"
+  labels:
+    name: "mww59"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mww59
+  namespace: argocd
+  labels:
+    name: mww59
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/18F/identity-loadtest.git
+    path: mww59
+    targetRevision: stages/agnes
+  destination:
+    namespace: mww59
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+
