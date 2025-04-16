@@ -35,22 +35,22 @@ module "loadtest" {
     bigspot = {
       node_group_name = "${var.cluster_name}-managed-bigspot"
       min_size        = 1
-      max_size        = 10
-      desired_size    = 2
+      max_size        = 8
+      desired_size    = 4
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "SPOT"
       instance_types  = ["m6a.2xlarge", "m5.2xlarge", "m4.2xlarge", "m5a.2xlarge"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                        # disk_size will be ignored when using Launch Templates
+      disk_size       = 10                                                         # disk_size will be ignored when using Launch Templates
     }
     ondemand = {
       node_group_name = "${var.cluster_name}-managed-ondemand"
       min_size        = 1
-      max_size        = 250
-      desired_size    = 9
+      max_size        = 1
+      desired_size    = 1
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "ON_DEMAND"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 100                                                             # disk_size will be ignored when using Launch Templates
+      disk_size       = 10                                                              # disk_size will be ignored when using Launch Templates
     }
   }
 }
