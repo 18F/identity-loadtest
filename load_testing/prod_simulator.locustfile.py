@@ -24,16 +24,16 @@ root.addHandler(handler)
 # These can be overridden by setting the corresponding environment
 # variable.  Example:  RATIO_SIGN_UP will override RATIOS["SIGN_UP"]
 
-# Defaults updated based on measurements from 2021-04-13
+# Defaults updated based on https://gitlab.login.gov/lg-teams/radia/TeamRadia/-/issues/320
 
 RATIOS = {
-    "SIGN_IN": 7217,
-    "SIGN_UP": 1666,
-    "SIGN_IN_AND_PROOF": 592,
-    "SIGN_UP_AND_PROOF": 148,
-    "SIGN_IN_USER_NOT_FOUND": 7,
-    "SIGN_IN_INCORRECT_PASSWORD": 185,
-    "SIGN_IN_INCORRECT_SMS_OTP": 185,
+    "SIGN_IN": 3812,
+    "SIGN_UP": 275,
+    "SIGN_IN_AND_PROOF": 0,
+    "SIGN_UP_AND_PROOF": 4990,
+    "SIGN_IN_USER_NOT_FOUND": 0,
+    "SIGN_IN_INCORRECT_PASSWORD": 900,
+    "SIGN_IN_INCORRECT_SMS_OTP": 23,
 }
 
 # For sign ins, what percentage should simulate a remembered device
