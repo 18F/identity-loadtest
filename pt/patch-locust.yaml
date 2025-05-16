@@ -16,11 +16,11 @@ spec:
           environment:
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
             NUM_USERS: "5000000" # 5M
-            RATIO_SIGN_IN: 3812
-            RATIO_SIGN_IN_INCORRECT_PASSWORD: 900
-            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 23
-            RATIO_SIGN_UP: 275
-            RATIO_SIGN_UP_AND_PROOF: 4990
+            RATIO_SIGN_IN: 7540
+            RATIO_SIGN_IN_INCORRECT_PASSWORD: 1775
+            RATIO_SIGN_IN_INCORRECT_SMS_OTP: 45
+            RATIO_SIGN_UP: 545
+            RATIO_SIGN_UP_AND_PROOF: 95
 
           locust_host: https://idp.pt.identitysandbox.gov
           locust_locustfile_configmap: pt-login-locustfiles
