@@ -1,9 +1,14 @@
 stages:
   - build
 
+include:
+  - .gitlab-ci-devenv.yml
+  - .gitlab-ci-rules.yml
+
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   VENV_PATH: "$CI_PROJECT_DIR/venv"
+  ECR_REGISTRY: "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
