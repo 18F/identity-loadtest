@@ -1,7 +1,7 @@
 devenv-test:
-  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.8
+  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.8.1
   before_script:
-    - nix-env -iA find
+    - nix-env -iA nixpkgs.findutils
     # Set up a local cache directory for Nix
     - export CACHEDIR="$(pwd)/.nix-cache"
     # If the cache directory exists, add it as an extra substituter in the Nix configuration
