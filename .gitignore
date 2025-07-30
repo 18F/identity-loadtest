@@ -27,3 +27,14 @@ mont-back.jpeg
 # terraform cruft
 .terraform
 
+
+# Devenv
+.devenv*
+devenv.local.nix
+.env
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
