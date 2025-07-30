@@ -29,7 +29,7 @@ devenv-test:
     ## Compare the before and after states to find new items added to the Nix store
     - comm -13 /nix/.before /nix/.after >/nix/.new
     ## Filter out specific items that should not be cached, these items change with every devenv generation.
-    - grep -v -e python3-3.12.10-env -e devenv-python-poetry -e devenv-profile -e devenv-shell-env -e source -e devenv-test /nix/.new >/nix/.filtered
+    - grep -v -e python3-3.12.10-env -e devenv-python-poetry -e devenv-profile -e devenv-shell-env -e source -e devenv-test -e poetry /nix/.new >/nix/.filtered
     - mv /nix/.filtered /nix/.new
     ## Exit if there are no new items to cache
     - '[ -s /nix/.new ] || exit 0'
