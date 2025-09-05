@@ -12,6 +12,7 @@
     aws-vault
     awscli2
     bash
+    detect-secrets
     git
     glab
     kubectl
@@ -39,5 +40,19 @@
   env = {
     AWS_VAULT_KEYCHAIN_NAME = "login";
     AWS_VAULT_PROMPT = "ykman";
+  };
+
+  git-hooks.hooks = {
+    detect-secrets = {
+      enable = true;
+      name = "detect-secrets";
+      description = "Detects high entropy strings that are likely to be passwords.";
+      entry = "detect-secrets-hook";
+      language = "python";
+      args = [
+        "--baseline"
+        ".secrets.baseline"
+      ];
+    };
   };
 }
