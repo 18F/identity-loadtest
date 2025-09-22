@@ -49,7 +49,7 @@ spec:
               memory: 1500Mi
         worker:
           image: 894947205914.dkr.ecr.us-west-2.amazonaws.com/locustio/locust:2.32.4
-          replicas: 440
+          replicas: 4
           args:
             - "--enable-rebalancing"
           hpa:
