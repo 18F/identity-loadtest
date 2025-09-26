@@ -6,6 +6,13 @@ provider "aws" {
 terraform {
   required_version = ">= 1.2.4"
   backend "s3" {}
+
+    required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.100.0"
+    }
+    }
 }
 
 # Using these data sources allows the configuration to be

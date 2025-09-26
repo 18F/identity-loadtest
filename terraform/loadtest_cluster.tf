@@ -50,7 +50,7 @@ module "loadtest" {
       subnet_ids      = module.vpc.private_subnets
       capacity_type   = "ON_DEMAND"
       instance_types  = ["m5.large", "m4.large", "m6a.large", "m5a.large", "m5d.large"] // Instances with same specs for memory and CPU so Cluster Autoscaler scales efficiently
-      disk_size       = 10                                                              # disk_size will be ignored when using Launch Templates
+      disk_size       = 100                                                             # disk_size will be ignored when using Launch Templates
     }
   }
 }
@@ -58,7 +58,7 @@ module "loadtest" {
 # Add-ons
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.20.0"
+  version = "~> 1.22.0"
 
   cluster_name      = module.loadtest.eks_cluster_id
   cluster_endpoint  = module.loadtest.eks_cluster_endpoint
