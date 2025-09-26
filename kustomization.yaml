@@ -3,6 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - agnesloadtest/agnes.yaml
+- agnesloadtest/sftest.yaml
 # - agnesloadtest/lt-beta_sam_prod.yaml
 # - agnesloadtest/lt-caia-oidc.yaml
 # - agnesloadtest/lt-clearinghouse.yaml
