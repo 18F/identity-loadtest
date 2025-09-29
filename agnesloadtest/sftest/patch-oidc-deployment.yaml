@@ -14,3 +14,8 @@
   value:
     name: NEW_RELIC_APP_NAME
     value: sftest-oidc-sinatra.agnesloadtest.identitysandbox.gov
+- op: replace
+  path: /spec/template/spec/containers/0/env/3
+  value:
+    name: client_id
+    value: urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sftest
