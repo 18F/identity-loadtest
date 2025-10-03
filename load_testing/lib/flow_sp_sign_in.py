@@ -208,22 +208,6 @@ def do_sign_in_user_not_found(context):
     num_users = get_env("NUM_USERS")
     credentials = random_cred(num_users, None)
 
-    # POST username and password
-    resp = do_request(
-        context,
-        "post",
-        "/",
-        "/",
-        "",
-        {
-            "user[email]": credentials["email"],
-            "user[password]": credentials["password"],
-            "authenticity_token": auth_token,
-        },
-    )
-    resp = do_request(context, "get", "/", "/")
-    auth_token = authenticity_token(resp)
-
     # Post login credentials
     resp = do_request(
         context,
@@ -259,22 +243,6 @@ def do_sign_in_incorrect_password(context):
     # the rake task
     num_users = get_env("NUM_USERS")
     credentials = random_cred(num_users, None)
-
-    # POST username and password
-    resp = do_request(
-        context,
-        "post",
-        "/",
-        "/",
-        "",
-        {
-            "user[email]": credentials["email"],
-            "user[password]": credentials["password"],
-            "authenticity_token": auth_token,
-        },
-    )
-    resp = do_request(context, "get", "/", "/")
-    auth_token = authenticity_token(resp)
 
     # Post login credentials
     resp = do_request(
