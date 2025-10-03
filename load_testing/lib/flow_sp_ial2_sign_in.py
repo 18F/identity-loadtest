@@ -133,12 +133,28 @@ def ial2_sign_in(context):
         context,
         "put",
         "/verify/hybrid_handoff",
-        "/verify/document_capture",
+        "/verify/choose_id_type",
         "",
         {
             "authenticity_token": auth_token,
         },
     )
+    auth_token = authenticity_token(resp)
+
+    logging.debug("/verify/choose_id_type")
+    # Choose Desktop flow
+    resp = do_request(
+        context,
+        "put",
+        "/verify/choose_id_type",
+        "/verify/document_capture",
+        "",
+        {
+            "doc_auth[choose_id_type_preference]": "drivers_license",
+            "authenticity_token": auth_token,
+        },
+    )
+    auth_token = authenticity_token(resp)
 
     dom = resp_to_dom(resp)
     selector = 'meta[name="csrf-token"]'
