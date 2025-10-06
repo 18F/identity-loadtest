@@ -36,7 +36,7 @@ coverage:
     - poetry run coverage html
   cache:
     paths:
-      - .venv/
+      - .cache/
   coverage: '/TOTAL.* (100\%|\d\d\%)$/'
   artifacts:
     paths:
