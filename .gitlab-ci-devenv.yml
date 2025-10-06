@@ -22,7 +22,7 @@ devenv-test:
     # Record the current state of the Nix store (which includes the local cache) before the script runs
     - find /nix/store -mindepth 1 -maxdepth 1 ! -name \*.drv | sort >/nix/.before
   script:
-    - devenv test
+    - devenv test --nix-option fallback true
   after_script:
     - if [ "$CI_JOB_STATUS" == "canceled" ]; then exit 0; fi
     # This section updates the local cache with new items.
