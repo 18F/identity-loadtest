@@ -18,8 +18,11 @@ cache:
     - .venv/
 
 coverage:
-  stage: build
+  stage: test
   image: cimg/python:3.12.11
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
   before_script:
     - python --version
     - poetry --version
