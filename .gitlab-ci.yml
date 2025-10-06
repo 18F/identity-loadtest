@@ -14,8 +14,10 @@ variables:
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
+  fallback_keys:
+    - $CI_DEFAULT_BRANCH
   paths:
-    - .venv/
+    - .cache/
 
 coverage:
   stage: test
