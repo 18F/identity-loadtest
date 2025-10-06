@@ -25,6 +25,8 @@ coverage:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "main"
+  variables:
+    POETRY_CACHE_DIR: $CI_PROJECT_DIR/.cache
   before_script:
     - python --version
     - poetry --version
