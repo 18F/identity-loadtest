@@ -2,22 +2,34 @@
 name = "identity-loadtest"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Your Name",email = "you@example.com"}
-]
+authors = [{ name = "Your Name", email = "you@example.com" }]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "locust (>=2.37.14,<3.0.0)",
-    "pytest (>=8.4.1,<9.0.0)",
-    "pyzmq (>=27.0.0,<28.0.0)",
-    "pyquery (>=2.0.1,<3.0.0)",
-    "black (>=25.1.0,<26.0.0)",
-    "coverage (>=7.10.1,<8.0.0)",
-    "faker (>=37.4.2,<38.0.0)"
+  "locust (>=2.37.14,<3.0.0)",
+  "pytest (>=8.4.1,<9.0.0)",
+  "pyzmq (>=27.0.0,<28.0.0)",
+  "pyquery (>=2.0.1,<3.0.0)",
+  "black (>=25.1.0,<26.0.0)",
+  "coverage (>=7.10.1,<8.0.0)",
+  "faker (>=37.4.2,<38.0.0)",
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+source_dirs = ["load_testing/lib", "tests"]
+
+[tool.coverage.report]
+ignore_errors = true
+
+[tool.coverage.html]
+title = "Load Testing Library Coverage Report"
