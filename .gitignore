@@ -23,6 +23,7 @@ mont-back.jpeg
 # tests
 .pytest_cache
 .coverage
+coverage.xml
 
 # terraform cruft
 .terraform

@@ -10,28 +10,33 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   VENV_PATH: "$CI_PROJECT_DIR/venv"
   ECR_REGISTRY: "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+  SECURE_ANALYZERS_PREFIX: "$ECR_REGISTRY/gitlab/security-products"
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-    - .cache/pip/
-    - venv/
+    - .venv/
 
-build:
+coverage:
   stage: build
-  image: cimg/python:3.12.3
+  image: cimg/python:3.12.11
   before_script:
-    - python -V
-    - pip install --upgrade pip
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
+    - python --version
+    - poetry --version
+    - poetry install
   script:
-    - pip install -r requirements.txt
-    - coverage run -m pytest
-    - coverage report
+    - poetry run coverage run
+    - poetry run coverage report
+    - poetry run coverage xml
+    - poetry run coverage html
   cache:
     paths:
-      - venv/
-      - .cache/pip/
-  
+      - .venv/
+  coverage: '/TOTAL.* (100\%|\d\d\%)$/'
+  artifacts:
+    paths:
+      - htmlcov/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml

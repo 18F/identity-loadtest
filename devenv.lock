@@ -3,10 +3,10 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1753888869,
+        "lastModified": 1759756814,
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "bdf26a4453eff6bae835f33d519a36f77e0ca257",
+        "rev": "fe0de42324615376a47d8d32b3fab0c42b8fecae",
         "type": "github"
       },
       "original": {
@@ -55,10 +55,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1750779888,
+        "lastModified": 1759523803,
         "owner": "cachix",
         "repo": "git-hooks.nix",
-        "rev": "16ec914f6fb6f599ce988427d9d94efddf25fe6d",
+        "rev": "cfc9f7bb163ad8542029d303e599c0f7eee09835",
         "type": "github"
       },
       "original": {
@@ -89,10 +89,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1750441195,
+        "lastModified": 1758532697,
         "owner": "cachix",
         "repo": "devenv-nixpkgs",
-        "rev": "0ceffe312871b443929ff3006960d29b120dc627",
+        "rev": "207a4cb0e1253c7658c6736becc6eb9cace1f25f",
         "type": "github"
       },
       "original": {
@@ -140,10 +140,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1753757143,
+        "lastModified": 1755249745,
         "owner": "cachix",
         "repo": "nixpkgs-python",
-        "rev": "c172f7036afd4f22528eebbaa30025d454692dcc",
+        "rev": "b6632af2db9f47c79dac8f4466388c7b1b6c3071",
         "type": "github"
       },
       "original": {
@@ -160,10 +160,10 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1753194085,
+        "lastModified": 1759625489,
         "owner": "stackbuilders",
         "repo": "nixpkgs-terraform",
-        "rev": "76fbf4ee84cb3c0effcc7826f7cba356d9661a5c",
+        "rev": "b35e3dfe82bb8a80d414f20b44345b1158a167aa",
         "type": "github"
       },
       "original": {
@@ -174,10 +174,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1753844155,
+        "lastModified": 1759632233,
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e44b8dc0882d66e2627a8ff252b04a22f4a629fd",
+        "rev": "d7f52a7a640bc54c7bb414cca603835bf8dd4b10",
         "type": "github"
       },
       "original": {
