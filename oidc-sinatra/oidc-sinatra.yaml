@@ -47,6 +47,8 @@ spec:
               value: "http://idmanagement.gov/ns/assurance/loa/1"
             - name: client_id
               value: "urn:gov:gsa:openidconnect:sp:sinatra"
+            - name: signed_events
+              value: true
             - name: attempts_shared_secret
               valueFrom:
                 secretKeyRef:
