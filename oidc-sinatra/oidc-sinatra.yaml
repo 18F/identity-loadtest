@@ -48,7 +48,7 @@ spec:
             - name: client_id
               value: "urn:gov:gsa:openidconnect:sp:sinatra"
             - name: signed_events
-              value: true
+              value: "true"
             - name: attempts_shared_secret
               valueFrom:
                 secretKeyRef:
