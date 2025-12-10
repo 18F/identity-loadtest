@@ -51,7 +51,7 @@ def ial2_sign_up(context):
 
     # Post fake email and get confirmation link (link shows up in "load test mode")
     fake = Faker()
-    new_email = "test+{}@test.com".format(fake.md5())
+    new_email = "test+{}@example.com".format(fake.md5())
     default_password = "salty pickles"
 
     resp = do_request(
