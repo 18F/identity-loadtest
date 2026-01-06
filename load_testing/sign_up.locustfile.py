@@ -26,7 +26,7 @@ class SignUpLoad(TaskSet):
 
         # Now log out.
         # You'd think that this would leave you at "/", but it returns a 204 and leaves you be.
-        flow_helper.do_request(self, "get", "/logout", "/logout", "")
+        flow_helper.do_request(self, "post", "/logout", "/logout", "")
 
 
 class WebsiteUser(HttpUser):
