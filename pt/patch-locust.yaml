@@ -15,7 +15,7 @@ spec:
           headless: false
           environment:
             SP_HOST: https://oidc-sinatra.loadtest.identitysandbox.gov
-            NUM_USERS: "5000000" # 5M
+            NUM_USERS: "1000000" # 5M
             RATIO_SIGN_IN: 3812
             RATIO_SIGN_IN_INCORRECT_PASSWORD: 900
             RATIO_SIGN_IN_INCORRECT_SMS_OTP: 23
