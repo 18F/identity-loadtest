@@ -179,7 +179,7 @@ def do_sign_up(context):
     )
 
     auth_token = authenticity_token(resp)
-    state = querystring_value(resp.url, "state")
+    state = querystring_value(resp.url, "state", resp)
     # Confirm the logout request on the IdP
     resp = do_request(
         context,

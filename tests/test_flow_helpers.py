@@ -17,6 +17,7 @@ from lib.flow_helper import (
     choose_cred,
     confirm_link,
     desktop_agent_headers,
+    do_request,
     export_cookies,
     get_env,
     import_cookies,
@@ -41,6 +42,18 @@ def test_querystring_value():
     url = "http://one.two?three=four&five=six"
     assert querystring_value(url, "three") == "four"
     assert querystring_value(url, "five") == "six"
+
+
+def test_querystring_value_marks_response_failure_when_key_missing():
+    response = test_helper.mock_response("doc_auth_verify.html")
+    response.url = "http://one.two?three=four"
+
+    with pytest.raises(Exception):
+        querystring_value(response.url, "five", response)
+
+    response.failure.assert_called_once_with(
+        "No querystring value found for five in http://one.two?three=four"
+    )
 
 
 def test_url_without_querystring():
@@ -106,6 +119,18 @@ def test_get_env():
 def test_resp_to_dom():
     resp = test_helper.mock_response("doc_auth_verify.html")
     assert resp_to_dom(resp)
+
+
+def test_do_request_marks_http_errors_as_failures():
+    context = test_helper.mock_context()
+
+    with pytest.raises(Exception):
+        do_request(context, "get", "/example")
+
+    response = context.client.get.return_value.__enter__.return_value
+    response.failure.assert_called_once_with(
+        "GET http://example.test/example returned 500 Internal Server Error"
+    )
 
 
 def test_authentication_token():

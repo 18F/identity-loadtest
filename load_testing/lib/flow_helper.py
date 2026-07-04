@@ -31,6 +31,9 @@ def do_request(
         catch_response=True,
         name=name,
     ) as resp:
+        if resp.status_code >= 400:
+            fail_response_status(resp)
+            raise locust.exception.RescheduleTask
         if expected_redirect:
             if resp.url and expected_redirect not in resp.url:
                 fail_response(resp, expected_redirect, expected_text)
@@ -40,6 +43,14 @@ def do_request(
                 fail_response(resp, expected_redirect, expected_text)
                 raise locust.exception.RescheduleTask
         return resp
+
+
+def fail_response_status(response):
+    message = (
+        f"{response.request.method} {response.url} returned "
+        f"{response.status_code} {response.reason}"
+    )
+    response.failure(message)
 
 
 def fail_response(response, expected_redirect, expected_text):
@@ -153,14 +164,17 @@ def idv_phone_form_value(response):
     return value
 
 
-def querystring_value(url, key):
+def querystring_value(url, key, response=None):
     # Get a querystring value from a url
     parsed = urlparse(url)
     try:
         return parse_qs(parsed.query)[key][0]
     except KeyError as e:
-        logging.error(f"{LOG_NAME}: No querystring found for {key} in {url}")
+        error = f"No querystring value found for {key} in {url}"
+        logging.error(f"{LOG_NAME}: {error}")
         logging.debug(e)
+        if response:
+            response.failure(error)
         raise locust.exception.RescheduleTask
 
 

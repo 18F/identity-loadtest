@@ -18,3 +18,14 @@ def mock_response(fixture_name):
     response.content = fixture_content
 
     return response
+
+
+def mock_context():
+    context = MagicMock()
+    response = context.client.get.return_value.__enter__.return_value
+    response.status_code = 500
+    response.reason = "Internal Server Error"
+    response.url = "http://example.test/example"
+    response.request.method = "GET"
+
+    return context
