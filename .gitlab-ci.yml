@@ -1,3 +1,7 @@
+default:
+  tags:
+    - test-pool
+
 stages:
   - build
   - test
